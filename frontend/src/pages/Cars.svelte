@@ -158,7 +158,7 @@
     }
 </script>
 
-{#if $user.user_roles && $user.user_roles.includes("admin")}
+{#if $user.user_roles && $user.user_roles.includes("vermieter")}
     <h1 class="mt-3">Create Car</h1>
     <form class="mb-5">
         <div class="row mb-3">

@@ -31,7 +31,7 @@ public class CarController {
     CarRepository carRepository;
 
     @PostMapping("/car")
-    @Secured("ROLE_admin")
+    @Secured("ROLE_vermieter")
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
         Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getPrice(), cDTO.getCarType(), cDTO.getCarTransmission(), cDTO.getDescription());
