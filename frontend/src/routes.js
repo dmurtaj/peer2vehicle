@@ -1,12 +1,12 @@
 import Home from "./pages/Home.svelte";
-import Freelancers from "./pages/Freelancers.svelte";
-import Jobs from "./pages/Jobs.svelte";
+import Mieter from "./pages/Mieter.svelte";
+import Cars from "./pages/Cars.svelte";
 import Account from "./pages/Account.svelte";
 
 export default {
     '/': Home,
     '/home': Home,
-    '/freelancers': Freelancers,
-    '/jobs': Jobs,
+    '/mieters': Mieter,
+    '/cars': Cars,
     '/account': Account,
 }
