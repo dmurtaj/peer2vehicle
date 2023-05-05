@@ -36,15 +36,15 @@ public class MieterController {
     @PostMapping("/mieter")
     @Secured("ROLE_admin")
     public ResponseEntity<Mieter> createMieter(
-            @RequestBody MieterCreateDTO fDTO) {
+            @RequestBody MieterCreateDTO mDTO) {
         // Validate email using MailValidatorService
-        MailInformation mailInformation = mailValidatorService.validateEmail(fDTO.getEmail());
+        MailInformation mailInformation = mailValidatorService.validateEmail(mDTO.getEmail());
 
         // Check if the email is valid and not from a temporary domain
         if (mailInformation.isFormat() && !mailInformation.isDisposable() && mailInformation.isDns()) { // Es ist is und nicht getFormat, da es in MailInformation.java booleans sind.
-            Mieter fDAO = new Mieter(fDTO.getEmail(), fDTO.getName());
-            Mieter f = mieterRepository.save(fDAO);
-            return new ResponseEntity<>(f, HttpStatus.CREATED);
+            Mieter mDAO = new Mieter(mDTO.getEmail(), mDTO.getName());
+            Mieter m = mieterRepository.save(mDAO);
+            return new ResponseEntity<>(m, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
