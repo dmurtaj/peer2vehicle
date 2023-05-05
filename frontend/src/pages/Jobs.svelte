@@ -1,12 +1,12 @@
 <script>
     import axios from "axios";
-    import { user, jwt_token, myFreelancerId } from "../store"; //Das JWT wird aus dem Store geladen
-    import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/jobs?pageNumber=2
+    import { user, jwt_token, myMieterId } from "../store"; //Das JWT wird aus dem Store geladen
+    import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
     /*
     Hinweis: window.location.origin ist die Serveradresse der aktuellen Seiten. Beispiel: Wenn
-    http://localhost:8080/#/jobs angezeigt wird, ist window.location.origin gleich
+    http://localhost:8080/#/cars angezeigt wird, ist window.location.origin gleich
     http://localhost:8080
     Dies hat den Vorteil, dass wir die URL später nicht anpassen müssen, wenn wir die Anwendung
     deployen.
@@ -19,14 +19,18 @@
     Page aktuell angezeigt wird und wie viele
     Pages es insgesamt gibt.*/
 
-    let earningsMin;
-    let jobType; //In den Input-Elementen eingetragene Werte
+    let priceMin;
+    let carType;
+    let carTransmission; //In den Input-Elementen eingetragene Werte
 
-    let jobs = [];
-    let job = {
+    let cars = [];
+    let car = {
+        brand: null,
+        model: null,
+        price: null,
+        carType: null,
+        carTransmission: null,
         description: null,
-        earnings: null,
-        jobType: null,
     };
 
     $: {
@@ -36,204 +40,216 @@
         } else {
             currentPage = "1";
         }
-        getJobs();
+        getCars();
     }
     /* Dieser Code wird immer dann ausgeführt, wenn sich der Wert einer Variablen im Code-Block $: {... } ändert,
     siehe auch https://svelte.dev/tutorial/reactive-statements
-    Wir lesen hier den Query-Parameter "page" aus der URL und holen uns anschliessend alle Jobs. */
+    Wir lesen hier den Query-Parameter "page" aus der URL und holen uns anschliessend alle Cars. */
 
-    function getJobs() {
+    function getCars() {
         let query =
             "?pageSize=" + defaultPageSize + " &pageNumber=" + currentPage; //Hier werden die Query-Parameter für den Request ans Backend erstellt
 
-        if (earningsMin) {
-            query += "&min=" + earningsMin;
+        if (priceMin) {
+            query += "&price=" + priceMin;
         }
-        if (jobType && jobType !== "ALL") {
-            query += "&type=" + jobType;
+        if (carType && carType !== "ALL") {
+            query += "&type=" + carType;
+        }
+        if (carTransmission && carTransmission !== "ALL") {
+            query += "&type=" + carTransmission;
         }
         /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
-        http://localhost:8080/api/job?pageSize=4&page=2&min=139&jobType=TEST */
+        http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
 
         var config = {
             method: "get",
-            url: api_root + "/api/job" + query, //Komplette URL für den Request erstellen, z.B: http://localhost:8080/api/job?pageSize=4&pageNumber=1
+            url: api_root + "/api/car" + query, //Komplette URL für den Request erstellen, z.B: http://localhost:8080/api/car?pageSize=4&pageNumber=1
             headers: { Authorization: "Bearer " + $jwt_token }, //Das JWT wird im Header mitgeschickt
         };
 
         axios(config)
             .then(function (response) {
-                jobs = response.data.content;
+                cars = response.data.content;
 
                 nrOfPages = response.data.totalPages; //Nach jedem Request wird die Anzahl Pages aktualisiert. Das Backend schickt diese in der Property totalPages in der Response.
             })
             .catch(function (error) {
-                alert("Could not get jobs");
+                alert("Could not get cars");
                 console.log(error);
             });
     }
-    //getJobs();
-    /* getJobs() wird neu im Reactive Statement weiter
+    //getCars();
+    /* getCars() wird neu im Reactive Statement weiter
     oben aufgerufen und kann hier gelöscht oder
     auskommentiert werden. */
 
-    function createJob() {
+    function createCar() {
         var config = {
             method: "post",
-            url: api_root + "/api/job",
+            url: api_root + "/api/car",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
             },
-            data: job,
+            data: car,
         };
 
         axios(config)
             .then(function (response) {
-                alert("Job created");
-                getJobs();
+                alert("Car created");
+                getCars();
             })
             .catch(function (error) {
-                alert("Could not create Job");
+                alert("Could not create Car");
                 console.log(error);
             });
     }
 
-    function assignToMe(jobId) {
+    function rentCar(carId) {
         var config = {
             method: "put",
-            url: api_root + "/api/service/me/assignjob?jobId=" + jobId,
+            url: api_root + "/api/service/me/rentcar?carId=" + carId,
             headers: { Authorization: "Bearer " + $jwt_token },
         };
         axios(config)
             .then(function (response) {
-                getJobs();
+                getCars();
             })
             .catch(function (error) {
-                alert("Could not assign job to me");
+                alert("Could not rent car");
                 console.log(error);
             });
     }
 
     /*
-    function getMyFreelancerId() {
+    function getMyMieterId() {
         var config = {
             method: "get",
-            url: api_root + "/api/me/freelancer",
+            url: api_root + "/api/me/mieter",
             headers: { Authorization: "Bearer " + $jwt_token },
         };
         axios(config)
             .then(function (response) {
-                $myFreelancerId = response.data.id;
+                $myMieterId = response.data.id;
             })
             .catch(function (error) {
-                alert("Could not get freelancer ID");
+                alert("Could not get mieter ID");
                 console.log(error);
             });
     }
-    getMyFreelancerId();
+    getMyMieterId();
     */
 
-    function completeJob(jobId) {
+    function unrentCar(carId) {
         var config = {
             method: "put",
-            url: api_root + "/api/service/me/completejob?jobId=" + jobId,
+            url: api_root + "/api/service/me/unrentcar?carId=" + carId,
             headers: { Authorization: "Bearer " + $jwt_token },
         };
         axios(config)
             .then(function (response) {
-                getJobs();
+                getCars();
             })
             .catch(function (error) {
-                alert("Could not complete job");
+                alert("Could not unrent car");
                 console.log(error);
             });
     }
 </script>
 
 {#if $user.user_roles && $user.user_roles.includes("admin")}
-    <h1 class="mt-3">Create Job</h1>
+    <h1 class="mt-3">Create Car</h1>
     <form class="mb-5">
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label" for="description">Description</label>
-                <input
-                    bind:value={job.description}
-                    class="form-control"
-                    id="description"
-                    type="text"
-                />
+                <label class="form-label" for="brand">Brand</label>
+                <input bind:value={car.brand} class="form-control" id="brand" type="text"/>
+            </div>
+            <div class="col">
+                <label class="form-label" for="model">Model</label>
+                <input bind:value={car.model} class="form-control" id="model" type="text"/>
             </div>
         </div>
         <div class="row mb-3">
             <div class="col">
-                <label class="form-label" for="type">Type</label>
-                <select
-                    bind:value={job.jobType}
-                    class="form-select"
-                    id="type"
-                    type="text"
-                >
-                    <option value="OTHER">OTHER</option>
-                    <option value="TEST">TEST</option>
-                    <option value="IMPLEMENT">IMPLEMENT</option>
-                    <option value="REVIEW">REVIEW</option>
+                <label class="form-label" for="description">Description</label>
+                <input bind:value={car.description} class="form-control" id="description" type="text"/>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label class="form-label" for="cartype">Cartype</label>
+                <select bind:value={car.carType} class="form-select" id="cartype" type="text">
+                    <option value="ELECTRIC">ELECTRIC</option>
+                    <option value="HYBRID">HYBRID</option>
+                    <option value="DIESEL">DIESEL</option>
+                    <option value="GAS">GAS</option>
                 </select>
             </div>
             <div class="col">
-                <label class="form-label" for="earnings">Earnings</label>
-                <input
-                    bind:value={job.earnings}
-                    class="form-control"
-                    id="earnings"
-                    type="number"
-                />
+                <label class="form-label" for="transmission">Transmission</label>
+                <select bind:value={car.carTransmission} class="form-select" id="transmission" type="text">
+                    <option value="MANUAL">MANUAL</option>
+                    <option value="AUTOMATIC">AUTOMATIC</option>
+                    <option value="SINGLE">SINGLE</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label" for="price">Price</label>
+                <input bind:value={car.price} class="form-control" id="price" type="number"/>
             </div>
         </div>
-        <button type="button" class="btn btn-primary" id="submitbutton" on:click={createJob}
-            >Submit</button
-        >
+        <button type="button" class="btn btn-primary" id="submitbutton" on:click={createCar}>Submit</button>
     </form>
 {/if}
 
-<h1>All Jobs</h1>
+<h1>All Cars</h1>
 
 <div class="row my-3">
     <div class="col-auto">
-        <label for="" class="col-form-label">Earnings: </label>
+        <label for="" class="col-form-label">Price: </label>
     </div>
     <div class="col-3">
         <input
             class="form-control"
             type="number"
-            placeholder="min"
-            id="minEarningFilter"
-            bind:value={earningsMin}
+            placeholder="price"
+            id="minPriceFilter"
+            bind:value={priceMin}
         />
-        <!--Die Eingaben sind via value-binding mit den Variablen earningsMin und jobType (siehe nächste Seite) verknüpft.
+        <!--Die Eingaben sind via value-binding mit den Variablen priceMin und carType (siehe nächste Seite) verknüpft.
         Für den Apply-Button braucht es keine neue Funktion, wir müssen nur die URL mit den neuen Query-Parametern aktualisieren.
-        Dadurch werden via Reactive Statement die Jobs neu geladen. //-->
+        Dadurch werden via Reactive Statement die Cars neu geladen. //-->
     </div>
     <div class="col-auto">
-        <label for="" class="col-form-label">Job Type: </label>
+        <label for="" class="col-form-label">Car Type: </label>
     </div>
     <div class="col-3">
-        <select bind:value={jobType} class="form-select" id="jobTypeFilter" type="text">
+        <select bind:value={carType} class="form-select" id="carTypeFilter" type="text">
             <option value="ALL" />
-            <option value="OTHER">OTHER</option>
-            <option value="TEST">TEST</option>
-            <option value="IMPLEMENT">IMPLEMENT</option>
-            <option value="REVIEW">REVIEW</option>
+            <option value="ELECTRIC">ELECTRIC</option>
+            <option value="HYBRID">HYBRID</option>
+            <option value="DIESEL">DIESEL</option>
+            <option value="GAS">GAS</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="" class="col-form-label">Transmission: </label>
+    </div>
+    <div class="col-3">
+        <select bind:value={carTransmission} class="form-select" id="carTransmissionFilter" type="text">
+            <option value="ALL" />
+            <option value="MANUAL">MANUAL</option>
+            <option value="AUTOMATIC">AUTOMATIC</option>
+            <option value="SINGLE">SINGLE</option>
         </select>
     </div>
     <div class="col-3">
         <a
             class="btn btn-primary"
             id="applyButton"
-            href={"#/jobs?page=1&jobType=" +
-                jobType +
-                "&earningsMin=" +
-                earningsMin}
+            href={"#/cars?page=1&carType=" + carType + "&price=" + priceMin + "&carTransmission=" + carTransmission}
             role="button">Apply</a
         >
     </div>
@@ -242,53 +258,41 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Description</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">Price</th>
             <th scope="col">Type</th>
-            <th scope="col">Earnings</th>
+            <th scope="col">Transmission</th>
             <th scope="col">State</th>
-            <th scope="col">FreelancerId</th>
+            <th scope="col">MieterId</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
-        {#each jobs as job}
+        {#each cars as car}
             <tr>
-                <td>{job.description}</td>
-                <td>{job.jobType}</td>
-                <td>{job.earnings}</td>
-                <td>{job.jobState}</td>
-                <td>{job.freelancerId}</td>
+                <td>{car.brand}</td>
+                <td>{car.model}</td>
+                <td>{car.price}</td>
+                <td>{car.cartype}</td>
+                <td>{car.carTransmission}</td>
+                <td>{car.carState}</td>
+                <td>{car.mieterId}</td>
                 <td>
-                    {#if job.jobState === "ASSIGNED"}
-                        <span class="badge bg-secondary" id="assignedToMe">Assigned</span>
-                    {:else if job.freelancerId === null}
-                        <button
-                            type="button"
-                            class="btn btn-primary btn-sm"
-                            id="assignbutton"
-                            on:click={() => {
-                                assignToMe(job.id);
-                            }}
-                        >
-                            Assign to me
-                        </button>
+                    {#if car.carState === "UNAVAILABLE" && car.mieterId !== $myMieterId}
+                        <span class="badge bg-secondary" id="rented">Unavailable</span>
+                    {:else if car.mieterId === null}
+                        <button type="button" class="btn btn-primary btn-sm" id="rentButton"
+                            on:click={() => {rentCar(car.id);}}>Rent Car</button>
                     {/if}
-                    {#if job.freelancerId === $myFreelancerId && job.jobState !== "DONE"}
-                        <button
-                            type="button"
-                            class="btn btn-success btn-sm"
-                            on:click={() => {
-                                completeJob(job.id);
-                            }}
-                        >
-                            Complete Job
-                        </button>
-                    {:else if job.jobState === "DONE"}
-                        <span class="badge bg-success">Done</span>
+
+                    {#if car.mieterId === $myMieterId && car.carState !== "UNAVAILABLE"}
+                        <button type="button" class="btn btn-success btn-sm"
+                            on:click={() => {unrentCar(car.id);}}>Unrent Car</button>
                     {/if}
                 </td>
-                <!-- Wenn der Job den Zustand «ASSIGNED» hat, wird ein Badge mit dem Text «Assigned» angezeigt.
-                Wenn dem Job noch kein Freelancer zugewiesen ist (freelancerId ist null), wird der Button «Assign To Me» angezeigt. //-->
+                <!-- Wenn der Car den Zustand «ASSIGNED» hat, wird ein Badge mit dem Text «Assigned» angezeigt.
+                Wenn dem Car noch kein Freelancer zugewiesen ist (mieterId ist null), wird der Button «Assign To Me» angezeigt. //-->
             </tr>
         {/each}
     </tbody>
@@ -305,12 +309,12 @@
                 <a
                     class="page-link"
                     class:active={currentPage == i + 1}
-                    href={"#/jobs?page=" + (i + 1)}
+                    href={"#/cars?page=" + (i + 1)}
                     >{i + 1}
                 </a>
                 <!-- Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
                     
-                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/jobs?page=2//-->
+                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/cars?page=2//-->
             </li>
         {/each}
     </ul>

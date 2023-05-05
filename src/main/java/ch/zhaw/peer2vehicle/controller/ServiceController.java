@@ -37,7 +37,7 @@ public class ServiceController {
         mailService.sendMail(mail);
     }
 
-    @PutMapping("/rentCar")
+    @PutMapping("/rentcar")
     @Secured("ROLE_admin")
     public ResponseEntity<Car> rentCar(@RequestBody CarStateChangeDTO changes) {
         String mieterEmail = changes.getMieterEmail();
@@ -50,7 +50,7 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/unrentCar")
+    @PutMapping("/unrentcar")
     @Secured("ROLE_admin")
     public ResponseEntity<Car> unrentCar(@RequestBody CarStateChangeDTO changes) {
         String mieterEmail = changes.getMieterEmail();
@@ -63,7 +63,7 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/me/rentCar")
+    @PutMapping("/me/rentcar")
     public ResponseEntity<Car> rentToMe(@RequestParam String carId,
             @AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaimAsString("email");
@@ -75,7 +75,7 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/me/unrentCar")
+    @PutMapping("/me/unrentcar")
     public ResponseEntity<Car> unrentToMe(@RequestParam String carId,
             @AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaimAsString("email");

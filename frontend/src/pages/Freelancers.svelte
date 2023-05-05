@@ -6,7 +6,7 @@
     const api_root = window.location.origin;
     /*
     Hinweis: window.location.origin ist die Serveradresse der aktuellen Seiten. Beispiel: Wenn
-    http://localhost:8080/#/freelancer angezeigt wird, ist window.location.origin gleich
+    http://localhost:8080/#/mieter angezeigt wird, ist window.location.origin gleich
     http://localhost:8080
     Dies hat den Vorteil, dass wir die URL später nicht anpassen müssen, wenn wir die Anwendung
     deployen.
@@ -19,8 +19,8 @@
     Page aktuell angezeigt wird und wie viele
     Pages es insgesamt gibt.*/
 
-    let freelancers = [];
-    let freelancer = {
+    let mieters = [];
+    let mieter = {
         name: null,
         email: null,
     };
@@ -32,48 +32,48 @@
         } else {
             currentPage = "1";
         }
-        getFreelancers();
+        getMieters();
     }
 
-    function getFreelancers() {
+    function getMieters() {
         let query =
             "?pageSize=" + defaultPageSize + "&pageNumber=" + currentPage;
 
         var config = {
             method: "get",
-            url: api_root + "/api/freelancer" + query,
+            url: api_root + "/api/mieter" + query,
             headers: { Authorization: "Bearer " + $jwt_token }, //Das JWT wird im Header mitgeschickt
         };
 
         axios(config)
             .then(function (response) {
-                freelancers = response.data.content;
+                mieters = response.data.content;
                 nrOfPages = response.data.totalPages;
             })
             .catch(function (error) {
-                alert("Could not get freelancers");
+                alert("Could not get mieters");
                 console.log(error);
             });
     }
-    //getFreelancers();
 
-    function validateEmailAndcreateFreelancer() {
+    /*
+    function validateEmailAndcreateMieter() {
         var config = {
             method: "get",
-            url: "https://disify.com/api/email/" + freelancer.email, //API-URL mit E-Mail
+            url: "https://disify.com/api/email/" + mieter.email, //API-URL mit E-Mail
         };
         axios(config)
             .then(function (response) {
-                console.log("Validated email " + freelancer.email);
+                console.log("Validated email " + mieter.email);
                 console.log(response.data);
                 if ( //Validierung ob E-Mail gültig ist.
                     response.data.format &&
                     !response.data.disposable &&
                     response.data.dns
                 ) {
-                    createFreelancer();
+                    createMieter();
                 } else {
-                    alert("Email " + freelancer.email + " is not valid.");
+                    alert("Email " + mieter.email + " is not valid.");
                 }
             })
             .catch(function (error) {
@@ -81,39 +81,40 @@
                 console.log(error);
             });
     }
+    */
 
-    function createFreelancer() {
+    function createMieter() {
         var config = {
             method: "post",
-            url: api_root + "/api/freelancer",
+            url: api_root + "/api/mieter",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
             },
-            data: freelancer,
+            data: mieter,
         };
 
         axios(config)
             .then(function (response) {
-                alert("Freelancer created");
-                getFreelancers();
+                alert("Mieter created");
+                getMieters();
             })
             .catch(function (error) {
-                alert("Could not create Freelancer");
+                alert("Could not create Mieter");
                 console.log(error);
             });
     }
 </script>
 
-<h1 class="mt-3">Create Freelancer</h1>
+<h1 class="mt-3">Create Mieter</h1>
 <form class="mb-5">
     <div class="row mb-3">
         <div class="col">
             <label class="form-label" for="name">Name</label>
             <input
-                bind:value={freelancer.name}
+                bind:value={mieter.name}
                 class="form-control"
-                id="email"
+                id="name"
                 type="text"
             />
         </div>
@@ -122,19 +123,19 @@
         <div class="col">
             <label class="form-label" for="email">Email</label>
             <input
-                bind:value={freelancer.email}
+                bind:value={mieter.email}
                 class="form-control"
                 id="email"
                 type="text"
             />
         </div>
     </div>
-    <button type="button" class="btn btn-primary" on:click={validateEmailAndcreateFreelancer}
+    <button type="button" class="btn btn-primary" on:click={createMieter}
         >Submit</button
     >
 </form>
 
-<h1>All Freelancers</h1>
+<h1>All Mieter</h1>
 <table class="table">
     <thead>
         <tr>
@@ -143,10 +144,10 @@
         </tr>
     </thead>
     <tbody>
-        {#each freelancers as freelancer}
+        {#each mieters as mieter}
             <tr>
-                <td>{freelancer.name}</td>
-                <td>{freelancer.email}</td>
+                <td>{mieter.name}</td>
+                <td>{mieter.email}</td>
             </tr>
         {/each}
     </tbody>
@@ -163,12 +164,12 @@
                 <a
                     class="page-link"
                     class:active={currentPage == i + 1}
-                    href={"#/freelancers?page=" + (i + 1)}
+                    href={"#/mieters?page=" + (i + 1)}
                     >{i + 1}
                 </a>
                 <!-- Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
                     
-                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/jobs?page=2//-->
+                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/cars?page=2//-->
             </li>
         {/each}
     </ul>

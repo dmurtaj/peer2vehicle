@@ -30,5 +30,5 @@ public class Car {
     @NonNull
     private String description;
     private CarState carState = CarState.AVAILABLE;
-    private String MieterId;
+    private String mieterId;
 }
