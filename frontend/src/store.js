@@ -22,7 +22,7 @@ export const isAuthenticated = derived(
 
 // jwt_token 
 export const jwt_token = writable("");
-export const myFreelancerId = writable(null);
+export const myMieterId = writable(null);
 let sessionToken = sessionStorage.getItem("jwt_token");
 if (sessionToken) {
     jwt_token.set(sessionToken);
@@ -30,23 +30,23 @@ if (sessionToken) {
     // create the key "jwt_token" in the session storage if it doesn't exist yet
     sessionStorage.setItem("jwt_token", "");
 }
-// update the jwt_token and myFreelancerId in the sessionStorage on changes
+// update the jwt_token and myMieterId in the sessionStorage on changes
 jwt_token.subscribe(jwt_token => {
     sessionStorage.setItem("jwt_token", jwt_token);
     if (jwt_token === "") {
-        myFreelancerId.set(null)
+        myMieterId.set(null)
     } else {
         var config = {
             method: "get",
-            url: window.location.origin + "/api/me/freelancer",
+            url: window.location.origin + "/api/me/mieter",
             headers: { Authorization: "Bearer " + jwt_token },
         };
         axios(config)
             .then(function (response) {
-                myFreelancerId.set(response.data.id);
+                myMieterId.set(response.data.id);
             })
             .catch(function (error) {
-                alert("Could not get Freelancer associated to current user");
+                alert("Could not get Mieter associated to current user");
                 console.log(error);
             });
     }
