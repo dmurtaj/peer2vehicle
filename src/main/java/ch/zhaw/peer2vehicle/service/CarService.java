@@ -34,7 +34,6 @@ public class CarService {
         return Optional.empty();
     }
 
-    /*
     public Optional<Car> unrentCar(String carId, String mieterEmail) {
         Optional<Car> carToUnrent = carRepository.findById(carId);
         if (carToUnrent.isPresent()) {
@@ -51,5 +50,4 @@ public class CarService {
         }
         return Optional.empty();
     }
-    */
 }

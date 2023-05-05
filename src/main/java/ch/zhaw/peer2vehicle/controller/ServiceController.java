@@ -50,7 +50,6 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    /*
     @PutMapping("/unrentCar")
     @Secured("ROLE_admin")
     public ResponseEntity<Car> unrentCar(@RequestBody CarStateChangeDTO changes) {
@@ -63,7 +62,6 @@ public class ServiceController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    */
 
     @PutMapping("/me/rentCar")
     public ResponseEntity<Car> rentToMe(@RequestParam String carId,
@@ -77,7 +75,6 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    /*
     @PutMapping("/me/unrentCar")
     public ResponseEntity<Car> unrentToMe(@RequestParam String carId,
             @AuthenticationPrincipal Jwt jwt) {
@@ -89,5 +86,4 @@ public class ServiceController {
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    */
 }
