@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CarStateChangeDTO {
     private String carId;
-    private String MieterEmail;    
+    private String userEmail;    
 }

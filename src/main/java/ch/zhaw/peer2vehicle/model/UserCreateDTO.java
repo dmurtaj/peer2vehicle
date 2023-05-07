@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class MieterCreateDTO {
+public class UserCreateDTO {
     private String email;
     private String name;
 }

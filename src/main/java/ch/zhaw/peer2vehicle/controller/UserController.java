@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import ch.zhaw.peer2vehicle.model.Mieter;
-import ch.zhaw.peer2vehicle.model.MieterCreateDTO;
+import ch.zhaw.peer2vehicle.model.User;
+import ch.zhaw.peer2vehicle.model.UserCreateDTO;
 import ch.zhaw.peer2vehicle.model.MailInformation;
-import ch.zhaw.peer2vehicle.repository.MieterRepository;
+import ch.zhaw.peer2vehicle.repository.UserRepository;
 import ch.zhaw.peer2vehicle.service.MailValidatorService;
 
 import org.springframework.security.access.annotation.Secured; //Mit @Secured wird der Request auf die entsprechende Rolle beschränkt
@@ -26,58 +26,58 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 @RestController
 @RequestMapping("/api")
-public class MieterController {
+public class UserController {
     @Autowired
-    MieterRepository mieterRepository;
+    UserRepository userRepository;
 
     @Autowired
     MailValidatorService mailValidatorService;
 
-    @PostMapping("/mieter")
+    @PostMapping("/user")
     @Secured("ROLE_admin")
-    public ResponseEntity<Mieter> createMieter(
-            @RequestBody MieterCreateDTO mDTO) {
+    public ResponseEntity<User> createUser(
+            @RequestBody UserCreateDTO uDTO) {
         // Validate email using MailValidatorService
-        MailInformation mailInformation = mailValidatorService.validateEmail(mDTO.getEmail());
+        MailInformation mailInformation = mailValidatorService.validateEmail(uDTO.getEmail());
 
         // Check if the email is valid and not from a temporary domain
         if (mailInformation.isFormat() && !mailInformation.isDisposable() && mailInformation.isDns()) { // Es ist is und nicht getFormat, da es in MailInformation.java booleans sind.
-            Mieter mDAO = new Mieter(mDTO.getEmail(), mDTO.getName());
-            Mieter m = mieterRepository.save(mDAO);
-            return new ResponseEntity<>(m, HttpStatus.CREATED);
+            User uDAO = new User(uDTO.getEmail(), uDTO.getName());
+            User u = userRepository.save(uDAO);
+            return new ResponseEntity<>(u, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/mieter")
+    @GetMapping("/user")
     @Secured("ROLE_admin")
-    public ResponseEntity<Page<Mieter>> getAllMieter(
+    public ResponseEntity<Page<User>> getAllUser(
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "2") Integer pageSize) {
-        Page<Mieter> allMieter = mieterRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
-        return new ResponseEntity<>(allMieter, HttpStatus.OK);
+        Page<User> allUser = userRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
+        return new ResponseEntity<>(allUser, HttpStatus.OK);
     }
 
-    @GetMapping("/mieter/{id}")
+    @GetMapping("/user/{id}")
     @Secured("ROLE_admin")
-    public ResponseEntity<Mieter> getMieterById(@PathVariable String id) {
-        Optional<Mieter> optMieter = mieterRepository.findById(id);
-        // Falls die ID existiert, OK und den Mieter zurückgeben
+    public ResponseEntity<User> getUserById(@PathVariable String id) {
+        Optional<User> optUser = userRepository.findById(id);
+        // Falls die ID existiert, OK und den User zurückgeben
         // Falls die ID nicht existiert, NOT_FOUND zurückgeben
-        if (optMieter.isPresent()) {
-            return new ResponseEntity<>(optMieter.get(), HttpStatus.OK);
+        if (optUser.isPresent()) {
+            return new ResponseEntity<>(optUser.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/me/mieter")
-    public ResponseEntity<Mieter> assignToMe(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/me/user")
+    public ResponseEntity<User> assignToMe(@AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaimAsString("email");
-        Mieter mieter = mieterRepository.findFirstByEmail(userEmail);
-        if (mieter != null) {
-            return new ResponseEntity<>(mieter, HttpStatus.OK);
+        User user = userRepository.findFirstByEmail(userEmail);
+        if (user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

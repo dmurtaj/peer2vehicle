@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import ch.zhaw.peer2vehicle.repository.MieterRepository;
+import ch.zhaw.peer2vehicle.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity //Mit der Annotation @EnableWebSecurity wird spring-security aktiviert. 
@@ -29,7 +29,7 @@ public class SecurityConfig {
     String issuerUri;
 
     @Autowired
-    MieterRepository mieterRepository;
+    UserRepository userRepository;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,7 +56,7 @@ public class SecurityConfig {
     @Bean
     JwtDecoder jwtDecoder() {
         NimbusJwtDecoder jwtDecoder = (NimbusJwtDecoder) JwtDecoders.fromIssuerLocation(issuerUri);
-        OAuth2TokenValidator<Jwt> userValidator = new UserValidator(mieterRepository);
+        OAuth2TokenValidator<Jwt> userValidator = new UserValidator(userRepository);
         OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
         OAuth2TokenValidator<Jwt> myValidator = new DelegatingOAuth2TokenValidator<>(withIssuer, userValidator);
         jwtDecoder.setJwtValidator(myValidator);

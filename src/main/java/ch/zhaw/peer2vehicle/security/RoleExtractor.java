@@ -35,7 +35,7 @@ public class RoleExtractor implements Converter<Jwt, AbstractAuthenticationToken
             List<String> userRole = jwt.getClaimAsStringList("user_roles");
             userRole.stream().forEach(role -> resourceRoles.add(role));
         }
-        resourceRoles.add("mieter");
+        resourceRoles.add("user");
         return resourceRoles.isEmpty() ? Collections.emptySet() : resourceRoles.stream().map(r -> new SimpleGrantedAuthority("ROLE_" + r)).collect(Collectors.toSet());
     }
 }

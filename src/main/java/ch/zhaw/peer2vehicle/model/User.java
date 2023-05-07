@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @Getter
-@Document("mieter")
-public class Mieter {
+@Document("user")
+public class User {
     @Id
     private String id;
     @NonNull

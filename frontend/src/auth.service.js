@@ -29,7 +29,7 @@ async function loginWithPopup() {
 function logout() {
   user.set({});
   jwt_token.set("")
-  auth0Client.logout();
+  auth0Client.logout({returnTo: window.location.origin});
   push("/"); // return to main page
 }
 

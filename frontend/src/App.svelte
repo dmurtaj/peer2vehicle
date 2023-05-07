@@ -24,8 +24,8 @@
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					{#if $isAuthenticated && $user.user_roles && $user.user_roles.includes("vermieter")}
 						<li class="nav-item">
-							<a class="nav-link" href="#/mieters"
-								>Mieter</a
+							<a class="nav-link" href="#/users"
+								>User</a
 							>
 						</li>
 					{/if}

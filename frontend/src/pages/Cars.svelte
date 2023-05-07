@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { user, jwt_token, myMieterId } from "../store"; //Das JWT wird aus dem Store geladen
+    import { user, jwt_token, myUserId } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
@@ -123,22 +123,22 @@
     }
 
     /*
-    function getMyMieterId() {
+    function getMyUserId() {
         var config = {
             method: "get",
-            url: api_root + "/api/me/mieter",
+            url: api_root + "/api/me/user",
             headers: { Authorization: "Bearer " + $jwt_token },
         };
         axios(config)
             .then(function (response) {
-                $myMieterId = response.data.id;
+                $myUserId = response.data.id;
             })
             .catch(function (error) {
-                alert("Could not get mieter ID");
+                alert("Could not get user ID");
                 console.log(error);
             });
     }
-    getMyMieterId();
+    getMyUserId();
     */
 
     function unrentCar(carId) {
@@ -264,7 +264,7 @@
             <th scope="col">Type</th>
             <th scope="col">Transmission</th>
             <th scope="col">State</th>
-            <th scope="col">MieterId</th>
+            <th scope="col">User</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -274,25 +274,25 @@
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.price}</td>
-                <td>{car.cartype}</td>
+                <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>
                 <td>{car.carState}</td>
-                <td>{car.mieterId}</td>
+                <td>{car.userId}</td>
                 <td>
-                    {#if car.carState === "UNAVAILABLE" && car.mieterId !== $myMieterId}
+                    {#if car.carState === "UNAVAILABLE" && car.userId !== $myUserId}
                         <span class="badge bg-secondary" id="rented">Unavailable</span>
-                    {:else if car.mieterId === null}
+                    {:else if car.userId === null}
                         <button type="button" class="btn btn-primary btn-sm" id="rentButton"
                             on:click={() => {rentCar(car.id);}}>Rent Car</button>
                     {/if}
 
-                    {#if car.mieterId === $myMieterId && car.carState !== "UNAVAILABLE"}
+                    {#if car.userId === $myUserId && car.carState !== "UNAVAILABLE"}
                         <button type="button" class="btn btn-success btn-sm"
                             on:click={() => {unrentCar(car.id);}}>Unrent Car</button>
                     {/if}
                 </td>
                 <!-- Wenn der Car den Zustand «ASSIGNED» hat, wird ein Badge mit dem Text «Assigned» angezeigt.
-                Wenn dem Car noch kein Freelancer zugewiesen ist (mieterId ist null), wird der Button «Assign To Me» angezeigt. //-->
+                Wenn dem Car noch kein Freelancer zugewiesen ist (userId ist null), wird der Button «Assign To Me» angezeigt. //-->
             </tr>
         {/each}
     </tbody>

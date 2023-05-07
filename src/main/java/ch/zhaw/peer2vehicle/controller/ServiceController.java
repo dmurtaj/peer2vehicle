@@ -40,11 +40,11 @@ public class ServiceController {
     @PutMapping("/rentcar")
     @Secured("ROLE_admin")
     public ResponseEntity<Car> rentCar(@RequestBody CarStateChangeDTO changes) {
-        String mieterEmail = changes.getMieterEmail();
+        String userEmail = changes.getUserEmail();
         String carId = changes.getCarId();
-        Optional<Car> car = carService.rentCar(carId, mieterEmail);
+        Optional<Car> car = carService.rentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(mieterEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -53,11 +53,11 @@ public class ServiceController {
     @PutMapping("/unrentcar")
     @Secured("ROLE_admin")
     public ResponseEntity<Car> unrentCar(@RequestBody CarStateChangeDTO changes) {
-        String mieterEmail = changes.getMieterEmail();
+        String userEmail = changes.getUserEmail();
         String carId = changes.getCarId();
-        Optional<Car> car = carService.unrentCar(carId, mieterEmail);
+        Optional<Car> car = carService.unrentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(mieterEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

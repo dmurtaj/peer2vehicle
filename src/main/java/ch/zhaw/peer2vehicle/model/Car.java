@@ -30,5 +30,6 @@ public class Car {
     @NonNull
     private String description;
     private CarState carState = CarState.AVAILABLE;
-    private String mieterId;
+    private String userId;
+    private String imageId;
 }
