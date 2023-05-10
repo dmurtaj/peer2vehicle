@@ -11,5 +11,9 @@ public class CarCreateDTO {
     private Double price;
     private CarType carType;
     private CarTransmission carTransmission;
-    private String description;   
+    private String description;
+    private String ownerName;
+    private String ownerEmail;
+    private String ownerId;
+    //private String userId;
 }

@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { jwt_token } from "../store"; //Das JWT wird aus dem Store geladen
+    import { actualUser, jwt_token } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router";
 
     const api_root = window.location.origin;
@@ -65,7 +65,8 @@
             .then(function (response) {
                 console.log("Validated email " + user.email);
                 console.log(response.data);
-                if ( //Validierung ob E-Mail gültig ist.
+                if (
+                    //Validierung ob E-Mail gültig ist.
                     response.data.format &&
                     !response.data.disposable &&
                     response.data.dns
@@ -77,6 +78,28 @@
             })
             .catch(function (error) {
                 alert("Could not validate email");
+                console.log(error);
+            });
+    }
+
+    function deleteUser(userId) {
+        var config = {
+            method: "delete",
+            url: api_root + "/api/user/" + userId,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+            },
+            data: user,
+        };
+
+        axios(config)
+            .then(function (response) {
+                alert("User deleted");
+                getUsers();
+            })
+            .catch(function (error) {
+                alert("Could not delete User");
                 console.log(error);
             });
     }
@@ -130,8 +153,10 @@
             />
         </div>
     </div>
-    <button type="button" class="btn btn-primary" on:click={validateEmailAndcreateUser}
-        >Submit</button
+    <button
+        type="button"
+        class="btn btn-primary"
+        on:click={validateEmailAndcreateUser}>Submit</button
     >
 </form>
 
@@ -141,6 +166,7 @@
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Email</th>
+            <th scope="col">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -148,6 +174,18 @@
             <tr>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
+                <td>
+                    {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-sm"
+                            id="deleteButton"
+                            on:click={() => {
+                                deleteUser(user.id);
+                            }}>Delete</button
+                        >
+                    {/if}
+                </td>
             </tr>
         {/each}
     </tbody>

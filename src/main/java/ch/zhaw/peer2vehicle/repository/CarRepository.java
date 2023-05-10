@@ -13,7 +13,7 @@ import ch.zhaw.peer2vehicle.model.CarType;
 
 public interface CarRepository extends MongoRepository<Car, String> {
     // Einzelne Filter
-    Page<Car> findByPriceGreaterThan(Double price, Pageable pageable);
+    Page<Car> findByPriceLessThan(Double price, Pageable pageable);
 
     Page<Car> findByCarType(CarType carType, Pageable pageable);
 
@@ -23,11 +23,11 @@ public interface CarRepository extends MongoRepository<Car, String> {
 
     Page<Car> findByCarTypeAndCarTransmission(CarType carType, CarTransmission carTransmission, Pageable pageable);
 
-    Page<Car> findByCarTypeAndCarTransmissionAndPriceGreaterThan(CarType carType, CarTransmission carTransmission, Double price, Pageable pageable);
+    Page<Car> findByCarTypeAndCarTransmissionAndPriceLessThan(CarType carType, CarTransmission carTransmission, Double price, Pageable pageable);
 
-    Page<Car> findByCarTransmissionAndPriceGreaterThan(CarTransmission carTransmission, Double price, Pageable pageable);
+    Page<Car> findByCarTransmissionAndPriceLessThan(CarTransmission carTransmission, Double price, Pageable pageable);
 
-    Page<Car> findByCarTypeAndPriceGreaterThan(CarType carType, Double price, Pageable pageable);
+    Page<Car> findByCarTypeAndPriceLessThan(CarType carType, Double price, Pageable pageable);
 
     /*
     List<Car> findByPriceGreaterThan(Double price);

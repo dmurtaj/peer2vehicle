@@ -2,21 +2,21 @@ import { writable, derived } from "svelte/store";
 import axios from 'axios';
 
 // user 
-export const user = writable({});
+export const actualUser = writable({});
 let sessionUser = sessionStorage.getItem("user");
 if (sessionUser) {
-    user.set(JSON.parse(sessionUser));
+    actualUser.set(JSON.parse(sessionUser));
 } else {
     // create the key "user" in the session storage if it doesn't exist yet
     sessionStorage.setItem("user", {});
 }
 // update the user in the sessionStorage on changes
-user.subscribe(user => sessionStorage.setItem("user", JSON.stringify(user)));
+actualUser.subscribe(user => sessionStorage.setItem("user", JSON.stringify(user)));
 
 
 // isAuthenticated: we assume that users are authenticated if the property "user.name" exists
 export const isAuthenticated = derived(
-    user,
+    actualUser,
     $user => $user && $user.name
 );
 

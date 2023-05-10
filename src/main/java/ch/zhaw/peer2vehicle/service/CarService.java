@@ -43,6 +43,7 @@ public class CarService {
                 //System.out.println(userByEmail.getId());
                 if (userByEmail != null && userByEmail.getId().equals(car.getUserId())) {
                     car.setCarState(CarState.AVAILABLE);
+                    car.setUserId(null);
                     carRepository.save(car);
                     return Optional.of(car);
                 }

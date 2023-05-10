@@ -1,5 +1,5 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
-import { user, jwt_token } from "./store";
+import { actualUser, jwt_token } from "./store";
 import config from "./auth.config";
 import {push} from "svelte-spa-router"
 
@@ -16,7 +16,7 @@ async function loginWithPopup() {
   try {
     await createClient();
     await auth0Client.loginWithPopup();
-    user.set(await auth0Client.getUser());
+    actualUser.set(await auth0Client.getUser());
     const claims = await auth0Client.getIdTokenClaims();
     const id_token = await claims.__raw;
     jwt_token.set(id_token);
@@ -27,7 +27,7 @@ async function loginWithPopup() {
 }
 
 function logout() {
-  user.set({});
+  actualUser.set({});
   jwt_token.set("")
   auth0Client.logout({returnTo: window.location.origin});
   push("/"); // return to main page

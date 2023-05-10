@@ -3,6 +3,7 @@ package ch.zhaw.peer2vehicle.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import jakarta.annotation.Nonnull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -30,6 +31,11 @@ public class Car {
     @NonNull
     private String description;
     private CarState carState = CarState.AVAILABLE;
+    @NonNull
+    private String ownerName;
+    @NonNull
+    private String ownerEmail;
+    @Nonnull
+    private String ownerId;
     private String userId;
-    private String imageId;
 }

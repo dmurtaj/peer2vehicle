@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { user, jwt_token, myUserId } from "../store"; //Das JWT wird aus dem Store geladen
+    import { actualUser, jwt_token, myUserId } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
@@ -19,19 +19,19 @@
     Page aktuell angezeigt wird und wie viele
     Pages es insgesamt gibt.*/
 
-    let priceMin;
+    let priceMax;
     let carType;
     let carTransmission; //In den Input-Elementen eingetragene Werte
 
     let cars = [];
-    let car = {
+    /*let car = {
         brand: null,
         model: null,
         price: null,
         carType: null,
         carTransmission: null,
         description: null,
-    };
+    };*/
 
     $: {
         let searchParams = new URLSearchParams($querystring);
@@ -50,14 +50,14 @@
         let query =
             "?pageSize=" + defaultPageSize + " &pageNumber=" + currentPage; //Hier werden die Query-Parameter für den Request ans Backend erstellt
 
-        if (priceMin) {
-            query += "&price=" + priceMin;
+        if (priceMax) {
+            query += "&price=" + priceMax;
         }
         if (carType && carType !== "ALL") {
             query += "&type=" + carType;
         }
         if (carTransmission && carTransmission !== "ALL") {
-            query += "&type=" + carTransmission;
+            query += "&transmission=" + carTransmission;
         }
         /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
         http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
@@ -71,7 +71,6 @@
         axios(config)
             .then(function (response) {
                 cars = response.data.content;
-
                 nrOfPages = response.data.totalPages; //Nach jedem Request wird die Anzahl Pages aktualisiert. Das Backend schickt diese in der Property totalPages in der Response.
             })
             .catch(function (error) {
@@ -84,6 +83,7 @@
     oben aufgerufen und kann hier gelöscht oder
     auskommentiert werden. */
 
+    /*
     function createCar() {
         var config = {
             method: "post",
@@ -105,6 +105,7 @@
                 console.log(error);
             });
     }
+    */
 
     function rentCar(carId) {
         var config = {
@@ -156,53 +157,51 @@
                 console.log(error);
             });
     }
-</script>
 
-{#if $user.user_roles && $user.user_roles.includes("vermieter")}
-    <h1 class="mt-3">Create Car</h1>
-    <form class="mb-5">
-        <div class="row mb-3">
-            <div class="col">
-                <label class="form-label" for="brand">Brand</label>
-                <input bind:value={car.brand} class="form-control" id="brand" type="text"/>
-            </div>
-            <div class="col">
-                <label class="form-label" for="model">Model</label>
-                <input bind:value={car.model} class="form-control" id="model" type="text"/>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col">
-                <label class="form-label" for="description">Description</label>
-                <input bind:value={car.description} class="form-control" id="description" type="text"/>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col">
-                <label class="form-label" for="cartype">Cartype</label>
-                <select bind:value={car.carType} class="form-select" id="cartype" type="text">
-                    <option value="ELECTRIC">ELECTRIC</option>
-                    <option value="HYBRID">HYBRID</option>
-                    <option value="DIESEL">DIESEL</option>
-                    <option value="GAS">GAS</option>
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label" for="transmission">Transmission</label>
-                <select bind:value={car.carTransmission} class="form-select" id="transmission" type="text">
-                    <option value="MANUAL">MANUAL</option>
-                    <option value="AUTOMATIC">AUTOMATIC</option>
-                    <option value="SINGLE">SINGLE</option>
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label" for="price">Price</label>
-                <input bind:value={car.price} class="form-control" id="price" type="number"/>
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary" id="submitbutton" on:click={createCar}>Submit</button>
-    </form>
-{/if}
+    function deleteCar(carId) {
+        var config = {
+            method: "delete",
+            url: api_root + "/api/car/" + carId,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+            },
+            data: cars,
+        };
+
+        axios(config)
+            .then(function (response) {
+                alert("Car deleted");
+                getCars();
+            })
+            .catch(function (error) {
+                alert("Could not delete Car");
+                console.log(error);
+            });
+    }
+
+    function deleteMyCarById(carId) {
+    var config = {
+        method: "delete",
+        url: api_root + "/api/me/car/" + carId,
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+        },
+    };
+
+    axios(config)
+        .then(function (response) {
+            alert("Car deleted");
+            getCars();
+        })
+        .catch(function (error) {
+            alert("Could not delete Car");
+            console.log(error);
+        });
+}
+
+</script>
 
 <h1>All Cars</h1>
 
@@ -216,9 +215,9 @@
             type="number"
             placeholder="price"
             id="minPriceFilter"
-            bind:value={priceMin}
+            bind:value={priceMax}
         />
-        <!--Die Eingaben sind via value-binding mit den Variablen priceMin und carType (siehe nächste Seite) verknüpft.
+        <!--Die Eingaben sind via value-binding mit den Variablen priceMax und carType (siehe nächste Seite) verknüpft.
         Für den Apply-Button braucht es keine neue Funktion, wir müssen nur die URL mit den neuen Query-Parametern aktualisieren.
         Dadurch werden via Reactive Statement die Cars neu geladen. //-->
     </div>
@@ -226,7 +225,12 @@
         <label for="" class="col-form-label">Car Type: </label>
     </div>
     <div class="col-3">
-        <select bind:value={carType} class="form-select" id="carTypeFilter" type="text">
+        <select
+            bind:value={carType}
+            class="form-select"
+            id="carTypeFilter"
+            type="text"
+        >
             <option value="ALL" />
             <option value="ELECTRIC">ELECTRIC</option>
             <option value="HYBRID">HYBRID</option>
@@ -238,7 +242,12 @@
         <label for="" class="col-form-label">Transmission: </label>
     </div>
     <div class="col-3">
-        <select bind:value={carTransmission} class="form-select" id="carTransmissionFilter" type="text">
+        <select
+            bind:value={carTransmission}
+            class="form-select"
+            id="carTransmissionFilter"
+            type="text"
+        >
             <option value="ALL" />
             <option value="MANUAL">MANUAL</option>
             <option value="AUTOMATIC">AUTOMATIC</option>
@@ -249,7 +258,12 @@
         <a
             class="btn btn-primary"
             id="applyButton"
-            href={"#/cars?page=1&carType=" + carType + "&price=" + priceMin + "&carTransmission=" + carTransmission}
+            href={"#/cars?page=1&carType=" +
+                carType +
+                "&price=" +
+                priceMax +
+                "&carTransmission=" +
+                carTransmission}
             role="button">Apply</a
         >
     </div>
@@ -279,20 +293,44 @@
                 <td>{car.carState}</td>
                 <td>{car.userId}</td>
                 <td>
-                    {#if car.carState === "UNAVAILABLE" && car.userId !== $myUserId}
-                        <span class="badge bg-secondary" id="rented">Unavailable</span>
-                    {:else if car.userId === null}
-                        <button type="button" class="btn btn-primary btn-sm" id="rentButton"
-                            on:click={() => {rentCar(car.id);}}>Rent Car</button>
+                    {#if car.userId === $myUserId}
+                        <button
+                            type="button"
+                            class="btn btn-success btn-sm"
+                            on:click={() => {
+                                unrentCar(car.id);
+                            }}>Unrent Car</button
+                        >
+                    {:else if car.ownerId === $myUserId}
+                    <span class="badge bg-secondary" id="myCar"
+                    >My Car</span>
+                    <button
+                            type="button"
+                            class="btn btn-danger btn-sm"
+                            id="deleteButton"
+                            on:click={() => {deleteMyCarById(car.id);}}>Delete</button
+                        >
+                    {:else if car.userId === null && car.ownerId !== $myUserId}
+                        <button
+                            type="button"
+                            class="btn btn-primary btn-sm"
+                            id="rentButton"
+                            on:click={() => {rentCar(car.id);}}>Rent Car</button
+                        >
+                    {:else}
+                        <span class="badge bg-secondary" id="rented"
+                            >Unavailable</span
+                        >
                     {/if}
-
-                    {#if car.userId === $myUserId && car.carState !== "UNAVAILABLE"}
-                        <button type="button" class="btn btn-success btn-sm"
-                            on:click={() => {unrentCar(car.id);}}>Unrent Car</button>
+                    {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+                        <button
+                            type="button"
+                            class="btn btn-danger btn-sm"
+                            id="deleteButton"
+                            on:click={() => {deleteCar(car.id);}}>Delete</button
+                        >
                     {/if}
                 </td>
-                <!-- Wenn der Car den Zustand «ASSIGNED» hat, wird ein Badge mit dem Text «Assigned» angezeigt.
-                Wenn dem Car noch kein Freelancer zugewiesen ist (userId ist null), wird der Button «Assign To Me» angezeigt. //-->
             </tr>
         {/each}
     </tbody>

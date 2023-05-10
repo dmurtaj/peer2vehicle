@@ -1,7 +1,7 @@
 <script>
 	import Router from "svelte-spa-router";
 	import routes from "./routes";
-	import { isAuthenticated, user } from "./store";
+	import { isAuthenticated, actualUser } from "./store";
 	import auth from "./auth.service";
 </script>
 
@@ -22,39 +22,53 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-					{#if $isAuthenticated && $user.user_roles && $user.user_roles.includes("vermieter")}
+					{#if $isAuthenticated && $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 						<li class="nav-item">
 							<a class="nav-link" href="#/users"
-								>User</a
+								>Benutzer</a
 							>
 						</li>
 					{/if}
-					{#if $isAuthenticated}
+					{#if $isAuthenticated && $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 						<li class="nav-item">
-							<a class="nav-link" href="#/cars">Cars</a>
+							<a class="nav-link" href="#/cars"
+								>Fahrzeuge</a
+							>
 						</li>
 					{/if}
-					{#if $isAuthenticated}
+
+
+					{#if $isAuthenticated && $actualUser.user_roles && !$actualUser.user_roles.includes("admin")}
 						<li class="nav-item">
-							<a class="nav-link" href="#/account">Account</a>
+							<a class="nav-link" href="#/cars">Mieten</a>
+						</li>
+					{/if}
+					{#if $isAuthenticated && $actualUser.user_roles && !$actualUser.user_roles.includes("admin")}
+						<li class="nav-item">
+							<a class="nav-link" href="#/createcars">Vermieten</a>
+						</li>
+					{/if}
+					{#if $isAuthenticated && $actualUser.user_roles && !$actualUser.user_roles.includes("admin")}
+						<li class="nav-item">
+							<a class="nav-link" href="#/overview">Meine Übersicht</a>
 						</li>
 					{/if}
 				</ul>
 				<div class="d-flex">
 					{#if $isAuthenticated}
 						<span class="navbar-text me-2">
-							{$user.name}
+							{$actualUser.name}
 						</span>
 						<button
 							type="button"
 							class="btn btn-primary"
-							on:click={auth.logout}>Log Out</button
+							on:click={auth.logout}>Ausloggen</button
 						>
 					{:else}
 						<button
 							type="button"
 							class="btn btn-primary"
-							on:click={auth.loginWithPopup}>Log In</button
+							on:click={auth.loginWithPopup}>Einloggen</button
 						>
 					{/if}
 				</div>
