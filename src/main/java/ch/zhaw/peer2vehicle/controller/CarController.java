@@ -2,6 +2,8 @@ package ch.zhaw.peer2vehicle.controller;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,15 @@ public class CarController {
                 cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(), cDTO.getOwnerId());
         Car c = carRepository.save(cDAO);
         return new ResponseEntity<>(c, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/mycars")
+    public ResponseEntity<List<Car>> getMyCars(@AuthenticationPrincipal Jwt jwt) {
+        String actualUserEmail = jwt.getClaimAsString("email"); // Get the current user's Email from the JWT
+        List<Car> myOwnedCars = carRepository.findByOwnerEmail(actualUserEmail);
+        List<Car> myRentedCars = carRepository.findByUserEmail(actualUserEmail);
+        List<Car> myCars = Stream.concat(myOwnedCars.stream(), myRentedCars.stream()).collect(Collectors.toList());
+        return new ResponseEntity<>(myCars, HttpStatus.OK);
     }
 
     @GetMapping("/car")
@@ -111,7 +122,7 @@ public class CarController {
 
     @DeleteMapping("/me/car/{id}")
     public ResponseEntity<String> deleteMyCarById(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
-        String actualUserEmail = jwt.getClaimAsString("email"); // Get the current user's ID from the JWT
+        String actualUserEmail = jwt.getClaimAsString("email"); // Get the current user's Email from the JWT
         Optional<Car> carToDelete = carRepository.findById(id);
         if (carToDelete.isPresent()) {
             if (carToDelete.get().getOwnerEmail().equals(actualUserEmail)) {

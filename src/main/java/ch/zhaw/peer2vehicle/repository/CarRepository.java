@@ -29,6 +29,12 @@ public interface CarRepository extends MongoRepository<Car, String> {
 
     Page<Car> findByCarTypeAndPriceLessThan(CarType carType, Double price, Pageable pageable);
 
+    // List Filter für Meine Übersicht
+
+    List<Car> findByOwnerEmail(String ownerEmail);
+
+    List<Car> findByUserEmail(String userEmail);
+
     /*
     List<Car> findByPriceGreaterThan(Double price);
 
