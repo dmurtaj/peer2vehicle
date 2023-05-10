@@ -272,6 +272,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th />
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
             <th scope="col">Price</th>
@@ -285,6 +286,12 @@
     <tbody>
         {#each cars as car}
             <tr>
+                <td>
+                    <a
+                        href={"#/car/" + car.id}
+                        class="btn btn-primary"><i class="fa fa-bars" /></a
+                    >
+                </td>
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.price}</td>

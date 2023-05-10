@@ -11,6 +11,6 @@ export default {
     '/users': Users,
     '/cars': Cars,
     '/createcars': CreateCars,
-    '/cars/:id': CarDetails,
+    '/car/:id': CarDetails,
     '/overview': Overview,
 }

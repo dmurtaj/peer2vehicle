@@ -40,7 +40,8 @@ public class CarController {
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
         Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getPrice(), cDTO.getCarType(),
-                cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(), cDTO.getOwnerId());
+                cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(),
+                cDTO.getOwnerId());
         Car c = carRepository.save(cDAO);
         return new ResponseEntity<>(c, HttpStatus.CREATED);
     }
@@ -52,6 +53,16 @@ public class CarController {
         List<Car> myRentedCars = carRepository.findByUserEmail(actualUserEmail);
         List<Car> myCars = Stream.concat(myOwnedCars.stream(), myRentedCars.stream()).collect(Collectors.toList());
         return new ResponseEntity<>(myCars, HttpStatus.OK);
+    }
+
+    @GetMapping("/car/{id}")
+    public ResponseEntity<Car> getCarById(@PathVariable String id) {
+        Optional<Car> car = carRepository.findById(id);
+        if (car.isPresent()) {
+            return new ResponseEntity<>(car.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/car")
