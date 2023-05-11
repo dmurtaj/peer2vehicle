@@ -27,6 +27,7 @@
     let car = {
         brand: null,
         model: null,
+        year: null,
         price: null,
         carType: null,
         carTransmission: null,
@@ -34,7 +35,27 @@
         ownerName: null,
         ownerEmail: null,
         ownerId: null,
-        //userId: null,
+    };
+
+    let brands = ["Audi", "Citroen", "Fiat", "Ford", "Jeep", "Mini", "Opel", "Seat", "Tesla", "VW"];
+    let models = {
+        Audi: ["A3", "A5", "A6", "Q5", "Q8", "etron"],
+        Citroen: ["Berlingo", "C3", "C4", "C5", "C6", "C8"],
+        Fiat: ["Doblo", "Ducato", "Panda", "Punto", "Tipo"],
+        Ford: ["EcoSport", "Fiesta", "Focus", "Kuga", "Mondeo", "Mustang"],
+        Jeep: [
+            "Cherokee",
+            "Compass",
+            "Patriot",
+            "Renegade",
+            "Wagoneer",
+            "Wrangler",
+        ],
+        Mini: ["Cabrio", "Clubman", "Cooper", "Countryman", "Coupe", "Paceman"],
+        Opel: ["Astra", "Cascada", "Corsa", "Crossland", "Insignia", "Mokka"],
+        Seat: ["Alhambra", "Arona", "Ateca", "Ibiza", "Leon", "Tarraco"],
+        Tesla: ["ModelS", "Model3", "ModelX", "ModelY"],
+        VW: ["Golf", "ID3", "ID4", "Tiguan", "Touareg", "Touran"],
     };
 
     $: {
@@ -129,25 +150,6 @@
             });
     }
 
-    /*
-    function getMyUserId() {
-        var config = {
-            method: "get",
-            url: api_root + "/api/me/user",
-            headers: { Authorization: "Bearer " + $jwt_token },
-        };
-        axios(config)
-            .then(function (response) {
-                $myUserId = response.data.id;
-            })
-            .catch(function (error) {
-                alert("Could not get user ID");
-                console.log(error);
-            });
-    }
-    getMyUserId();
-    */
-
     function unrentCar(carId) {
         var config = {
             method: "put",
@@ -168,6 +170,7 @@
 <h1 class="mt-3">Create Car</h1>
 <form class="mb-5">
     <div class="row mb-3">
+        <!--
         <div class="col">
             <label class="form-label" for="brand">Brand</label>
             <input
@@ -186,6 +189,33 @@
                 type="text"
             />
         </div>
+        -->
+
+        <div class="col">
+            <label class="form-label" for="brand">Brand</label>
+            <select bind:value={car.brand} class="form-select" id="brand">
+                <option value="">Select a brand</option>
+                {#each brands as brand}
+                    <option value={brand}>{brand}</option>
+                {/each}
+            </select>
+        </div>
+        <div class="col">
+            <label class="form-label" for="model">Model</label>
+            <select
+                bind:value={car.model}
+                class="form-select"
+                id="model"
+                disabled={!car.brand}
+            >
+                <option value="">Select a model</option>
+                {#if car.brand}
+                    {#each models[car.brand] as model}
+                        <option value={model}>{model}</option>
+                    {/each}
+                {/if}
+            </select>
+        </div>
     </div>
     <div class="row mb-3">
         <div class="col">
@@ -197,6 +227,15 @@
                 type="text"
             />
         </div>
+    </div>
+    <div class="col">
+        <label class="form-label" for="year">Year</label>
+        <input
+            bind:value={car.year}
+            class="form-control"
+            id="year"
+            type="number"
+        />
     </div>
     <div class="row mb-3">
         <div class="col">

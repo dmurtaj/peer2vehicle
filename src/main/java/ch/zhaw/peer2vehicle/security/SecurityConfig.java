@@ -42,6 +42,11 @@ public class SecurityConfig {
                 .requestMatchers("/*").permitAll()
                 .requestMatchers("/api/**").authenticated()
                 .requestMatchers("/build/**").permitAll()
+                .requestMatchers("/images/**").permitAll() // Erlaube den Zugriff auf das /images Verzeichnis
+
+                /*Die Methode permitAll() ist Teil des Spring Security Frameworks und wird verwendet,
+                um den Zugriff auf bestimmte Endpunkte oder URL-Muster für alle Benutzer ohne Authentifizierung oder Autorisierung zuzulassen. */
+
                 /* Erklärung:/api/* matcht alle Pfade, die mit /api/ beginnen, aber keine weiteren Trennzeichen
                  * «/» enthalten. Weil die Service-Endpoints mit /api/service/ beginnen, und somit weitere
                  * Trennzeichen enthalten, müssen wir stattdessen /api/** (mit 2 *) verwenden. Dadurch werden

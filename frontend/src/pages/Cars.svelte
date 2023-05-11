@@ -123,25 +123,6 @@
             });
     }
 
-    /*
-    function getMyUserId() {
-        var config = {
-            method: "get",
-            url: api_root + "/api/me/user",
-            headers: { Authorization: "Bearer " + $jwt_token },
-        };
-        axios(config)
-            .then(function (response) {
-                $myUserId = response.data.id;
-            })
-            .catch(function (error) {
-                alert("Could not get user ID");
-                console.log(error);
-            });
-    }
-    getMyUserId();
-    */
-
     function unrentCar(carId) {
         var config = {
             method: "put",
@@ -273,13 +254,16 @@
     <thead>
         <tr>
             <th />
+            <th>Image</th>
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
+            <th scope="col">Year</th>
             <th scope="col">Price</th>
             <th scope="col">Type</th>
             <th scope="col">Transmission</th>
             <th scope="col">State</th>
-            <th scope="col">User</th>
+            <th scope="col">User ID</th>
+            <th scope="col">User Name</th>
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -292,13 +276,16 @@
                         class="btn btn-primary"><i class="fa fa-bars" /></a
                     >
                 </td>
+                <td><img src={"images/" + car.model + ".jpg"} alt={car.model} width="200" /></td>
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
+                <td>{car.year}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>
                 <td>{car.carState}</td>
                 <td>{car.userId}</td>
+                <td>{car.userName}</td>
                 <td>
                     {#if car.userId === $myUserId}
                         <button

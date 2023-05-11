@@ -39,7 +39,7 @@ public class CarController {
     @PostMapping("/car")
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
-        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getPrice(), cDTO.getCarType(),
+        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getPrice(), cDTO.getCarType(),
                 cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(),
                 cDTO.getOwnerId());
         Car c = carRepository.save(cDAO);

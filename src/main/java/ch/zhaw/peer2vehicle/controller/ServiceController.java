@@ -14,6 +14,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.RequestParam;
 import ch.zhaw.peer2vehicle.model.Car;
+import ch.zhaw.peer2vehicle.model.CarBrand;
+import ch.zhaw.peer2vehicle.model.CarModel;
 import ch.zhaw.peer2vehicle.model.CarStateChangeDTO;
 import ch.zhaw.peer2vehicle.model.CarState;
 import ch.zhaw.peer2vehicle.model.Mail;
@@ -30,7 +32,7 @@ public class ServiceController {
     @Autowired
     MailService mailService;
 
-    private void sendCarStatusEmail(String to, String brand, String model, CarState carState) {
+    private void sendCarStatusEmail(String to, CarBrand brand, CarModel model, CarState carState) {
         String subject = String.format("'%s' '%s' marked as '%s'", brand, model, carState.name());
         String message = String.format("Hi, you just marked the car '%s' '%s' as '%s'", brand, model, carState.name());
         Mail mail = new Mail(to, subject, message);

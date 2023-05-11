@@ -25,6 +25,7 @@ public class CarService {
                 User userByEmail = userRepository.findFirstByEmail(userEmail);
                 if (userByEmail != null) {
                     car.setCarState(CarState.UNAVAILABLE);
+                    car.setUserName(userByEmail.getName());
                     car.setUserEmail(userByEmail.getEmail());
                     car.setUserId(userByEmail.getId());
                     carRepository.save(car);
@@ -44,6 +45,7 @@ public class CarService {
                 //System.out.println(userByEmail.getId());
                 if (userByEmail != null && userByEmail.getId().equals(car.getUserId())) {
                     car.setCarState(CarState.AVAILABLE);
+                    car.setUserName(null);
                     car.setUserEmail(null);
                     car.setUserId(null);
                     carRepository.save(car);

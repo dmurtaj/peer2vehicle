@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CarCreateDTO {
-    private String brand;
-    private String model;
+    private CarBrand brand;
+    private CarModel model;
+    private Double year;
     private Double price;
     private CarType carType;
     private CarTransmission carTransmission;
@@ -15,5 +16,4 @@ public class CarCreateDTO {
     private String ownerName;
     private String ownerEmail;
     private String ownerId;
-    //private String userId;
 }

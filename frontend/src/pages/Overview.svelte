@@ -84,8 +84,10 @@
 <table class="table">
     <thead>
         <tr>
+            <th>Image</th>
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
+            <th scope="col">Year</th>
             <th scope="col">Price</th>
             <th scope="col">Type</th>
             <th scope="col">Transmission</th>
@@ -98,8 +100,10 @@
     <tbody>
         {#each cars as car}
             <tr>
+                <td><img src={"images/" + car.model + ".jpg"} alt={car.model} width="200" /></td>
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
+                <td>{car.year}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>

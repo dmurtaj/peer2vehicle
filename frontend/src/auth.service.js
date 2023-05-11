@@ -1,7 +1,7 @@
 import createAuth0Client from "@auth0/auth0-spa-js";
 import { actualUser, jwt_token } from "./store";
 import config from "./auth.config";
-import {push} from "svelte-spa-router"
+//import {push} from "svelte-spa-router"
 
 let auth0Client;
 
@@ -30,7 +30,7 @@ function logout() {
   actualUser.set({});
   jwt_token.set("")
   auth0Client.logout({returnTo: window.location.origin});
-  push("/"); // return to main page
+  //push("/"); // return to main page
 }
 
 const auth = {

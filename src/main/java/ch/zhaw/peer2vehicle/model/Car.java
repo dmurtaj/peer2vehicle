@@ -18,9 +18,11 @@ public class Car {
     @Id
     private String id;
     @NonNull
-    private String brand;
+    private CarBrand brand;
     @NonNull
-    private String model;
+    private CarModel model;
+    @NonNull
+    private Double year;
     @NonNull
     private Double price;
     @NonNull
@@ -36,6 +38,7 @@ public class Car {
     private String ownerEmail;
     @NonNull
     private String ownerId;
+    private String userName;
     private String userEmail;
     private String userId;
 }

@@ -103,11 +103,14 @@
 
 <h1>Car Details</h1>
 
+<img src={"images/" + carDetails.model + ".jpg"} alt={carDetails.model} width="350" />
+
 <div class="card" style="width: 18rem;">
     <div class="card-body">
         <h5 class="card-title">{carDetails.brand} {carDetails.model}</h5>
         <h6 class="card-subtitle mb-2 text-muted">Price: {carDetails.price}</h6>
         <p class="card-text">
+            Year: {carDetails.carYear}
             Type: {carDetails.carType}<br />
             Transmission: {carDetails.carTransmission}<br />
             State: {carDetails.carState}<br />
@@ -151,6 +154,6 @@
                             id="deleteButton"
                             on:click={() => {deleteCar(carDetails.id);}}>Delete</button
                         >
-                    {/if}
+                    {/if}          
     </div>
 </div>
