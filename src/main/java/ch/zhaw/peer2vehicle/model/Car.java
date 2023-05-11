@@ -24,7 +24,7 @@ public class Car {
     @NonNull
     private Double year;
     @NonNull
-    private String area;
+    private CarArea carArea;
     @NonNull
     private Double price;
     @NonNull

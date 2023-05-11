@@ -105,7 +105,7 @@
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.year}</td>
-                <td>{car.area}</td>
+                <td>{car.carArea}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>

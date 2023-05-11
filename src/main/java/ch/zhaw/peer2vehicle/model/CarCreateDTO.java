@@ -9,7 +9,7 @@ public class CarCreateDTO {
     private CarBrand brand;
     private CarModel model;
     private Double year;
-    private String area;
+    private CarArea carArea;
     private Double price;
     private CarType carType;
     private CarTransmission carTransmission;

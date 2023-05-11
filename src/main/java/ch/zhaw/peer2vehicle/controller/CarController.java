@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.zhaw.peer2vehicle.model.Car;
+import ch.zhaw.peer2vehicle.model.CarArea;
 import ch.zhaw.peer2vehicle.model.CarCreateDTO;
 import ch.zhaw.peer2vehicle.model.CarStateAggregation;
-import ch.zhaw.peer2vehicle.model.CarTransmission;
 import ch.zhaw.peer2vehicle.model.CarType;
 import ch.zhaw.peer2vehicle.repository.CarRepository;
 
@@ -39,7 +39,7 @@ public class CarController {
     @PostMapping("/car")
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
-        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getArea(), cDTO.getPrice(), cDTO.getCarType(),
+        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getCarArea(), cDTO.getPrice(), cDTO.getCarType(),
                 cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(),
                 cDTO.getOwnerId());
         Car c = carRepository.save(cDAO);
@@ -69,46 +69,46 @@ public class CarController {
     public ResponseEntity<Page<Car>> getAllCars(
             @RequestParam(required = false) Double price,
             @RequestParam(required = false) CarType type,
-            @RequestParam(required = false) CarTransmission transmission,
+            @RequestParam(required = false) CarArea carArea,
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "2") Integer pageSize) {
         Page<Car> allCars;
-        if (price == null && type == null && transmission == null) {
+        if (price == null && type == null && carArea == null) {
             allCars = carRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
         } else {
-            // Filter Price, Type, Transmission
-            if (price != null && type != null && transmission != null) {
-                allCars = carRepository.findByCarTypeAndCarTransmissionAndPriceLessThan(type, transmission, price,
+            // Filter Price, Type, Area
+            if (price != null && type != null && carArea != null) {
+                allCars = carRepository.findByCarTypeAndCarAreaAndPriceLessThan(type, carArea, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
 
-            // Filter Type, Transmission
-            else if (price == null && type != null && transmission != null) {
-                allCars = carRepository.findByCarTypeAndCarTransmission(type, transmission,
+            // Filter Type, Area
+            else if (price == null && type != null && carArea != null) {
+                allCars = carRepository.findByCarTypeAndCarArea(type, carArea,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
 
-            // Filter Price, Transmission
-            else if (price != null && type == null && transmission != null) {
-                allCars = carRepository.findByCarTransmissionAndPriceLessThan(transmission, price,
+            // Filter Price, Area
+            else if (price != null && type == null && carArea != null) {
+                allCars = carRepository.findByCarAreaAndPriceLessThan(carArea, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
             // Filter Price, Type
-            else if (price != null && type != null && transmission == null) {
+            else if (price != null && type != null && carArea == null) {
                 allCars = carRepository.findByCarTypeAndPriceLessThan(type, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
             // Filter Price
-            else if (price != null && type == null && transmission == null) {
+            else if (price != null && type == null && carArea == null) {
                 allCars = carRepository.findByPriceLessThan(price, PageRequest.of(pageNumber - 1, pageSize));
             }
             // Filter Type
-            else if (price == null && type != null && transmission == null) {
+            else if (price == null && type != null && carArea == null) {
                 allCars = carRepository.findByCarType(type, PageRequest.of(pageNumber - 1, pageSize));
             }
-            // Filter Transmission
+            // Filter Area
             else {
-                allCars = carRepository.findByCarTransmission(transmission, PageRequest.of(pageNumber - 1, pageSize));
+                allCars = carRepository.findByCarArea(carArea, PageRequest.of(pageNumber - 1, pageSize));
             }
         }
         return new ResponseEntity<>(allCars, HttpStatus.OK);

@@ -21,7 +21,9 @@
 
     let priceMax;
     let carType;
-    let carTransmission; //In den Input-Elementen eingetragene Werte
+    let carArea; //In den Input-Elementen eingetragene Werte
+
+    let showAvailableOnly = "AVAILABLE";
 
     let cars = [];
     /*let car = {
@@ -29,9 +31,60 @@
         model: null,
         price: null,
         carType: null,
-        carTransmission: null,
+        carArea: null,
         description: null,
     };*/
+
+    let carAreas = [
+        "Aarau",
+        "Adliswil",
+        "Altstätten",
+        "Amriswil",
+        "Arbon",
+        "Baden",
+        "Basel",
+        "Bellinzona",
+        "Bern",
+        "Biel",
+        "Bülach",
+        "Chur",
+        "Davos",
+        "Dietikon",
+        "Dübendorf",
+        "Emmen",
+        "Frauenfeld",
+        "Genf",
+        "Glarus",
+        "Gossau",
+        "Hinwil",
+        "Horgen",
+        "Kloten",
+        "Kreuzlingen",
+        "Kriens",
+        "Küsnacht",
+        "Lausanne",
+        "Lenzburg",
+        "Locarno",
+        "Luzern",
+        "Opfikon",
+        "Rapperswil",
+        "Regensdorf",
+        "Romanshorn",
+        "Schaffhausen",
+        "Schlieren",
+        "Schwyz",
+        "Solothurn",
+        "Thalwil",
+        "Thun",
+        "Uster",
+        "Volketswil",
+        "Wallisellen",
+        "Wettingen",
+        "Wetzikon",
+        "Wil",
+        "Winterthur",
+        "Zürich",
+    ];
 
     $: {
         let searchParams = new URLSearchParams($querystring);
@@ -56,8 +109,8 @@
         if (carType && carType !== "ALL") {
             query += "&type=" + carType;
         }
-        if (carTransmission && carTransmission !== "ALL") {
-            query += "&transmission=" + carTransmission;
+        if (carArea && carArea !== "ALL") {
+            query += "&carArea=" + carArea;
         }
         /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
         http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
@@ -219,19 +272,19 @@
         </select>
     </div>
     <div class="col-auto">
-        <label for="" class="col-form-label">Transmission: </label>
+        <label for="" class="col-form-label">Area: </label>
     </div>
     <div class="col-3">
         <select
-            bind:value={carTransmission}
+            bind:value={carArea}
             class="form-select"
-            id="carTransmissionFilter"
+            id="carAreaFilter"
             type="text"
         >
             <option value="ALL" />
-            <option value="MANUAL">MANUAL</option>
-            <option value="AUTOMATIC">AUTOMATIC</option>
-            <option value="SINGLE">SINGLE</option>
+            {#each carAreas as carArea}
+                <option value={carArea}>{carArea}</option>
+            {/each}
         </select>
     </div>
     <div class="col-3">
@@ -242,12 +295,28 @@
                 carType +
                 "&price=" +
                 priceMax +
-                "&carTransmission=" +
-                carTransmission}
+                "&carArea=" +
+                carArea}
             role="button">Apply</a
         >
     </div>
 </div>
+
+<div class="row my-3">
+    <div class="col-auto">
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label>Show:</label>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="availabilityFilter" id="availableFilter" value="AVAILABLE" bind:group={showAvailableOnly} checked />
+            <label class="form-check-label" for="availableFilter">Available</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="availabilityFilter" id="allFilter" value="ALL" bind:group={showAvailableOnly} />
+            <label class="form-check-label" for="allFilter">All</label>
+        </div>
+    </div>
+</div>
+
 
 <table class="table">
     <thead>
@@ -268,7 +337,7 @@
         </tr>
     </thead>
     <tbody>
-        {#each cars as car}
+        {#each cars.filter(car => showAvailableOnly === "ALL" || car.userId === null) as car}
             <tr>
                 <td>
                     <a href={"#/car/" + car.id} class="btn btn-primary"
@@ -285,7 +354,7 @@
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.year}</td>
-                <td>{car.area}</td>
+                <td>{car.carArea}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>

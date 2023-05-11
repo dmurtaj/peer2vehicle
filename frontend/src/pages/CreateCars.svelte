@@ -21,14 +21,14 @@
 
     let priceMax;
     let carType;
-    let carTransmission; //In den Input-Elementen eingetragene Werte
+    let carArea; //In den Input-Elementen eingetragene Werte
 
     let cars = [];
     let car = {
         brand: null,
         model: null,
         year: null,
-        area: null,
+        carArea: null,
         price: null,
         carType: null,
         carTransmission: null,
@@ -38,7 +38,18 @@
         ownerId: null,
     };
 
-    let brands = ["Audi", "Citroen", "Fiat", "Ford", "Jeep", "Mini", "Opel", "Seat", "Tesla", "VW"];
+    let brands = [
+        "Audi",
+        "Citroen",
+        "Fiat",
+        "Ford",
+        "Jeep",
+        "Mini",
+        "Opel",
+        "Seat",
+        "Tesla",
+        "VW",
+    ];
     let models = {
         Audi: ["A3", "A5", "A6", "Q5", "Q8", "etron"],
         Citroen: ["Berlingo", "C3", "C4", "C5", "C6", "C8"],
@@ -58,6 +69,56 @@
         Tesla: ["ModelS", "Model3", "ModelX", "ModelY"],
         VW: ["Golf", "ID3", "ID4", "Tiguan", "Touareg", "Touran"],
     };
+    let carAreas = [
+        "Aarau",
+        "Adliswil",
+        "Altstätten",
+        "Amriswil",
+        "Arbon",
+        "Baden",
+        "Basel",
+        "Bellinzona",
+        "Bern",
+        "Biel",
+        "Bülach",
+        "Chur",
+        "Davos",
+        "Dietikon",
+        "Dübendorf",
+        "Emmen",
+        "Frauenfeld",
+        "Genf",
+        "Glarus",
+        "Gossau",
+        "Hinwil",
+        "Horgen",
+        "Kloten",
+        "Kreuzlingen",
+        "Kriens",
+        "Küsnacht",
+        "Lausanne",
+        "Lenzburg",
+        "Locarno",
+        "Luzern",
+        "Opfikon",
+        "Rapperswil",
+        "Regensdorf",
+        "Romanshorn",
+        "Schaffhausen",
+        "Schlieren",
+        "Schwyz",
+        "Solothurn",
+        "Thalwil",
+        "Thun",
+        "Uster",
+        "Volketswil",
+        "Wallisellen",
+        "Wettingen",
+        "Wetzikon",
+        "Wil",
+        "Winterthur",
+        "Zürich",
+    ];
 
     $: {
         let searchParams = new URLSearchParams($querystring);
@@ -72,6 +133,7 @@
     siehe auch https://svelte.dev/tutorial/reactive-statements
     Wir lesen hier den Query-Parameter "page" aus der URL und holen uns anschliessend alle Cars. */
 
+    
     function getCars() {
         let query =
             "?pageSize=" + defaultPageSize + " &pageNumber=" + currentPage; //Hier werden die Query-Parameter für den Request ans Backend erstellt
@@ -82,12 +144,13 @@
         if (carType && carType !== "ALL") {
             query += "&type=" + carType;
         }
-        if (carTransmission && carTransmission !== "ALL") {
-            query += "&type=" + carTransmission;
+        if (carArea && carArea !== "ALL") {
+            query += "&carArea=" + carArea;
         }
         /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
         http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
 
+        
         var config = {
             method: "get",
             url: api_root + "/api/car" + query, //Komplette URL für den Request erstellen, z.B: http://localhost:8080/api/car?pageSize=4&pageNumber=1
@@ -171,27 +234,6 @@
 <h1 class="mt-3">Create Car</h1>
 <form class="mb-5">
     <div class="row mb-3">
-        <!--
-        <div class="col">
-            <label class="form-label" for="brand">Brand</label>
-            <input
-                bind:value={car.brand}
-                class="form-control"
-                id="brand"
-                type="text"
-            />
-        </div>
-        <div class="col">
-            <label class="form-label" for="model">Model</label>
-            <input
-                bind:value={car.model}
-                class="form-control"
-                id="model"
-                type="text"
-            />
-        </div>
-        -->
-
         <div class="col">
             <label class="form-label" for="brand">Brand</label>
             <select bind:value={car.brand} class="form-select" id="brand">
@@ -239,13 +281,13 @@
         />
     </div>
     <div class="col">
-        <label class="form-label" for="area">Area</label>
-        <input
-            bind:value={car.area}
-            class="form-control"
-            id="area"
-            type="text"
-        />
+        <label class="form-label" for="carArea">Area</label>
+        <select bind:value={car.carArea} class="form-select" id="carArea">
+            <option value="">Select an carArea</option>
+            {#each carAreas as carArea}
+                <option value={carArea}>{carArea}</option>
+            {/each}
+        </select>
     </div>
     <div class="row mb-3">
         <div class="col">
@@ -275,6 +317,7 @@
                 <option value="SINGLE">SINGLE</option>
             </select>
         </div>
+
         <div class="col">
             <label class="form-label" for="price">Price</label>
             <input

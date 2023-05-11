@@ -5,6 +5,7 @@
     const api_root = window.location.origin;
 
     let carDetails = [];
+    let mapUrl = "";
 
     function getCarDetails(carId) {
         var config = {
@@ -16,6 +17,7 @@
         axios(config)
             .then(function (response) {
                 carDetails = response.data;
+                mapUrl = "https://maps.google.com/maps?width=1229&height=529&hl=en&q=%20" + carDetails.carArea + "+()&t=&z=11&ie=UTF8&iwloc=B&output=embed";
             })
             .catch(function (error) {
                 alert("Could not get CarDetails");
@@ -103,7 +105,11 @@
 
 <h1>Car Details</h1>
 
-<img src={"images/" + carDetails.model + ".jpg"} alt={carDetails.model} width="350" />
+<img
+    src={"images/" + carDetails.model + ".jpg"}
+    alt={carDetails.model}
+    width="350"
+/>
 
 <div class="card" style="width: 18rem;">
     <div class="card-body">
@@ -111,7 +117,7 @@
         <h6 class="card-subtitle mb-2 text-muted">Price: {carDetails.price}</h6>
         <p class="card-text">
             Year: {carDetails.year}
-            Area: {carDetails.area}
+            Area: {carDetails.carArea}
             Type: {carDetails.carType}<br />
             Transmission: {carDetails.carTransmission}<br />
             State: {carDetails.carState}<br />
@@ -120,41 +126,56 @@
         </p>
         <p class="card-text">{carDetails.description}</p>
         {#if carDetails.userId === $myUserId}
-                        <button
-                            type="button"
-                            class="btn btn-success btn-sm"
-                            on:click={() => {
-                                unrentCar(carDetails.id);
-                            }}>Unrent Car</button
-                        >
-                    {:else if carDetails.ownerId === $myUserId}
-                    <span class="badge bg-secondary" id="myCar"
-                    >My Car</span>
-                    <button
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                            id="deleteButton"
-                            on:click={() => {deleteMyCarById(carDetails.id);}}>Delete</button
-                        >
-                    {:else if carDetails.userId === null && carDetails.ownerId !== $myUserId}
-                        <button
-                            type="button"
-                            class="btn btn-primary btn-sm"
-                            id="rentButton"
-                            on:click={() => {rentCar(carDetails.id);}}>Rent Car</button
-                        >
-                    {:else}
-                        <span class="badge bg-secondary" id="rented"
-                            >Unavailable</span
-                        >
-                    {/if}
-                    {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
-                        <button
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                            id="deleteButton"
-                            on:click={() => {deleteCar(carDetails.id);}}>Delete</button
-                        >
-                    {/if}          
+            <button
+                type="button"
+                class="btn btn-success btn-sm"
+                on:click={() => {
+                    unrentCar(carDetails.id);
+                }}>Unrent Car</button
+            >
+        {:else if carDetails.ownerId === $myUserId}
+            <span class="badge bg-secondary" id="myCar">My Car</span>
+            <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                id="deleteButton"
+                on:click={() => {
+                    deleteMyCarById(carDetails.id);
+                }}>Delete</button
+            >
+        {:else if carDetails.userId === null && carDetails.ownerId !== $myUserId}
+            <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                id="rentButton"
+                on:click={() => {
+                    rentCar(carDetails.id);
+                }}>Rent Car</button
+            >
+        {:else}
+            <span class="badge bg-secondary" id="rented">Unavailable</span>
+        {/if}
+        {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+            <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                id="deleteButton"
+                on:click={() => {
+                    deleteCar(carDetails.id);
+                }}>Delete</button
+            >
+        {/if}
     </div>
 </div>
+
+<!-- svelte-ignore a11y-missing-attribute -->
+<iframe
+    scrolling="no"
+    marginheight="0"
+    marginwidth="0"
+    id="gmap_canvas"
+    src={mapUrl}
+    width="1229"
+    height="529"
+    frameborder="0"
+/>
