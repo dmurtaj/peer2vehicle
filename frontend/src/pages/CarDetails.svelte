@@ -110,7 +110,8 @@
         <h5 class="card-title">{carDetails.brand} {carDetails.model}</h5>
         <h6 class="card-subtitle mb-2 text-muted">Price: {carDetails.price}</h6>
         <p class="card-text">
-            Year: {carDetails.carYear}
+            Year: {carDetails.year}
+            Area: {carDetails.area}
             Type: {carDetails.carType}<br />
             Transmission: {carDetails.carTransmission}<br />
             State: {carDetails.carState}<br />

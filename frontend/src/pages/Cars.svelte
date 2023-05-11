@@ -162,26 +162,25 @@
     }
 
     function deleteMyCarById(carId) {
-    var config = {
-        method: "delete",
-        url: api_root + "/api/me/car/" + carId,
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
-        },
-    };
+        var config = {
+            method: "delete",
+            url: api_root + "/api/me/car/" + carId,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+            },
+        };
 
-    axios(config)
-        .then(function (response) {
-            alert("Car deleted");
-            getCars();
-        })
-        .catch(function (error) {
-            alert("Could not delete Car");
-            console.log(error);
-        });
-}
-
+        axios(config)
+            .then(function (response) {
+                alert("Car deleted");
+                getCars();
+            })
+            .catch(function (error) {
+                alert("Could not delete Car");
+                console.log(error);
+            });
+    }
 </script>
 
 <h1>All Cars</h1>
@@ -258,6 +257,7 @@
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
             <th scope="col">Year</th>
+            <th scope="col">Area</th>
             <th scope="col">Price</th>
             <th scope="col">Type</th>
             <th scope="col">Transmission</th>
@@ -271,15 +271,21 @@
         {#each cars as car}
             <tr>
                 <td>
-                    <a
-                        href={"#/car/" + car.id}
-                        class="btn btn-primary"><i class="fa fa-bars" /></a
+                    <a href={"#/car/" + car.id} class="btn btn-primary"
+                        ><i class="fa fa-bars" /></a
                     >
                 </td>
-                <td><img src={"images/" + car.model + ".jpg"} alt={car.model} width="200" /></td>
+                <td
+                    ><img
+                        src={"images/" + car.model + ".jpg"}
+                        alt={car.model}
+                        width="200"
+                    /></td
+                >
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.year}</td>
+                <td>{car.area}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>
@@ -296,20 +302,24 @@
                             }}>Unrent Car</button
                         >
                     {:else if car.ownerId === $myUserId}
-                    <span class="badge bg-secondary" id="myCar"
-                    >My Car</span>
-                    <button
+                        <span class="badge bg-secondary" id="myCar">My Car</span
+                        >
+                        <button
                             type="button"
                             class="btn btn-danger btn-sm"
                             id="deleteButton"
-                            on:click={() => {deleteMyCarById(car.id);}}>Delete</button
+                            on:click={() => {
+                                deleteMyCarById(car.id);
+                            }}>Delete</button
                         >
                     {:else if car.userId === null && car.ownerId !== $myUserId}
                         <button
                             type="button"
                             class="btn btn-primary btn-sm"
                             id="rentButton"
-                            on:click={() => {rentCar(car.id);}}>Rent Car</button
+                            on:click={() => {
+                                rentCar(car.id);
+                            }}>Rent Car</button
                         >
                     {:else}
                         <span class="badge bg-secondary" id="rented"
@@ -321,7 +331,9 @@
                             type="button"
                             class="btn btn-danger btn-sm"
                             id="deleteButton"
-                            on:click={() => {deleteCar(car.id);}}>Delete</button
+                            on:click={() => {
+                                deleteCar(car.id);
+                            }}>Delete</button
                         >
                     {/if}
                 </td>

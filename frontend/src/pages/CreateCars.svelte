@@ -28,6 +28,7 @@
         brand: null,
         model: null,
         year: null,
+        area: null,
         price: null,
         carType: null,
         carTransmission: null,
@@ -235,6 +236,15 @@
             class="form-control"
             id="year"
             type="number"
+        />
+    </div>
+    <div class="col">
+        <label class="form-label" for="area">Area</label>
+        <input
+            bind:value={car.area}
+            class="form-control"
+            id="area"
+            type="text"
         />
     </div>
     <div class="row mb-3">

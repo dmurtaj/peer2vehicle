@@ -24,6 +24,8 @@ public class Car {
     @NonNull
     private Double year;
     @NonNull
+    private String area;
+    @NonNull
     private Double price;
     @NonNull
     private CarType carType;

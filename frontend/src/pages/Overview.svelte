@@ -88,6 +88,7 @@
             <th scope="col">Brand</th>
             <th scope="col">Model</th>
             <th scope="col">Year</th>
+            <th scope="col">Area</th>
             <th scope="col">Price</th>
             <th scope="col">Type</th>
             <th scope="col">Transmission</th>
@@ -104,6 +105,7 @@
                 <td>{car.brand}</td>
                 <td>{car.model}</td>
                 <td>{car.year}</td>
+                <td>{car.area}</td>
                 <td>{car.price}</td>
                 <td>{car.carType}</td>
                 <td>{car.carTransmission}</td>
