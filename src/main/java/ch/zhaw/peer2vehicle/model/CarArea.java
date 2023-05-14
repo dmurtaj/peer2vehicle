@@ -6,5 +6,5 @@ public enum CarArea {
     Gossau, Hinwil, Horgen, Kloten, Kreuzlingen, Kriens, Küsnacht, Lausanne, Lenzburg,
     Locarno, Luzern, Opfikon, Rapperswil, Regensdorf, Romanshorn, Schaffhausen, Schlieren,
     Schwyz, Solothurn, Thalwil, Thun, Uster, Volketswil, Wallisellen, Wettingen, Wetzikon,
-    Wil, Winterthur, Zürich;
+    Wil, Windisch, Winterthur, Zürich;
 }

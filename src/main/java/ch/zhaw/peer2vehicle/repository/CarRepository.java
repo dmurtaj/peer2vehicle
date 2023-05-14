@@ -9,25 +9,25 @@ import org.springframework.data.domain.Page;
 import ch.zhaw.peer2vehicle.model.Car;
 import ch.zhaw.peer2vehicle.model.CarArea;
 import ch.zhaw.peer2vehicle.model.CarStateAggregation;
-import ch.zhaw.peer2vehicle.model.CarType;
+import ch.zhaw.peer2vehicle.model.CarState;
 
 public interface CarRepository extends MongoRepository<Car, String> {
     // Einzelne Filter
     Page<Car> findByPriceLessThan(Double price, Pageable pageable);
 
-    Page<Car> findByCarType(CarType carType, Pageable pageable);
+    Page<Car> findByCarState(CarState carState, Pageable pageable);
 
     Page<Car> findByCarArea(CarArea carArea, Pageable pageable);
 
     // Multiple Filter
 
-    Page<Car> findByCarTypeAndCarArea(CarType carType, CarArea carArea, Pageable pageable);
+    Page<Car> findByCarStateAndCarArea(CarState carState, CarArea carArea, Pageable pageable);
 
-    Page<Car> findByCarTypeAndCarAreaAndPriceLessThan(CarType carType, CarArea carArea, Double price, Pageable pageable);
+    Page<Car> findByCarStateAndCarAreaAndPriceLessThan(CarState carState, CarArea carArea, Double price, Pageable pageable);
 
     Page<Car> findByCarAreaAndPriceLessThan(CarArea carArea, Double price, Pageable pageable);
 
-    Page<Car> findByCarTypeAndPriceLessThan(CarType carType, Double price, Pageable pageable);
+    Page<Car> findByCarStateAndPriceLessThan(CarState carState, Double price, Pageable pageable);
 
     // List Filter für Meine Übersicht
 

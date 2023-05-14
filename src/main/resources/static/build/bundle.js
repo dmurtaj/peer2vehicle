@@ -87,23 +87,18 @@ var app = (function () {
         node.addEventListener(event, handler, options);
         return () => node.removeEventListener(event, handler, options);
     }
+    function prevent_default(fn) {
+        return function (event) {
+            event.preventDefault();
+            // @ts-ignore
+            return fn.call(this, event);
+        };
+    }
     function attr(node, attribute, value) {
         if (value == null)
             node.removeAttribute(attribute);
         else if (node.getAttribute(attribute) !== value)
             node.setAttribute(attribute, value);
-    }
-    function init_binding_group(group) {
-        let _inputs;
-        return {
-            /* push */ p(...inputs) {
-                _inputs = inputs;
-                _inputs.forEach(input => group.push(input));
-            },
-            /* remove */ r() {
-                _inputs.forEach(input => group.splice(group.indexOf(input), 1));
-            }
-        };
     }
     function to_number(value) {
         return value === '' ? null : +value;
@@ -5097,196 +5092,21 @@ var app = (function () {
     const { console: console_1$4 } = globals;
     const file$5 = "src\\pages\\Users.svelte";
 
-    function get_each_context$3(ctx, list, i) {
+    function get_each_context$4(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[15] = list[i];
-    	child_ctx[17] = i;
+    	child_ctx[16] = list[i];
+    	child_ctx[18] = i;
     	return child_ctx;
     }
 
-    function get_each_context_1$2(ctx, list, i) {
+    function get_each_context_1$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[4] = list[i];
     	return child_ctx;
     }
 
-    // (178:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+    // (134:0) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
     function create_if_block$5(ctx) {
-    	let button;
-    	let mounted;
-    	let dispose;
-
-    	function click_handler() {
-    		return /*click_handler*/ ctx[10](/*user*/ ctx[4]);
-    	}
-
-    	const block = {
-    		c: function create() {
-    			button = element("button");
-    			button.textContent = "Delete";
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$5, 178, 24, 5412);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, button, anchor);
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", click_handler, false, false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: function update(new_ctx, dirty) {
-    			ctx = new_ctx;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(button);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$5.name,
-    		type: "if",
-    		source: "(178:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (173:8) {#each users as user}
-    function create_each_block_1$2(ctx) {
-    	let tr;
-    	let td0;
-    	let t0_value = /*user*/ ctx[4].name + "";
-    	let t0;
-    	let t1;
-    	let td1;
-    	let t2_value = /*user*/ ctx[4].email + "";
-    	let t2;
-    	let t3;
-    	let td2;
-    	let show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
-    	let t4;
-    	let if_block = show_if && create_if_block$5(ctx);
-
-    	const block = {
-    		c: function create() {
-    			tr = element("tr");
-    			td0 = element("td");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			td1 = element("td");
-    			t2 = text(t2_value);
-    			t3 = space();
-    			td2 = element("td");
-    			if (if_block) if_block.c();
-    			t4 = space();
-    			add_location(td0, file$5, 174, 16, 5211);
-    			add_location(td1, file$5, 175, 16, 5249);
-    			add_location(td2, file$5, 176, 16, 5288);
-    			add_location(tr, file$5, 173, 12, 5189);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, tr, anchor);
-    			append_dev(tr, td0);
-    			append_dev(td0, t0);
-    			append_dev(tr, t1);
-    			append_dev(tr, td1);
-    			append_dev(td1, t2);
-    			append_dev(tr, t3);
-    			append_dev(tr, td2);
-    			if (if_block) if_block.m(td2, null);
-    			append_dev(tr, t4);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*users*/ 4 && t0_value !== (t0_value = /*user*/ ctx[4].name + "")) set_data_dev(t0, t0_value);
-    			if (dirty & /*users*/ 4 && t2_value !== (t2_value = /*user*/ ctx[4].email + "")) set_data_dev(t2, t2_value);
-    			if (dirty & /*$actualUser*/ 8) show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
-
-    			if (show_if) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block$5(ctx);
-    					if_block.c();
-    					if_block.m(td2, null);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(tr);
-    			if (if_block) if_block.d();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block_1$2.name,
-    		type: "each",
-    		source: "(173:8) {#each users as user}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (195:8) {#each Array(nrOfPages) as _, i}
-    function create_each_block$3(ctx) {
-    	let li;
-    	let a;
-    	let t0_value = /*i*/ ctx[17] + 1 + "";
-    	let t0;
-    	let t1;
-
-    	const block = {
-    		c: function create() {
-    			li = element("li");
-    			a = element("a");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			attr_dev(a, "class", "page-link");
-    			attr_dev(a, "href", "#/users?page=" + (/*i*/ ctx[17] + 1));
-    			toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[17] + 1);
-    			add_location(a, file$5, 201, 16, 6449);
-    			attr_dev(li, "class", "page-item");
-    			add_location(li, file$5, 200, 12, 6409);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, li, anchor);
-    			append_dev(li, a);
-    			append_dev(a, t0);
-    			append_dev(li, t1);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*currentPage*/ 1) {
-    				toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[17] + 1);
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(li);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block$3.name,
-    		type: "each",
-    		source: "(195:8) {#each Array(nrOfPages) as _, i}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment$5(ctx) {
     	let h10;
     	let t1;
     	let form;
@@ -5326,7 +5146,7 @@ var app = (function () {
     	let each_blocks_1 = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks_1[i] = create_each_block_1$2(get_each_context_1$2(ctx, each_value_1, i));
+    		each_blocks_1[i] = create_each_block_1$3(get_each_context_1$3(ctx, each_value_1, i));
     	}
 
     	let each_value = Array(/*nrOfPages*/ ctx[1]);
@@ -5334,7 +5154,7 @@ var app = (function () {
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
+    		each_blocks[i] = create_each_block$4(get_each_context$4(ctx, each_value, i));
     	}
 
     	const block = {
@@ -5390,52 +5210,49 @@ var app = (function () {
     			}
 
     			attr_dev(h10, "class", "mt-3");
-    			add_location(h10, file$5, 131, 0, 4072);
+    			add_location(h10, file$5, 135, 0, 4284);
     			attr_dev(label0, "class", "form-label");
     			attr_dev(label0, "for", "name");
-    			add_location(label0, file$5, 135, 12, 4195);
+    			add_location(label0, file$5, 139, 12, 4407);
     			attr_dev(input0, "class", "form-control");
     			attr_dev(input0, "id", "name");
     			attr_dev(input0, "type", "text");
-    			add_location(input0, file$5, 136, 12, 4258);
+    			add_location(input0, file$5, 140, 12, 4470);
     			attr_dev(div0, "class", "col");
-    			add_location(div0, file$5, 134, 8, 4164);
+    			add_location(div0, file$5, 138, 8, 4376);
     			attr_dev(div1, "class", "row mb-3");
-    			add_location(div1, file$5, 133, 4, 4132);
+    			add_location(div1, file$5, 137, 4, 4344);
     			attr_dev(label1, "class", "form-label");
     			attr_dev(label1, "for", "email");
-    			add_location(label1, file$5, 146, 12, 4511);
+    			add_location(label1, file$5, 150, 12, 4723);
     			attr_dev(input1, "class", "form-control");
     			attr_dev(input1, "id", "email");
     			attr_dev(input1, "type", "text");
-    			add_location(input1, file$5, 147, 12, 4576);
+    			add_location(input1, file$5, 151, 12, 4788);
     			attr_dev(div2, "class", "col");
-    			add_location(div2, file$5, 145, 8, 4480);
+    			add_location(div2, file$5, 149, 8, 4692);
     			attr_dev(div3, "class", "row mb-3");
-    			add_location(div3, file$5, 144, 4, 4448);
+    			add_location(div3, file$5, 148, 4, 4660);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
-    			add_location(button, file$5, 155, 4, 4768);
+    			add_location(button, file$5, 159, 4, 4980);
     			attr_dev(form, "class", "mb-5");
-    			add_location(form, file$5, 132, 0, 4107);
-    			add_location(h11, file$5, 162, 0, 4913);
+    			add_location(form, file$5, 136, 0, 4319);
+    			add_location(h11, file$5, 166, 0, 5125);
     			attr_dev(th0, "scope", "col");
-    			add_location(th0, file$5, 166, 12, 4995);
+    			add_location(th0, file$5, 170, 12, 5207);
     			attr_dev(th1, "scope", "col");
-    			add_location(th1, file$5, 167, 12, 5034);
+    			add_location(th1, file$5, 171, 12, 5246);
     			attr_dev(th2, "scope", "col");
-    			add_location(th2, file$5, 168, 12, 5074);
-    			add_location(tr, file$5, 165, 8, 4977);
-    			add_location(thead, file$5, 164, 4, 4960);
-    			add_location(tbody, file$5, 171, 4, 5137);
+    			add_location(th2, file$5, 172, 12, 5286);
+    			add_location(tr, file$5, 169, 8, 5189);
+    			add_location(thead, file$5, 168, 4, 5172);
+    			add_location(tbody, file$5, 175, 4, 5349);
     			attr_dev(table, "class", "table");
-    			add_location(table, file$5, 163, 0, 4933);
+    			add_location(table, file$5, 167, 0, 5145);
     			attr_dev(ul, "class", "pagination");
-    			add_location(ul, file$5, 193, 4, 5866);
-    			add_location(nav, file$5, 192, 0, 5855);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(ul, file$5, 197, 4, 6001);
+    			add_location(nav, file$5, 196, 0, 5990);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h10, anchor);
@@ -5496,7 +5313,7 @@ var app = (function () {
     				mounted = true;
     			}
     		},
-    		p: function update(ctx, [dirty]) {
+    		p: function update(ctx, dirty) {
     			if (dirty & /*user*/ 16 && input0.value !== /*user*/ ctx[4].name) {
     				set_input_value(input0, /*user*/ ctx[4].name);
     			}
@@ -5505,18 +5322,18 @@ var app = (function () {
     				set_input_value(input1, /*user*/ ctx[4].email);
     			}
 
-    			if (dirty & /*deleteUser, users, $actualUser*/ 76) {
+    			if (dirty & /*deleteUser, users*/ 68) {
     				each_value_1 = /*users*/ ctx[2];
     				validate_each_argument(each_value_1);
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1$2(ctx, each_value_1, i);
+    					const child_ctx = get_each_context_1$3(ctx, each_value_1, i);
 
     					if (each_blocks_1[i]) {
     						each_blocks_1[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks_1[i] = create_each_block_1$2(child_ctx);
+    						each_blocks_1[i] = create_each_block_1$3(child_ctx);
     						each_blocks_1[i].c();
     						each_blocks_1[i].m(tbody, null);
     					}
@@ -5535,12 +5352,12 @@ var app = (function () {
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context$3(ctx, each_value, i);
+    					const child_ctx = get_each_context$4(ctx, each_value, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block$3(child_ctx);
+    						each_blocks[i] = create_each_block$4(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(ul, null);
     					}
@@ -5553,8 +5370,6 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
     		},
-    		i: noop$1,
-    		o: noop$1,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h10);
     			if (detaching) detach_dev(t1);
@@ -5569,6 +5384,189 @@ var app = (function () {
     			destroy_each(each_blocks, detaching);
     			mounted = false;
     			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$5.name,
+    		type: "if",
+    		source: "(134:0) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (177:8) {#each users as user}
+    function create_each_block_1$3(ctx) {
+    	let tr;
+    	let td0;
+    	let t0_value = /*user*/ ctx[4].name + "";
+    	let t0;
+    	let t1;
+    	let td1;
+    	let t2_value = /*user*/ ctx[4].email + "";
+    	let t2;
+    	let t3;
+    	let td2;
+    	let button;
+    	let t5;
+    	let mounted;
+    	let dispose;
+
+    	function click_handler() {
+    		return /*click_handler*/ ctx[10](/*user*/ ctx[4]);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			tr = element("tr");
+    			td0 = element("td");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			td1 = element("td");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			td2 = element("td");
+    			button = element("button");
+    			button.textContent = "Delete";
+    			t5 = space();
+    			add_location(td0, file$5, 178, 16, 5423);
+    			add_location(td1, file$5, 179, 16, 5461);
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn btn-danger btn-sm");
+    			attr_dev(button, "id", "deleteButton");
+    			add_location(button, file$5, 182, 24, 5552);
+    			add_location(td2, file$5, 180, 16, 5500);
+    			add_location(tr, file$5, 177, 12, 5401);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, tr, anchor);
+    			append_dev(tr, td0);
+    			append_dev(td0, t0);
+    			append_dev(tr, t1);
+    			append_dev(tr, td1);
+    			append_dev(td1, t2);
+    			append_dev(tr, t3);
+    			append_dev(tr, td2);
+    			append_dev(td2, button);
+    			append_dev(tr, t5);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", click_handler, false, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+    			if (dirty & /*users*/ 4 && t0_value !== (t0_value = /*user*/ ctx[4].name + "")) set_data_dev(t0, t0_value);
+    			if (dirty & /*users*/ 4 && t2_value !== (t2_value = /*user*/ ctx[4].email + "")) set_data_dev(t2, t2_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(tr);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1$3.name,
+    		type: "each",
+    		source: "(177:8) {#each users as user}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (199:8) {#each Array(nrOfPages) as _, i}
+    function create_each_block$4(ctx) {
+    	let li;
+    	let a;
+    	let t0_value = /*i*/ ctx[18] + 1 + "";
+    	let t0;
+    	let t1;
+
+    	const block = {
+    		c: function create() {
+    			li = element("li");
+    			a = element("a");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			attr_dev(a, "class", "page-link");
+    			attr_dev(a, "href", "#/users?page=" + (/*i*/ ctx[18] + 1));
+    			toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[18] + 1);
+    			add_location(a, file$5, 205, 16, 6584);
+    			attr_dev(li, "class", "page-item");
+    			add_location(li, file$5, 204, 12, 6544);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, li, anchor);
+    			append_dev(li, a);
+    			append_dev(a, t0);
+    			append_dev(li, t1);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*currentPage*/ 1) {
+    				toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[18] + 1);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(li);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$4.name,
+    		type: "each",
+    		source: "(199:8) {#each Array(nrOfPages) as _, i}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$5(ctx) {
+    	let show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
+    	let if_block_anchor;
+    	let if_block = show_if && create_if_block$5(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*$actualUser*/ 8) show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
+
+    			if (show_if) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$5(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop$1,
+    		o: noop$1,
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -5673,8 +5671,31 @@ var app = (function () {
     		axios$1(config).then(function (response) {
     			alert("User deleted");
     			getUsers();
+    			window.location.href = api_root + '/#/users?page=1';
     		}).catch(function (error) {
     			alert("Could not delete User");
+    			console.log(error);
+    		});
+    	}
+
+    	function createUser() {
+    		var config = {
+    			method: "post",
+    			url: api_root + "/api/user",
+    			headers: {
+    				"Content-Type": "application/json",
+    				Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+    				
+    			},
+    			data: user
+    		};
+
+    		axios$1(config).then(function (response) {
+    			alert("User created");
+    			getUsers();
+    			window.location.href = api_root + '/#/users?page=1';
+    		}).catch(function (error) {
+    			alert("Could not create User");
     			console.log(error);
     		});
     	}
@@ -5713,6 +5734,7 @@ var app = (function () {
     		getUsers,
     		validateEmailAndcreateUser,
     		deleteUser,
+    		createUser,
     		$jwt_token,
     		$querystring,
     		$actualUser
@@ -5780,27 +5802,519 @@ var app = (function () {
     const { console: console_1$3 } = globals;
     const file$4 = "src\\pages\\Cars.svelte";
 
-    function get_each_context$2(ctx, list, i) {
+    function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[30] = list[i];
-    	child_ctx[32] = i;
+    	child_ctx[26] = list[i];
+    	child_ctx[28] = i;
     	return child_ctx;
     }
 
-    function get_each_context_1$1(ctx, list, i) {
+    function get_each_context_1$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[33] = list[i];
+    	child_ctx[29] = list[i];
     	return child_ctx;
     }
 
-    function get_each_context_2$1(ctx, list, i) {
+    function get_each_context_2$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
     	child_ctx[8] = list[i];
     	return child_ctx;
     }
 
-    // (285:12) {#each carAreas as carArea}
-    function create_each_block_2$1(ctx) {
+    // (237:0) {#if $isAuthenticated}
+    function create_if_block$4(ctx) {
+    	let h1;
+    	let t1;
+    	let div7;
+    	let div0;
+    	let label0;
+    	let t3;
+    	let div1;
+    	let input;
+    	let t4;
+    	let div2;
+    	let label1;
+    	let t6;
+    	let div3;
+    	let select0;
+    	let option0;
+    	let option1;
+    	let option2;
+    	let t9;
+    	let div4;
+    	let label2;
+    	let t11;
+    	let div5;
+    	let select1;
+    	let option3;
+    	let t12;
+    	let div6;
+    	let a;
+    	let t13;
+    	let a_href_value;
+    	let t14;
+    	let table;
+    	let thead;
+    	let tr;
+    	let th0;
+    	let t15;
+    	let th1;
+    	let t17;
+    	let th2;
+    	let t19;
+    	let th3;
+    	let t21;
+    	let th4;
+    	let t23;
+    	let th5;
+    	let t25;
+    	let th6;
+    	let t27;
+    	let th7;
+    	let t29;
+    	let th8;
+    	let t31;
+    	let th9;
+    	let t33;
+    	let th10;
+    	let t35;
+    	let th11;
+    	let t37;
+    	let th12;
+    	let t39;
+    	let tbody;
+    	let t40;
+    	let nav;
+    	let ul;
+    	let mounted;
+    	let dispose;
+    	let each_value_2 = /*carAreas*/ ctx[9];
+    	validate_each_argument(each_value_2);
+    	let each_blocks_2 = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks_2[i] = create_each_block_2$2(get_each_context_2$2(ctx, each_value_2, i));
+    	}
+
+    	let each_value_1 = /*cars*/ ctx[4];
+    	validate_each_argument(each_value_1);
+    	let each_blocks_1 = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks_1[i] = create_each_block_1$2(get_each_context_1$2(ctx, each_value_1, i));
+    	}
+
+    	let each_value = Array(/*nrOfPages*/ ctx[1]);
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$3(get_each_context$3(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			h1 = element("h1");
+    			h1.textContent = "All Cars";
+    			t1 = space();
+    			div7 = element("div");
+    			div0 = element("div");
+    			label0 = element("label");
+    			label0.textContent = "Price:";
+    			t3 = space();
+    			div1 = element("div");
+    			input = element("input");
+    			t4 = space();
+    			div2 = element("div");
+    			label1 = element("label");
+    			label1.textContent = "Car State:";
+    			t6 = space();
+    			div3 = element("div");
+    			select0 = element("select");
+    			option0 = element("option");
+    			option1 = element("option");
+    			option1.textContent = "AVAILABLE";
+    			option2 = element("option");
+    			option2.textContent = "UNAVAILABLE";
+    			t9 = space();
+    			div4 = element("div");
+    			label2 = element("label");
+    			label2.textContent = "Area:";
+    			t11 = space();
+    			div5 = element("div");
+    			select1 = element("select");
+    			option3 = element("option");
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				each_blocks_2[i].c();
+    			}
+
+    			t12 = space();
+    			div6 = element("div");
+    			a = element("a");
+    			t13 = text("Apply");
+    			t14 = space();
+    			table = element("table");
+    			thead = element("thead");
+    			tr = element("tr");
+    			th0 = element("th");
+    			t15 = space();
+    			th1 = element("th");
+    			th1.textContent = "Image";
+    			t17 = space();
+    			th2 = element("th");
+    			th2.textContent = "Brand";
+    			t19 = space();
+    			th3 = element("th");
+    			th3.textContent = "Model";
+    			t21 = space();
+    			th4 = element("th");
+    			th4.textContent = "Year";
+    			t23 = space();
+    			th5 = element("th");
+    			th5.textContent = "Area";
+    			t25 = space();
+    			th6 = element("th");
+    			th6.textContent = "Price";
+    			t27 = space();
+    			th7 = element("th");
+    			th7.textContent = "Type";
+    			t29 = space();
+    			th8 = element("th");
+    			th8.textContent = "Transmission";
+    			t31 = space();
+    			th9 = element("th");
+    			th9.textContent = "State";
+    			t33 = space();
+    			th10 = element("th");
+    			th10.textContent = "User ID";
+    			t35 = space();
+    			th11 = element("th");
+    			th11.textContent = "User Name";
+    			t37 = space();
+    			th12 = element("th");
+    			th12.textContent = "Actions";
+    			t39 = space();
+    			tbody = element("tbody");
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			t40 = space();
+    			nav = element("nav");
+    			ul = element("ul");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			add_location(h1, file$4, 238, 0, 7336);
+    			attr_dev(label0, "for", "");
+    			attr_dev(label0, "class", "col-form-label");
+    			add_location(label0, file$4, 242, 8, 7417);
+    			attr_dev(div0, "class", "col-auto");
+    			add_location(div0, file$4, 241, 4, 7385);
+    			attr_dev(input, "class", "form-control");
+    			attr_dev(input, "type", "number");
+    			attr_dev(input, "placeholder", "price");
+    			attr_dev(input, "id", "minPriceFilter");
+    			add_location(input, file$4, 245, 8, 7516);
+    			attr_dev(div1, "class", "col-3");
+    			add_location(div1, file$4, 244, 4, 7487);
+    			attr_dev(label1, "for", "");
+    			attr_dev(label1, "class", "col-form-label");
+    			add_location(label1, file$4, 257, 8, 8073);
+    			attr_dev(div2, "class", "col-auto");
+    			add_location(div2, file$4, 256, 4, 8041);
+    			option0.__value = "ALL";
+    			option0.value = option0.__value;
+    			add_location(option0, file$4, 266, 12, 8334);
+    			option1.__value = "AVAILABLE";
+    			option1.value = option1.__value;
+    			add_location(option1, file$4, 267, 12, 8370);
+    			option2.__value = "UNAVAILABLE";
+    			option2.value = option2.__value;
+    			add_location(option2, file$4, 268, 12, 8428);
+    			attr_dev(select0, "class", "form-select");
+    			attr_dev(select0, "id", "carStateFilter");
+    			attr_dev(select0, "type", "text");
+    			if (/*carState*/ ctx[3] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[16].call(select0));
+    			add_location(select0, file$4, 260, 8, 8176);
+    			attr_dev(div3, "class", "col-3");
+    			add_location(div3, file$4, 259, 4, 8147);
+    			attr_dev(label2, "for", "");
+    			attr_dev(label2, "class", "col-form-label");
+    			add_location(label2, file$4, 272, 8, 8545);
+    			attr_dev(div4, "class", "col-auto");
+    			add_location(div4, file$4, 271, 4, 8513);
+    			option3.__value = "ALL";
+    			option3.value = option3.__value;
+    			add_location(option3, file$4, 281, 12, 8799);
+    			attr_dev(select1, "class", "form-select");
+    			attr_dev(select1, "id", "carAreaFilter");
+    			attr_dev(select1, "type", "text");
+    			if (/*carArea*/ ctx[8] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[17].call(select1));
+    			add_location(select1, file$4, 275, 8, 8643);
+    			attr_dev(div5, "class", "col-3");
+    			add_location(div5, file$4, 274, 4, 8614);
+    			attr_dev(a, "class", "btn btn-primary");
+    			attr_dev(a, "id", "applyButton");
+    			attr_dev(a, "href", a_href_value = "#/cars?page=1&carType=" + /*carState*/ ctx[3] + "&price=" + /*priceMax*/ ctx[2] + "&carArea=" + /*carArea*/ ctx[8]);
+    			attr_dev(a, "role", "button");
+    			add_location(a, file$4, 288, 8, 9009);
+    			attr_dev(div6, "class", "col-3");
+    			add_location(div6, file$4, 287, 4, 8980);
+    			attr_dev(div7, "class", "row my-3");
+    			add_location(div7, file$4, 240, 0, 7357);
+    			add_location(th0, file$4, 306, 12, 9401);
+    			add_location(th1, file$4, 307, 12, 9421);
+    			attr_dev(th2, "scope", "col");
+    			add_location(th2, file$4, 308, 12, 9449);
+    			attr_dev(th3, "scope", "col");
+    			add_location(th3, file$4, 309, 12, 9489);
+    			attr_dev(th4, "scope", "col");
+    			add_location(th4, file$4, 310, 12, 9529);
+    			attr_dev(th5, "scope", "col");
+    			add_location(th5, file$4, 311, 12, 9568);
+    			attr_dev(th6, "scope", "col");
+    			add_location(th6, file$4, 312, 12, 9607);
+    			attr_dev(th7, "scope", "col");
+    			add_location(th7, file$4, 313, 12, 9647);
+    			attr_dev(th8, "scope", "col");
+    			add_location(th8, file$4, 314, 12, 9686);
+    			attr_dev(th9, "scope", "col");
+    			add_location(th9, file$4, 315, 12, 9733);
+    			attr_dev(th10, "scope", "col");
+    			add_location(th10, file$4, 316, 12, 9773);
+    			attr_dev(th11, "scope", "col");
+    			add_location(th11, file$4, 317, 12, 9815);
+    			attr_dev(th12, "scope", "col");
+    			add_location(th12, file$4, 318, 12, 9859);
+    			add_location(tr, file$4, 305, 8, 9383);
+    			add_location(thead, file$4, 304, 4, 9366);
+    			add_location(tbody, file$4, 321, 4, 9922);
+    			attr_dev(table, "class", "table");
+    			add_location(table, file$4, 303, 0, 9339);
+    			attr_dev(ul, "class", "pagination");
+    			add_location(ul, file$4, 396, 4, 12929);
+    			add_location(nav, file$4, 395, 0, 12918);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h1, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div7, anchor);
+    			append_dev(div7, div0);
+    			append_dev(div0, label0);
+    			append_dev(div7, t3);
+    			append_dev(div7, div1);
+    			append_dev(div1, input);
+    			set_input_value(input, /*priceMax*/ ctx[2]);
+    			append_dev(div7, t4);
+    			append_dev(div7, div2);
+    			append_dev(div2, label1);
+    			append_dev(div7, t6);
+    			append_dev(div7, div3);
+    			append_dev(div3, select0);
+    			append_dev(select0, option0);
+    			append_dev(select0, option1);
+    			append_dev(select0, option2);
+    			select_option(select0, /*carState*/ ctx[3], true);
+    			append_dev(div7, t9);
+    			append_dev(div7, div4);
+    			append_dev(div4, label2);
+    			append_dev(div7, t11);
+    			append_dev(div7, div5);
+    			append_dev(div5, select1);
+    			append_dev(select1, option3);
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				if (each_blocks_2[i]) {
+    					each_blocks_2[i].m(select1, null);
+    				}
+    			}
+
+    			select_option(select1, /*carArea*/ ctx[8], true);
+    			append_dev(div7, t12);
+    			append_dev(div7, div6);
+    			append_dev(div6, a);
+    			append_dev(a, t13);
+    			insert_dev(target, t14, anchor);
+    			insert_dev(target, table, anchor);
+    			append_dev(table, thead);
+    			append_dev(thead, tr);
+    			append_dev(tr, th0);
+    			append_dev(tr, t15);
+    			append_dev(tr, th1);
+    			append_dev(tr, t17);
+    			append_dev(tr, th2);
+    			append_dev(tr, t19);
+    			append_dev(tr, th3);
+    			append_dev(tr, t21);
+    			append_dev(tr, th4);
+    			append_dev(tr, t23);
+    			append_dev(tr, th5);
+    			append_dev(tr, t25);
+    			append_dev(tr, th6);
+    			append_dev(tr, t27);
+    			append_dev(tr, th7);
+    			append_dev(tr, t29);
+    			append_dev(tr, th8);
+    			append_dev(tr, t31);
+    			append_dev(tr, th9);
+    			append_dev(tr, t33);
+    			append_dev(tr, th10);
+    			append_dev(tr, t35);
+    			append_dev(tr, th11);
+    			append_dev(tr, t37);
+    			append_dev(tr, th12);
+    			append_dev(table, t39);
+    			append_dev(table, tbody);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				if (each_blocks_1[i]) {
+    					each_blocks_1[i].m(tbody, null);
+    				}
+    			}
+
+    			insert_dev(target, t40, anchor);
+    			insert_dev(target, nav, anchor);
+    			append_dev(nav, ul);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(ul, null);
+    				}
+    			}
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(input, "input", /*input_input_handler*/ ctx[15]),
+    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[16]),
+    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[17])
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*priceMax*/ 4 && to_number(input.value) !== /*priceMax*/ ctx[2]) {
+    				set_input_value(input, /*priceMax*/ ctx[2]);
+    			}
+
+    			if (dirty[0] & /*carState*/ 8) {
+    				select_option(select0, /*carState*/ ctx[3]);
+    			}
+
+    			if (dirty[0] & /*carAreas*/ 512) {
+    				each_value_2 = /*carAreas*/ ctx[9];
+    				validate_each_argument(each_value_2);
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2$2(ctx, each_value_2, i);
+
+    					if (each_blocks_2[i]) {
+    						each_blocks_2[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_2[i] = create_each_block_2$2(child_ctx);
+    						each_blocks_2[i].c();
+    						each_blocks_2[i].m(select1, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_2.length; i += 1) {
+    					each_blocks_2[i].d(1);
+    				}
+
+    				each_blocks_2.length = each_value_2.length;
+    			}
+
+    			if (dirty[0] & /*carArea, carAreas*/ 768) {
+    				select_option(select1, /*carArea*/ ctx[8]);
+    			}
+
+    			if (dirty[0] & /*carState, priceMax, carArea, carAreas*/ 780 && a_href_value !== (a_href_value = "#/cars?page=1&carType=" + /*carState*/ ctx[3] + "&price=" + /*priceMax*/ ctx[2] + "&carArea=" + /*carArea*/ ctx[8])) {
+    				attr_dev(a, "href", a_href_value);
+    			}
+
+    			if (dirty[0] & /*deleteCar, cars, $actualUser, unrentCar, $myUserId, deleteMyCarById, rentCar*/ 15568) {
+    				each_value_1 = /*cars*/ ctx[4];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$2(ctx, each_value_1, i);
+
+    					if (each_blocks_1[i]) {
+    						each_blocks_1[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_1[i] = create_each_block_1$2(child_ctx);
+    						each_blocks_1[i].c();
+    						each_blocks_1[i].m(tbody, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_1.length; i += 1) {
+    					each_blocks_1[i].d(1);
+    				}
+
+    				each_blocks_1.length = each_value_1.length;
+    			}
+
+    			if (dirty[0] & /*currentPage, nrOfPages*/ 3) {
+    				each_value = Array(/*nrOfPages*/ ctx[1]);
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$3(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$3(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(ul, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h1);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div7);
+    			destroy_each(each_blocks_2, detaching);
+    			if (detaching) detach_dev(t14);
+    			if (detaching) detach_dev(table);
+    			destroy_each(each_blocks_1, detaching);
+    			if (detaching) detach_dev(t40);
+    			if (detaching) detach_dev(nav);
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$4.name,
+    		type: "if",
+    		source: "(237:0) {#if $isAuthenticated}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (283:12) {#each carAreas as carArea}
+    function create_each_block_2$2(ctx) {
     	let option;
     	let t_value = /*carArea*/ ctx[8] + "";
     	let t;
@@ -5811,7 +6325,7 @@ var app = (function () {
     			t = text(t_value);
     			option.__value = /*carArea*/ ctx[8];
     			option.value = option.__value;
-    			add_location(option, file$4, 285, 16, 8959);
+    			add_location(option, file$4, 283, 16, 8880);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -5825,16 +6339,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block_2$1.name,
+    		id: create_each_block_2$2.name,
     		type: "each",
-    		source: "(285:12) {#each carAreas as carArea}",
+    		source: "(283:12) {#each carAreas as carArea}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (393:20) {:else}
+    // (376:20) {:else}
     function create_else_block$3(ctx) {
     	let span;
 
@@ -5844,7 +6358,7 @@ var app = (function () {
     			span.textContent = "Unavailable";
     			attr_dev(span, "class", "badge bg-secondary");
     			attr_dev(span, "id", "rented");
-    			add_location(span, file$4, 393, 24, 13129);
+    			add_location(span, file$4, 376, 24, 12211);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5859,21 +6373,21 @@ var app = (function () {
     		block,
     		id: create_else_block$3.name,
     		type: "else",
-    		source: "(393:20) {:else}",
+    		source: "(376:20) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (384:79) 
-    function create_if_block_3$3(ctx) {
+    // (367:79) 
+    function create_if_block_4$2(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_2() {
-    		return /*click_handler_2*/ ctx[24](/*car*/ ctx[33]);
+    		return /*click_handler_2*/ ctx[20](/*car*/ ctx[29]);
     	}
 
     	const block = {
@@ -5883,7 +6397,7 @@ var app = (function () {
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary btn-sm");
     			attr_dev(button, "id", "rentButton");
-    			add_location(button, file$4, 384, 24, 12746);
+    			add_location(button, file$4, 367, 24, 11828);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -5905,17 +6419,17 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_3$3.name,
+    		id: create_if_block_4$2.name,
     		type: "if",
-    		source: "(384:79) ",
+    		source: "(367:79) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (373:56) 
-    function create_if_block_2$3(ctx) {
+    // (356:56) 
+    function create_if_block_3$3(ctx) {
     	let span;
     	let t1;
     	let button;
@@ -5923,7 +6437,7 @@ var app = (function () {
     	let dispose;
 
     	function click_handler_1() {
-    		return /*click_handler_1*/ ctx[23](/*car*/ ctx[33]);
+    		return /*click_handler_1*/ ctx[19](/*car*/ ctx[29]);
     	}
 
     	const block = {
@@ -5935,11 +6449,11 @@ var app = (function () {
     			button.textContent = "Delete";
     			attr_dev(span, "class", "badge bg-secondary");
     			attr_dev(span, "id", "myCar");
-    			add_location(span, file$4, 373, 24, 12195);
+    			add_location(span, file$4, 356, 24, 11277);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-danger btn-sm");
     			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$4, 375, 24, 12304);
+    			add_location(button, file$4, 358, 24, 11386);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5965,23 +6479,23 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_2$3.name,
+    		id: create_if_block_3$3.name,
     		type: "if",
-    		source: "(373:56) ",
+    		source: "(356:56) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (365:20) {#if car.userId === $myUserId}
-    function create_if_block_1$3(ctx) {
+    // (348:20) {#if car.userId === $myUserId}
+    function create_if_block_2$3(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[22](/*car*/ ctx[33]);
+    		return /*click_handler*/ ctx[18](/*car*/ ctx[29]);
     	}
 
     	const block = {
@@ -5990,7 +6504,7 @@ var app = (function () {
     			button.textContent = "Unrent Car";
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-success btn-sm");
-    			add_location(button, file$4, 365, 24, 11824);
+    			add_location(button, file$4, 348, 24, 10906);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -6012,23 +6526,23 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$3.name,
+    		id: create_if_block_2$3.name,
     		type: "if",
-    		source: "(365:20) {#if car.userId === $myUserId}",
+    		source: "(348:20) {#if car.userId === $myUserId}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (398:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
-    function create_if_block$4(ctx) {
+    // (381:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+    function create_if_block_1$4(ctx) {
     	let button;
     	let mounted;
     	let dispose;
 
     	function click_handler_3() {
-    		return /*click_handler_3*/ ctx[25](/*car*/ ctx[33]);
+    		return /*click_handler_3*/ ctx[21](/*car*/ ctx[29]);
     	}
 
     	const block = {
@@ -6038,7 +6552,7 @@ var app = (function () {
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-danger btn-sm");
     			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$4, 398, 24, 13395);
+    			add_location(button, file$4, 381, 24, 12477);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -6060,17 +6574,17 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$4.name,
+    		id: create_if_block_1$4.name,
     		type: "if",
-    		source: "(398:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
+    		source: "(381:20) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (340:8) {#each cars.filter(car => showAvailableOnly === "ALL" || car.userId === null) as car}
-    function create_each_block_1$1(ctx) {
+    // (323:8) {#each cars as car}
+    function create_each_block_1$2(ctx) {
     	let tr;
     	let td0;
     	let a;
@@ -6083,43 +6597,43 @@ var app = (function () {
     	let img_alt_value;
     	let t1;
     	let td2;
-    	let t2_value = /*car*/ ctx[33].brand + "";
+    	let t2_value = /*car*/ ctx[29].brand + "";
     	let t2;
     	let t3;
     	let td3;
-    	let t4_value = /*car*/ ctx[33].model + "";
+    	let t4_value = /*car*/ ctx[29].model + "";
     	let t4;
     	let t5;
     	let td4;
-    	let t6_value = /*car*/ ctx[33].year + "";
+    	let t6_value = /*car*/ ctx[29].year + "";
     	let t6;
     	let t7;
     	let td5;
-    	let t8_value = /*car*/ ctx[33].carArea + "";
+    	let t8_value = /*car*/ ctx[29].carArea + "";
     	let t8;
     	let t9;
     	let td6;
-    	let t10_value = /*car*/ ctx[33].price + "";
+    	let t10_value = /*car*/ ctx[29].price + "";
     	let t10;
     	let t11;
     	let td7;
-    	let t12_value = /*car*/ ctx[33].carType + "";
+    	let t12_value = /*car*/ ctx[29].carType + "";
     	let t12;
     	let t13;
     	let td8;
-    	let t14_value = /*car*/ ctx[33].carTransmission + "";
+    	let t14_value = /*car*/ ctx[29].carTransmission + "";
     	let t14;
     	let t15;
     	let td9;
-    	let t16_value = /*car*/ ctx[33].carState + "";
+    	let t16_value = /*car*/ ctx[29].carState + "";
     	let t16;
     	let t17;
     	let td10;
-    	let t18_value = /*car*/ ctx[33].userId + "";
+    	let t18_value = /*car*/ ctx[29].userId + "";
     	let t18;
     	let t19;
     	let td11;
-    	let t20_value = /*car*/ ctx[33].userName + "";
+    	let t20_value = /*car*/ ctx[29].userName + "";
     	let t20;
     	let t21;
     	let td12;
@@ -6128,15 +6642,15 @@ var app = (function () {
     	let t23;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*car*/ ctx[33].userId === /*$myUserId*/ ctx[6]) return create_if_block_1$3;
-    		if (/*car*/ ctx[33].ownerId === /*$myUserId*/ ctx[6]) return create_if_block_2$3;
-    		if (/*car*/ ctx[33].userId === null && /*car*/ ctx[33].ownerId !== /*$myUserId*/ ctx[6]) return create_if_block_3$3;
+    		if (/*car*/ ctx[29].userId === /*$myUserId*/ ctx[6]) return create_if_block_2$3;
+    		if (/*car*/ ctx[29].ownerId === /*$myUserId*/ ctx[6]) return create_if_block_3$3;
+    		if (/*car*/ ctx[29].userId === null && /*car*/ ctx[29].ownerId !== /*$myUserId*/ ctx[6]) return create_if_block_4$2;
     		return create_else_block$3;
     	}
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = show_if && create_if_block$4(ctx);
+    	let if_block1 = show_if && create_if_block_1$4(ctx);
 
     	const block = {
     		c: function create() {
@@ -6184,28 +6698,28 @@ var app = (function () {
     			if (if_block1) if_block1.c();
     			t23 = space();
     			attr_dev(i, "class", "fa fa-bars");
-    			add_location(i, file$4, 343, 25, 11016);
-    			attr_dev(a, "href", a_href_value = "#/car/" + /*car*/ ctx[33].id);
+    			add_location(i, file$4, 326, 25, 10098);
+    			attr_dev(a, "href", a_href_value = "#/car/" + /*car*/ ctx[29].id);
     			attr_dev(a, "class", "btn btn-primary");
-    			add_location(a, file$4, 342, 20, 10938);
-    			add_location(td0, file$4, 341, 16, 10912);
-    			if (!src_url_equal(img.src, img_src_value = "images/" + /*car*/ ctx[33].model + ".jpg")) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "alt", img_alt_value = /*car*/ ctx[33].model);
+    			add_location(a, file$4, 325, 20, 10020);
+    			add_location(td0, file$4, 324, 16, 9994);
+    			if (!src_url_equal(img.src, img_src_value = "images/" + /*car*/ ctx[29].model + ".jpg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", img_alt_value = /*car*/ ctx[29].model);
     			attr_dev(img, "width", "200");
-    			add_location(img, file$4, 347, 21, 11133);
-    			add_location(td1, file$4, 346, 16, 11107);
-    			add_location(td2, file$4, 353, 16, 11342);
-    			add_location(td3, file$4, 354, 16, 11380);
-    			add_location(td4, file$4, 355, 16, 11418);
-    			add_location(td5, file$4, 356, 16, 11455);
-    			add_location(td6, file$4, 357, 16, 11495);
-    			add_location(td7, file$4, 358, 16, 11533);
-    			add_location(td8, file$4, 359, 16, 11573);
-    			add_location(td9, file$4, 360, 16, 11621);
-    			add_location(td10, file$4, 361, 16, 11662);
-    			add_location(td11, file$4, 362, 16, 11701);
-    			add_location(td12, file$4, 363, 16, 11742);
-    			add_location(tr, file$4, 340, 12, 10890);
+    			add_location(img, file$4, 330, 21, 10215);
+    			add_location(td1, file$4, 329, 16, 10189);
+    			add_location(td2, file$4, 336, 16, 10424);
+    			add_location(td3, file$4, 337, 16, 10462);
+    			add_location(td4, file$4, 338, 16, 10500);
+    			add_location(td5, file$4, 339, 16, 10537);
+    			add_location(td6, file$4, 340, 16, 10577);
+    			add_location(td7, file$4, 341, 16, 10615);
+    			add_location(td8, file$4, 342, 16, 10655);
+    			add_location(td9, file$4, 343, 16, 10703);
+    			add_location(td10, file$4, 344, 16, 10744);
+    			add_location(td11, file$4, 345, 16, 10783);
+    			add_location(td12, file$4, 346, 16, 10824);
+    			add_location(tr, file$4, 323, 12, 9972);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -6253,28 +6767,28 @@ var app = (function () {
     			append_dev(tr, t23);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && a_href_value !== (a_href_value = "#/car/" + /*car*/ ctx[33].id)) {
+    			if (dirty[0] & /*cars*/ 16 && a_href_value !== (a_href_value = "#/car/" + /*car*/ ctx[29].id)) {
     				attr_dev(a, "href", a_href_value);
     			}
 
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && !src_url_equal(img.src, img_src_value = "images/" + /*car*/ ctx[33].model + ".jpg")) {
+    			if (dirty[0] & /*cars*/ 16 && !src_url_equal(img.src, img_src_value = "images/" + /*car*/ ctx[29].model + ".jpg")) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && img_alt_value !== (img_alt_value = /*car*/ ctx[33].model)) {
+    			if (dirty[0] & /*cars*/ 16 && img_alt_value !== (img_alt_value = /*car*/ ctx[29].model)) {
     				attr_dev(img, "alt", img_alt_value);
     			}
 
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t2_value !== (t2_value = /*car*/ ctx[33].brand + "")) set_data_dev(t2, t2_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t4_value !== (t4_value = /*car*/ ctx[33].model + "")) set_data_dev(t4, t4_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t6_value !== (t6_value = /*car*/ ctx[33].year + "")) set_data_dev(t6, t6_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t8_value !== (t8_value = /*car*/ ctx[33].carArea + "")) set_data_dev(t8, t8_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t10_value !== (t10_value = /*car*/ ctx[33].price + "")) set_data_dev(t10, t10_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t12_value !== (t12_value = /*car*/ ctx[33].carType + "")) set_data_dev(t12, t12_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t14_value !== (t14_value = /*car*/ ctx[33].carTransmission + "")) set_data_dev(t14, t14_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t16_value !== (t16_value = /*car*/ ctx[33].carState + "")) set_data_dev(t16, t16_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t18_value !== (t18_value = /*car*/ ctx[33].userId + "")) set_data_dev(t18, t18_value);
-    			if (dirty[0] & /*cars, showAvailableOnly*/ 48 && t20_value !== (t20_value = /*car*/ ctx[33].userName + "")) set_data_dev(t20, t20_value);
+    			if (dirty[0] & /*cars*/ 16 && t2_value !== (t2_value = /*car*/ ctx[29].brand + "")) set_data_dev(t2, t2_value);
+    			if (dirty[0] & /*cars*/ 16 && t4_value !== (t4_value = /*car*/ ctx[29].model + "")) set_data_dev(t4, t4_value);
+    			if (dirty[0] & /*cars*/ 16 && t6_value !== (t6_value = /*car*/ ctx[29].year + "")) set_data_dev(t6, t6_value);
+    			if (dirty[0] & /*cars*/ 16 && t8_value !== (t8_value = /*car*/ ctx[29].carArea + "")) set_data_dev(t8, t8_value);
+    			if (dirty[0] & /*cars*/ 16 && t10_value !== (t10_value = /*car*/ ctx[29].price + "")) set_data_dev(t10, t10_value);
+    			if (dirty[0] & /*cars*/ 16 && t12_value !== (t12_value = /*car*/ ctx[29].carType + "")) set_data_dev(t12, t12_value);
+    			if (dirty[0] & /*cars*/ 16 && t14_value !== (t14_value = /*car*/ ctx[29].carTransmission + "")) set_data_dev(t14, t14_value);
+    			if (dirty[0] & /*cars*/ 16 && t16_value !== (t16_value = /*car*/ ctx[29].carState + "")) set_data_dev(t16, t16_value);
+    			if (dirty[0] & /*cars*/ 16 && t18_value !== (t18_value = /*car*/ ctx[29].userId + "")) set_data_dev(t18, t18_value);
+    			if (dirty[0] & /*cars*/ 16 && t20_value !== (t20_value = /*car*/ ctx[29].userName + "")) set_data_dev(t20, t20_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
@@ -6294,7 +6808,7 @@ var app = (function () {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block$4(ctx);
+    					if_block1 = create_if_block_1$4(ctx);
     					if_block1.c();
     					if_block1.m(td12, null);
     				}
@@ -6312,20 +6826,20 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block_1$1.name,
+    		id: create_each_block_1$2.name,
     		type: "each",
-    		source: "(340:8) {#each cars.filter(car => showAvailableOnly === \\\"ALL\\\" || car.userId === null) as car}",
+    		source: "(323:8) {#each cars as car}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (415:8) {#each Array(nrOfPages) as _, i}
-    function create_each_block$2(ctx) {
+    // (398:8) {#each Array(nrOfPages) as _, i}
+    function create_each_block$3(ctx) {
     	let li;
     	let a;
-    	let t0_value = /*i*/ ctx[32] + 1 + "";
+    	let t0_value = /*i*/ ctx[28] + 1 + "";
     	let t0;
     	let t1;
 
@@ -6336,11 +6850,11 @@ var app = (function () {
     			t0 = text(t0_value);
     			t1 = space();
     			attr_dev(a, "class", "page-link");
-    			attr_dev(a, "href", "#/cars?page=" + (/*i*/ ctx[32] + 1));
-    			toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[32] + 1);
-    			add_location(a, file$4, 421, 16, 14430);
+    			attr_dev(a, "href", "#/cars?page=" + (/*i*/ ctx[28] + 1));
+    			toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[28] + 1);
+    			add_location(a, file$4, 404, 16, 13512);
     			attr_dev(li, "class", "page-item");
-    			add_location(li, file$4, 420, 12, 14390);
+    			add_location(li, file$4, 403, 12, 13472);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, li, anchor);
@@ -6350,7 +6864,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty[0] & /*currentPage*/ 1) {
-    				toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[32] + 1);
+    				toggle_class(a, "active", /*currentPage*/ ctx[0] == /*i*/ ctx[28] + 1);
     			}
     		},
     		d: function destroy(detaching) {
@@ -6360,9 +6874,9 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block$2.name,
+    		id: create_each_block$3.name,
     		type: "each",
-    		source: "(415:8) {#each Array(nrOfPages) as _, i}",
+    		source: "(398:8) {#each Array(nrOfPages) as _, i}",
     		ctx
     	});
 
@@ -6370,595 +6884,40 @@ var app = (function () {
     }
 
     function create_fragment$4(ctx) {
-    	let h1;
-    	let t1;
-    	let div7;
-    	let div0;
-    	let label0;
-    	let t3;
-    	let div1;
-    	let input0;
-    	let t4;
-    	let div2;
-    	let label1;
-    	let t6;
-    	let div3;
-    	let select0;
-    	let option0;
-    	let option1;
-    	let option2;
-    	let option3;
-    	let option4;
-    	let t11;
-    	let div4;
-    	let label2;
-    	let t13;
-    	let div5;
-    	let select1;
-    	let option5;
-    	let t14;
-    	let div6;
-    	let a;
-    	let t15;
-    	let a_href_value;
-    	let t16;
-    	let div11;
-    	let div10;
-    	let label3;
-    	let t18;
-    	let div8;
-    	let input1;
-    	let t19;
-    	let label4;
-    	let t21;
-    	let div9;
-    	let input2;
-    	let t22;
-    	let label5;
-    	let t24;
-    	let table;
-    	let thead;
-    	let tr;
-    	let th0;
-    	let t25;
-    	let th1;
-    	let t27;
-    	let th2;
-    	let t29;
-    	let th3;
-    	let t31;
-    	let th4;
-    	let t33;
-    	let th5;
-    	let t35;
-    	let th6;
-    	let t37;
-    	let th7;
-    	let t39;
-    	let th8;
-    	let t41;
-    	let th9;
-    	let t43;
-    	let th10;
-    	let t45;
-    	let th11;
-    	let t47;
-    	let th12;
-    	let t49;
-    	let tbody;
-    	let t50;
-    	let nav;
-    	let ul;
-    	let binding_group;
-    	let mounted;
-    	let dispose;
-    	let each_value_2 = /*carAreas*/ ctx[9];
-    	validate_each_argument(each_value_2);
-    	let each_blocks_2 = [];
-
-    	for (let i = 0; i < each_value_2.length; i += 1) {
-    		each_blocks_2[i] = create_each_block_2$1(get_each_context_2$1(ctx, each_value_2, i));
-    	}
-
-    	let each_value_1 = /*cars*/ ctx[5].filter(/*func*/ ctx[21]);
-    	validate_each_argument(each_value_1);
-    	let each_blocks_1 = [];
-
-    	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks_1[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
-    	}
-
-    	let each_value = Array(/*nrOfPages*/ ctx[1]);
-    	validate_each_argument(each_value);
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
-    	}
-
-    	binding_group = init_binding_group(/*$$binding_groups*/ ctx[19][0]);
+    	let if_block_anchor;
+    	let if_block = /*$isAuthenticated*/ ctx[5] && create_if_block$4(ctx);
 
     	const block = {
     		c: function create() {
-    			h1 = element("h1");
-    			h1.textContent = "All Cars";
-    			t1 = space();
-    			div7 = element("div");
-    			div0 = element("div");
-    			label0 = element("label");
-    			label0.textContent = "Price:";
-    			t3 = space();
-    			div1 = element("div");
-    			input0 = element("input");
-    			t4 = space();
-    			div2 = element("div");
-    			label1 = element("label");
-    			label1.textContent = "Car Type:";
-    			t6 = space();
-    			div3 = element("div");
-    			select0 = element("select");
-    			option0 = element("option");
-    			option1 = element("option");
-    			option1.textContent = "ELECTRIC";
-    			option2 = element("option");
-    			option2.textContent = "HYBRID";
-    			option3 = element("option");
-    			option3.textContent = "DIESEL";
-    			option4 = element("option");
-    			option4.textContent = "GAS";
-    			t11 = space();
-    			div4 = element("div");
-    			label2 = element("label");
-    			label2.textContent = "Area:";
-    			t13 = space();
-    			div5 = element("div");
-    			select1 = element("select");
-    			option5 = element("option");
-
-    			for (let i = 0; i < each_blocks_2.length; i += 1) {
-    				each_blocks_2[i].c();
-    			}
-
-    			t14 = space();
-    			div6 = element("div");
-    			a = element("a");
-    			t15 = text("Apply");
-    			t16 = space();
-    			div11 = element("div");
-    			div10 = element("div");
-    			label3 = element("label");
-    			label3.textContent = "Show:";
-    			t18 = space();
-    			div8 = element("div");
-    			input1 = element("input");
-    			t19 = space();
-    			label4 = element("label");
-    			label4.textContent = "Available";
-    			t21 = space();
-    			div9 = element("div");
-    			input2 = element("input");
-    			t22 = space();
-    			label5 = element("label");
-    			label5.textContent = "All";
-    			t24 = space();
-    			table = element("table");
-    			thead = element("thead");
-    			tr = element("tr");
-    			th0 = element("th");
-    			t25 = space();
-    			th1 = element("th");
-    			th1.textContent = "Image";
-    			t27 = space();
-    			th2 = element("th");
-    			th2.textContent = "Brand";
-    			t29 = space();
-    			th3 = element("th");
-    			th3.textContent = "Model";
-    			t31 = space();
-    			th4 = element("th");
-    			th4.textContent = "Year";
-    			t33 = space();
-    			th5 = element("th");
-    			th5.textContent = "Area";
-    			t35 = space();
-    			th6 = element("th");
-    			th6.textContent = "Price";
-    			t37 = space();
-    			th7 = element("th");
-    			th7.textContent = "Type";
-    			t39 = space();
-    			th8 = element("th");
-    			th8.textContent = "Transmission";
-    			t41 = space();
-    			th9 = element("th");
-    			th9.textContent = "State";
-    			t43 = space();
-    			th10 = element("th");
-    			th10.textContent = "User ID";
-    			t45 = space();
-    			th11 = element("th");
-    			th11.textContent = "User Name";
-    			t47 = space();
-    			th12 = element("th");
-    			th12.textContent = "Actions";
-    			t49 = space();
-    			tbody = element("tbody");
-
-    			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				each_blocks_1[i].c();
-    			}
-
-    			t50 = space();
-    			nav = element("nav");
-    			ul = element("ul");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			add_location(h1, file$4, 238, 0, 7332);
-    			attr_dev(label0, "for", "");
-    			attr_dev(label0, "class", "col-form-label");
-    			add_location(label0, file$4, 242, 8, 7413);
-    			attr_dev(div0, "class", "col-auto");
-    			add_location(div0, file$4, 241, 4, 7381);
-    			attr_dev(input0, "class", "form-control");
-    			attr_dev(input0, "type", "number");
-    			attr_dev(input0, "placeholder", "price");
-    			attr_dev(input0, "id", "minPriceFilter");
-    			add_location(input0, file$4, 245, 8, 7512);
-    			attr_dev(div1, "class", "col-3");
-    			add_location(div1, file$4, 244, 4, 7483);
-    			attr_dev(label1, "for", "");
-    			attr_dev(label1, "class", "col-form-label");
-    			add_location(label1, file$4, 257, 8, 8069);
-    			attr_dev(div2, "class", "col-auto");
-    			add_location(div2, file$4, 256, 4, 8037);
-    			option0.__value = "ALL";
-    			option0.value = option0.__value;
-    			add_location(option0, file$4, 266, 12, 8327);
-    			option1.__value = "ELECTRIC";
-    			option1.value = option1.__value;
-    			add_location(option1, file$4, 267, 12, 8363);
-    			option2.__value = "HYBRID";
-    			option2.value = option2.__value;
-    			add_location(option2, file$4, 268, 12, 8419);
-    			option3.__value = "DIESEL";
-    			option3.value = option3.__value;
-    			add_location(option3, file$4, 269, 12, 8471);
-    			option4.__value = "GAS";
-    			option4.value = option4.__value;
-    			add_location(option4, file$4, 270, 12, 8523);
-    			attr_dev(select0, "class", "form-select");
-    			attr_dev(select0, "id", "carTypeFilter");
-    			attr_dev(select0, "type", "text");
-    			if (/*carType*/ ctx[3] === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[16].call(select0));
-    			add_location(select0, file$4, 260, 8, 8171);
-    			attr_dev(div3, "class", "col-3");
-    			add_location(div3, file$4, 259, 4, 8142);
-    			attr_dev(label2, "for", "");
-    			attr_dev(label2, "class", "col-form-label");
-    			add_location(label2, file$4, 274, 8, 8624);
-    			attr_dev(div4, "class", "col-auto");
-    			add_location(div4, file$4, 273, 4, 8592);
-    			option5.__value = "ALL";
-    			option5.value = option5.__value;
-    			add_location(option5, file$4, 283, 12, 8878);
-    			attr_dev(select1, "class", "form-select");
-    			attr_dev(select1, "id", "carAreaFilter");
-    			attr_dev(select1, "type", "text");
-    			if (/*carArea*/ ctx[8] === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[17].call(select1));
-    			add_location(select1, file$4, 277, 8, 8722);
-    			attr_dev(div5, "class", "col-3");
-    			add_location(div5, file$4, 276, 4, 8693);
-    			attr_dev(a, "class", "btn btn-primary");
-    			attr_dev(a, "id", "applyButton");
-    			attr_dev(a, "href", a_href_value = "#/cars?page=1&carType=" + /*carType*/ ctx[3] + "&price=" + /*priceMax*/ ctx[2] + "&carArea=" + /*carArea*/ ctx[8]);
-    			attr_dev(a, "role", "button");
-    			add_location(a, file$4, 290, 8, 9088);
-    			attr_dev(div6, "class", "col-3");
-    			add_location(div6, file$4, 289, 4, 9059);
-    			attr_dev(div7, "class", "row my-3");
-    			add_location(div7, file$4, 240, 0, 7353);
-    			add_location(label3, file$4, 307, 8, 9541);
-    			attr_dev(input1, "class", "form-check-input");
-    			attr_dev(input1, "type", "radio");
-    			attr_dev(input1, "name", "availabilityFilter");
-    			attr_dev(input1, "id", "availableFilter");
-    			input1.__value = "AVAILABLE";
-    			input1.value = input1.__value;
-    			input1.checked = true;
-    			add_location(input1, file$4, 309, 12, 9627);
-    			attr_dev(label4, "class", "form-check-label");
-    			attr_dev(label4, "for", "availableFilter");
-    			add_location(label4, file$4, 310, 12, 9792);
-    			attr_dev(div8, "class", "form-check form-check-inline");
-    			add_location(div8, file$4, 308, 8, 9571);
-    			attr_dev(input2, "class", "form-check-input");
-    			attr_dev(input2, "type", "radio");
-    			attr_dev(input2, "name", "availabilityFilter");
-    			attr_dev(input2, "id", "allFilter");
-    			input2.__value = "ALL";
-    			input2.value = input2.__value;
-    			add_location(input2, file$4, 313, 12, 9945);
-    			attr_dev(label5, "class", "form-check-label");
-    			attr_dev(label5, "for", "allFilter");
-    			add_location(label5, file$4, 314, 12, 10090);
-    			attr_dev(div9, "class", "form-check form-check-inline");
-    			add_location(div9, file$4, 312, 8, 9889);
-    			attr_dev(div10, "class", "col-auto");
-    			add_location(div10, file$4, 305, 4, 9443);
-    			attr_dev(div11, "class", "row my-3");
-    			add_location(div11, file$4, 304, 0, 9415);
-    			add_location(th0, file$4, 323, 12, 10253);
-    			add_location(th1, file$4, 324, 12, 10273);
-    			attr_dev(th2, "scope", "col");
-    			add_location(th2, file$4, 325, 12, 10301);
-    			attr_dev(th3, "scope", "col");
-    			add_location(th3, file$4, 326, 12, 10341);
-    			attr_dev(th4, "scope", "col");
-    			add_location(th4, file$4, 327, 12, 10381);
-    			attr_dev(th5, "scope", "col");
-    			add_location(th5, file$4, 328, 12, 10420);
-    			attr_dev(th6, "scope", "col");
-    			add_location(th6, file$4, 329, 12, 10459);
-    			attr_dev(th7, "scope", "col");
-    			add_location(th7, file$4, 330, 12, 10499);
-    			attr_dev(th8, "scope", "col");
-    			add_location(th8, file$4, 331, 12, 10538);
-    			attr_dev(th9, "scope", "col");
-    			add_location(th9, file$4, 332, 12, 10585);
-    			attr_dev(th10, "scope", "col");
-    			add_location(th10, file$4, 333, 12, 10625);
-    			attr_dev(th11, "scope", "col");
-    			add_location(th11, file$4, 334, 12, 10667);
-    			attr_dev(th12, "scope", "col");
-    			add_location(th12, file$4, 335, 12, 10711);
-    			add_location(tr, file$4, 322, 8, 10235);
-    			add_location(thead, file$4, 321, 4, 10218);
-    			add_location(tbody, file$4, 338, 4, 10774);
-    			attr_dev(table, "class", "table");
-    			add_location(table, file$4, 320, 0, 10191);
-    			attr_dev(ul, "class", "pagination");
-    			add_location(ul, file$4, 413, 4, 13847);
-    			add_location(nav, file$4, 412, 0, 13836);
-    			binding_group.p(input1, input2);
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, h1, anchor);
-    			insert_dev(target, t1, anchor);
-    			insert_dev(target, div7, anchor);
-    			append_dev(div7, div0);
-    			append_dev(div0, label0);
-    			append_dev(div7, t3);
-    			append_dev(div7, div1);
-    			append_dev(div1, input0);
-    			set_input_value(input0, /*priceMax*/ ctx[2]);
-    			append_dev(div7, t4);
-    			append_dev(div7, div2);
-    			append_dev(div2, label1);
-    			append_dev(div7, t6);
-    			append_dev(div7, div3);
-    			append_dev(div3, select0);
-    			append_dev(select0, option0);
-    			append_dev(select0, option1);
-    			append_dev(select0, option2);
-    			append_dev(select0, option3);
-    			append_dev(select0, option4);
-    			select_option(select0, /*carType*/ ctx[3], true);
-    			append_dev(div7, t11);
-    			append_dev(div7, div4);
-    			append_dev(div4, label2);
-    			append_dev(div7, t13);
-    			append_dev(div7, div5);
-    			append_dev(div5, select1);
-    			append_dev(select1, option5);
-
-    			for (let i = 0; i < each_blocks_2.length; i += 1) {
-    				if (each_blocks_2[i]) {
-    					each_blocks_2[i].m(select1, null);
-    				}
-    			}
-
-    			select_option(select1, /*carArea*/ ctx[8], true);
-    			append_dev(div7, t14);
-    			append_dev(div7, div6);
-    			append_dev(div6, a);
-    			append_dev(a, t15);
-    			insert_dev(target, t16, anchor);
-    			insert_dev(target, div11, anchor);
-    			append_dev(div11, div10);
-    			append_dev(div10, label3);
-    			append_dev(div10, t18);
-    			append_dev(div10, div8);
-    			append_dev(div8, input1);
-    			input1.checked = input1.__value === /*showAvailableOnly*/ ctx[4];
-    			append_dev(div8, t19);
-    			append_dev(div8, label4);
-    			append_dev(div10, t21);
-    			append_dev(div10, div9);
-    			append_dev(div9, input2);
-    			input2.checked = input2.__value === /*showAvailableOnly*/ ctx[4];
-    			append_dev(div9, t22);
-    			append_dev(div9, label5);
-    			insert_dev(target, t24, anchor);
-    			insert_dev(target, table, anchor);
-    			append_dev(table, thead);
-    			append_dev(thead, tr);
-    			append_dev(tr, th0);
-    			append_dev(tr, t25);
-    			append_dev(tr, th1);
-    			append_dev(tr, t27);
-    			append_dev(tr, th2);
-    			append_dev(tr, t29);
-    			append_dev(tr, th3);
-    			append_dev(tr, t31);
-    			append_dev(tr, th4);
-    			append_dev(tr, t33);
-    			append_dev(tr, th5);
-    			append_dev(tr, t35);
-    			append_dev(tr, th6);
-    			append_dev(tr, t37);
-    			append_dev(tr, th7);
-    			append_dev(tr, t39);
-    			append_dev(tr, th8);
-    			append_dev(tr, t41);
-    			append_dev(tr, th9);
-    			append_dev(tr, t43);
-    			append_dev(tr, th10);
-    			append_dev(tr, t45);
-    			append_dev(tr, th11);
-    			append_dev(tr, t47);
-    			append_dev(tr, th12);
-    			append_dev(table, t49);
-    			append_dev(table, tbody);
-
-    			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				if (each_blocks_1[i]) {
-    					each_blocks_1[i].m(tbody, null);
-    				}
-    			}
-
-    			insert_dev(target, t50, anchor);
-    			insert_dev(target, nav, anchor);
-    			append_dev(nav, ul);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				if (each_blocks[i]) {
-    					each_blocks[i].m(ul, null);
-    				}
-    			}
-
-    			if (!mounted) {
-    				dispose = [
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[15]),
-    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[16]),
-    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[17]),
-    					listen_dev(input1, "change", /*input1_change_handler*/ ctx[18]),
-    					listen_dev(input2, "change", /*input2_change_handler*/ ctx[20])
-    				];
-
-    				mounted = true;
-    			}
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*priceMax*/ 4 && to_number(input0.value) !== /*priceMax*/ ctx[2]) {
-    				set_input_value(input0, /*priceMax*/ ctx[2]);
-    			}
-
-    			if (dirty[0] & /*carType*/ 8) {
-    				select_option(select0, /*carType*/ ctx[3]);
-    			}
-
-    			if (dirty[0] & /*carAreas*/ 512) {
-    				each_value_2 = /*carAreas*/ ctx[9];
-    				validate_each_argument(each_value_2);
-    				let i;
-
-    				for (i = 0; i < each_value_2.length; i += 1) {
-    					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
-
-    					if (each_blocks_2[i]) {
-    						each_blocks_2[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks_2[i] = create_each_block_2$1(child_ctx);
-    						each_blocks_2[i].c();
-    						each_blocks_2[i].m(select1, null);
-    					}
+    			if (/*$isAuthenticated*/ ctx[5]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$4(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
-
-    				for (; i < each_blocks_2.length; i += 1) {
-    					each_blocks_2[i].d(1);
-    				}
-
-    				each_blocks_2.length = each_value_2.length;
-    			}
-
-    			if (dirty[0] & /*carArea, carAreas*/ 768) {
-    				select_option(select1, /*carArea*/ ctx[8]);
-    			}
-
-    			if (dirty[0] & /*carType, priceMax, carArea, carAreas*/ 780 && a_href_value !== (a_href_value = "#/cars?page=1&carType=" + /*carType*/ ctx[3] + "&price=" + /*priceMax*/ ctx[2] + "&carArea=" + /*carArea*/ ctx[8])) {
-    				attr_dev(a, "href", a_href_value);
-    			}
-
-    			if (dirty[0] & /*showAvailableOnly*/ 16) {
-    				input1.checked = input1.__value === /*showAvailableOnly*/ ctx[4];
-    			}
-
-    			if (dirty[0] & /*showAvailableOnly*/ 16) {
-    				input2.checked = input2.__value === /*showAvailableOnly*/ ctx[4];
-    			}
-
-    			if (dirty[0] & /*deleteCar, cars, showAvailableOnly, $actualUser, unrentCar, $myUserId, deleteMyCarById, rentCar*/ 15600) {
-    				each_value_1 = /*cars*/ ctx[5].filter(/*func*/ ctx[21]);
-    				validate_each_argument(each_value_1);
-    				let i;
-
-    				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
-
-    					if (each_blocks_1[i]) {
-    						each_blocks_1[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks_1[i] = create_each_block_1$1(child_ctx);
-    						each_blocks_1[i].c();
-    						each_blocks_1[i].m(tbody, null);
-    					}
-    				}
-
-    				for (; i < each_blocks_1.length; i += 1) {
-    					each_blocks_1[i].d(1);
-    				}
-
-    				each_blocks_1.length = each_value_1.length;
-    			}
-
-    			if (dirty[0] & /*currentPage, nrOfPages*/ 3) {
-    				each_value = Array(/*nrOfPages*/ ctx[1]);
-    				validate_each_argument(each_value);
-    				let i;
-
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context$2(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks[i] = create_each_block$2(child_ctx);
-    						each_blocks[i].c();
-    						each_blocks[i].m(ul, null);
-    					}
-    				}
-
-    				for (; i < each_blocks.length; i += 1) {
-    					each_blocks[i].d(1);
-    				}
-
-    				each_blocks.length = each_value.length;
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
     			}
     		},
     		i: noop$1,
     		o: noop$1,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(h1);
-    			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(div7);
-    			destroy_each(each_blocks_2, detaching);
-    			if (detaching) detach_dev(t16);
-    			if (detaching) detach_dev(div11);
-    			if (detaching) detach_dev(t24);
-    			if (detaching) detach_dev(table);
-    			destroy_each(each_blocks_1, detaching);
-    			if (detaching) detach_dev(t50);
-    			if (detaching) detach_dev(nav);
-    			destroy_each(each_blocks, detaching);
-    			binding_group.r();
-    			mounted = false;
-    			run_all(dispose);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -6976,12 +6935,15 @@ var app = (function () {
     function instance$4($$self, $$props, $$invalidate) {
     	let $jwt_token;
     	let $querystring;
+    	let $isAuthenticated;
     	let $myUserId;
     	let $actualUser;
     	validate_store(jwt_token, 'jwt_token');
-    	component_subscribe($$self, jwt_token, $$value => $$invalidate(26, $jwt_token = $$value));
+    	component_subscribe($$self, jwt_token, $$value => $$invalidate(22, $jwt_token = $$value));
     	validate_store(querystring, 'querystring');
     	component_subscribe($$self, querystring, $$value => $$invalidate(14, $querystring = $$value));
+    	validate_store(isAuthenticated, 'isAuthenticated');
+    	component_subscribe($$self, isAuthenticated, $$value => $$invalidate(5, $isAuthenticated = $$value));
     	validate_store(myUserId, 'myUserId');
     	component_subscribe($$self, myUserId, $$value => $$invalidate(6, $myUserId = $$value));
     	validate_store(actualUser, 'actualUser');
@@ -7007,9 +6969,8 @@ var app = (function () {
     Pages es insgesamt gibt.*/
     	let priceMax;
 
-    	let carType;
+    	let carState;
     	let carArea; //In den Input-Elementen eingetragene Werte
-    	let showAvailableOnly = "AVAILABLE";
     	let cars = [];
 
     	/*let car = {
@@ -7081,8 +7042,8 @@ var app = (function () {
     			query += "&price=" + priceMax;
     		}
 
-    		if (carType && carType !== "ALL") {
-    			query += "&type=" + carType;
+    		if (carState && carState !== "ALL") {
+    			query += "&state=" + carState;
     		}
 
     		if (carArea && carArea !== "ALL") {
@@ -7099,7 +7060,7 @@ var app = (function () {
     		};
 
     		axios$1(config).then(function (response) {
-    			$$invalidate(5, cars = response.data.content);
+    			$$invalidate(4, cars = response.data.content);
     			$$invalidate(1, nrOfPages = response.data.totalPages); //Nach jedem Request wird die Anzahl Pages aktualisiert. Das Backend schickt diese in der Property totalPages in der Response.
     		}).catch(function (error) {
     			alert("Could not get cars");
@@ -7211,16 +7172,14 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1$3.warn(`<Cars> was created with unknown prop '${key}'`);
     	});
 
-    	const $$binding_groups = [[]];
-
-    	function input0_input_handler() {
+    	function input_input_handler() {
     		priceMax = to_number(this.value);
     		$$invalidate(2, priceMax);
     	}
 
     	function select0_change_handler() {
-    		carType = select_value(this);
-    		$$invalidate(3, carType);
+    		carState = select_value(this);
+    		$$invalidate(3, carState);
     	}
 
     	function select1_change_handler() {
@@ -7228,18 +7187,6 @@ var app = (function () {
     		$$invalidate(8, carArea);
     		$$invalidate(9, carAreas);
     	}
-
-    	function input1_change_handler() {
-    		showAvailableOnly = this.__value;
-    		$$invalidate(4, showAvailableOnly);
-    	}
-
-    	function input2_change_handler() {
-    		showAvailableOnly = this.__value;
-    		$$invalidate(4, showAvailableOnly);
-    	}
-
-    	const func = car => showAvailableOnly === "ALL" || car.userId === null;
 
     	const click_handler = car => {
     		unrentCar(car.id);
@@ -7262,15 +7209,15 @@ var app = (function () {
     		actualUser,
     		jwt_token,
     		myUserId,
+    		isAuthenticated,
     		querystring,
     		api_root,
     		currentPage,
     		nrOfPages,
     		defaultPageSize,
     		priceMax,
-    		carType,
+    		carState,
     		carArea,
-    		showAvailableOnly,
     		cars,
     		carAreas,
     		getCars,
@@ -7280,6 +7227,7 @@ var app = (function () {
     		deleteMyCarById,
     		$jwt_token,
     		$querystring,
+    		$isAuthenticated,
     		$myUserId,
     		$actualUser
     	});
@@ -7289,10 +7237,9 @@ var app = (function () {
     		if ('nrOfPages' in $$props) $$invalidate(1, nrOfPages = $$props.nrOfPages);
     		if ('defaultPageSize' in $$props) defaultPageSize = $$props.defaultPageSize;
     		if ('priceMax' in $$props) $$invalidate(2, priceMax = $$props.priceMax);
-    		if ('carType' in $$props) $$invalidate(3, carType = $$props.carType);
+    		if ('carState' in $$props) $$invalidate(3, carState = $$props.carState);
     		if ('carArea' in $$props) $$invalidate(8, carArea = $$props.carArea);
-    		if ('showAvailableOnly' in $$props) $$invalidate(4, showAvailableOnly = $$props.showAvailableOnly);
-    		if ('cars' in $$props) $$invalidate(5, cars = $$props.cars);
+    		if ('cars' in $$props) $$invalidate(4, cars = $$props.cars);
     		if ('carAreas' in $$props) $$invalidate(9, carAreas = $$props.carAreas);
     	};
 
@@ -7320,9 +7267,9 @@ var app = (function () {
     		currentPage,
     		nrOfPages,
     		priceMax,
-    		carType,
-    		showAvailableOnly,
+    		carState,
     		cars,
+    		$isAuthenticated,
     		$myUserId,
     		$actualUser,
     		carArea,
@@ -7332,13 +7279,9 @@ var app = (function () {
     		deleteCar,
     		deleteMyCarById,
     		$querystring,
-    		input0_input_handler,
+    		input_input_handler,
     		select0_change_handler,
     		select1_change_handler,
-    		input1_change_handler,
-    		$$binding_groups,
-    		input2_change_handler,
-    		func,
     		click_handler,
     		click_handler_1,
     		click_handler_2,
@@ -7365,208 +7308,26 @@ var app = (function () {
     const { console: console_1$2 } = globals;
     const file$3 = "src\\pages\\CreateCars.svelte";
 
-    function get_each_context$1(ctx, list, i) {
+    function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[5] = list[i];
+    	child_ctx[6] = list[i];
     	return child_ctx;
     }
 
-    function get_each_context_1(ctx, list, i) {
+    function get_each_context_1$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[30] = list[i];
+    	child_ctx[31] = list[i];
     	return child_ctx;
     }
 
-    function get_each_context_2(ctx, list, i) {
+    function get_each_context_2$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[33] = list[i];
+    	child_ctx[34] = list[i];
     	return child_ctx;
     }
 
-    // (241:16) {#each brands as brand}
-    function create_each_block_2(ctx) {
-    	let option;
-    	let t_value = /*brand*/ ctx[33] + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			option = element("option");
-    			t = text(t_value);
-    			option.__value = /*brand*/ ctx[33];
-    			option.value = option.__value;
-    			add_location(option, file$3, 241, 20, 7631);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, option, anchor);
-    			append_dev(option, t);
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(option);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block_2.name,
-    		type: "each",
-    		source: "(241:16) {#each brands as brand}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (255:16) {#if car.brand}
+    // (233:0) {#if $isAuthenticated}
     function create_if_block$3(ctx) {
-    	let each_1_anchor;
-    	let each_value_1 = /*models*/ ctx[2][/*car*/ ctx[0].brand];
-    	validate_each_argument(each_value_1);
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
-    	}
-
-    	const block = {
-    		c: function create() {
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			each_1_anchor = empty();
-    		},
-    		m: function mount(target, anchor) {
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				if (each_blocks[i]) {
-    					each_blocks[i].m(target, anchor);
-    				}
-    			}
-
-    			insert_dev(target, each_1_anchor, anchor);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*models, car*/ 5) {
-    				each_value_1 = /*models*/ ctx[2][/*car*/ ctx[0].brand];
-    				validate_each_argument(each_value_1);
-    				let i;
-
-    				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks[i] = create_each_block_1(child_ctx);
-    						each_blocks[i].c();
-    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
-    					}
-    				}
-
-    				for (; i < each_blocks.length; i += 1) {
-    					each_blocks[i].d(1);
-    				}
-
-    				each_blocks.length = each_value_1.length;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			destroy_each(each_blocks, detaching);
-    			if (detaching) detach_dev(each_1_anchor);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$3.name,
-    		type: "if",
-    		source: "(255:16) {#if car.brand}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (256:20) {#each models[car.brand] as model}
-    function create_each_block_1(ctx) {
-    	let option;
-    	let t_value = /*model*/ ctx[30] + "";
-    	let t;
-    	let option_value_value;
-
-    	const block = {
-    		c: function create() {
-    			option = element("option");
-    			t = text(t_value);
-    			option.__value = option_value_value = /*model*/ ctx[30];
-    			option.value = option.__value;
-    			add_location(option, file$3, 256, 24, 8178);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, option, anchor);
-    			append_dev(option, t);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*car*/ 1 && t_value !== (t_value = /*model*/ ctx[30] + "")) set_data_dev(t, t_value);
-
-    			if (dirty[0] & /*car, brands*/ 3 && option_value_value !== (option_value_value = /*model*/ ctx[30])) {
-    				prop_dev(option, "__value", option_value_value);
-    				option.value = option.__value;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(option);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block_1.name,
-    		type: "each",
-    		source: "(256:20) {#each models[car.brand] as model}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (287:12) {#each carAreas as carArea}
-    function create_each_block$1(ctx) {
-    	let option;
-    	let t_value = /*carArea*/ ctx[5] + "";
-    	let t;
-
-    	const block = {
-    		c: function create() {
-    			option = element("option");
-    			t = text(t_value);
-    			option.__value = /*carArea*/ ctx[5];
-    			option.value = option.__value;
-    			add_location(option, file$3, 287, 16, 9180);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, option, anchor);
-    			append_dev(option, t);
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(option);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block$1.name,
-    		type: "each",
-    		source: "(287:12) {#each carAreas as carArea}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment$3(ctx) {
     	let h1;
     	let t1;
     	let form;
@@ -7627,21 +7388,21 @@ var app = (function () {
     	let button;
     	let mounted;
     	let dispose;
-    	let each_value_2 = /*brands*/ ctx[1];
+    	let each_value_2 = /*brands*/ ctx[2];
     	validate_each_argument(each_value_2);
     	let each_blocks_1 = [];
 
     	for (let i = 0; i < each_value_2.length; i += 1) {
-    		each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    		each_blocks_1[i] = create_each_block_2$1(get_each_context_2$1(ctx, each_value_2, i));
     	}
 
-    	let if_block = /*car*/ ctx[0].brand && create_if_block$3(ctx);
-    	let each_value = /*carAreas*/ ctx[3];
+    	let if_block = /*car*/ ctx[0].brand && create_if_block_1$3(ctx);
+    	let each_value = /*carAreas*/ ctx[4];
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
     	}
 
     	const block = {
@@ -7735,127 +7496,124 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "Submit";
     			attr_dev(h1, "class", "mt-3");
-    			add_location(h1, file$3, 233, 0, 7261);
+    			add_location(h1, file$3, 234, 0, 7314);
     			attr_dev(label0, "class", "form-label");
     			attr_dev(label0, "for", "brand");
-    			add_location(label0, file$3, 237, 12, 7383);
+    			add_location(label0, file$3, 238, 12, 7436);
     			option0.__value = "";
     			option0.value = option0.__value;
-    			add_location(option0, file$3, 239, 16, 7528);
+    			add_location(option0, file$3, 240, 16, 7581);
     			attr_dev(select0, "class", "form-select");
     			attr_dev(select0, "id", "brand");
-    			if (/*car*/ ctx[0].brand === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[7].call(select0));
-    			add_location(select0, file$3, 238, 12, 7448);
+    			if (/*car*/ ctx[0].brand === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[8].call(select0));
+    			add_location(select0, file$3, 239, 12, 7501);
     			attr_dev(div0, "class", "col");
-    			add_location(div0, file$3, 236, 8, 7352);
+    			add_location(div0, file$3, 237, 8, 7405);
     			attr_dev(label1, "class", "form-label");
     			attr_dev(label1, "for", "model");
-    			add_location(label1, file$3, 246, 12, 7774);
+    			add_location(label1, file$3, 247, 12, 7827);
     			option1.__value = "";
     			option1.value = option1.__value;
-    			add_location(option1, file$3, 253, 16, 8023);
+    			add_location(option1, file$3, 254, 16, 8076);
     			attr_dev(select1, "class", "form-select");
     			attr_dev(select1, "id", "model");
     			select1.disabled = select1_disabled_value = !/*car*/ ctx[0].brand;
-    			if (/*car*/ ctx[0].model === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[8].call(select1));
-    			add_location(select1, file$3, 247, 12, 7839);
+    			if (/*car*/ ctx[0].model === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[9].call(select1));
+    			add_location(select1, file$3, 248, 12, 7892);
     			attr_dev(div1, "class", "col");
-    			add_location(div1, file$3, 245, 8, 7743);
+    			add_location(div1, file$3, 246, 8, 7796);
     			attr_dev(div2, "class", "row mb-3");
-    			add_location(div2, file$3, 235, 4, 7320);
+    			add_location(div2, file$3, 236, 4, 7373);
     			attr_dev(label2, "class", "form-label");
     			attr_dev(label2, "for", "description");
-    			add_location(label2, file$3, 264, 12, 8388);
+    			add_location(label2, file$3, 265, 12, 8441);
     			attr_dev(input0, "class", "form-control");
     			attr_dev(input0, "id", "description");
     			attr_dev(input0, "type", "text");
-    			add_location(input0, file$3, 265, 12, 8465);
+    			add_location(input0, file$3, 266, 12, 8518);
     			attr_dev(div3, "class", "col");
-    			add_location(div3, file$3, 263, 8, 8357);
+    			add_location(div3, file$3, 264, 8, 8410);
     			attr_dev(div4, "class", "row mb-3");
-    			add_location(div4, file$3, 262, 4, 8325);
+    			add_location(div4, file$3, 263, 4, 8378);
     			attr_dev(label3, "class", "form-label");
     			attr_dev(label3, "for", "year");
-    			add_location(label3, file$3, 274, 8, 8695);
+    			add_location(label3, file$3, 275, 8, 8748);
     			attr_dev(input1, "class", "form-control");
     			attr_dev(input1, "id", "year");
     			attr_dev(input1, "type", "number");
-    			add_location(input1, file$3, 275, 8, 8754);
+    			add_location(input1, file$3, 276, 8, 8807);
     			attr_dev(div5, "class", "col");
-    			add_location(div5, file$3, 273, 4, 8668);
+    			add_location(div5, file$3, 274, 4, 8721);
     			attr_dev(label4, "class", "form-label");
     			attr_dev(label4, "for", "carArea");
-    			add_location(label4, file$3, 283, 8, 8936);
+    			add_location(label4, file$3, 284, 8, 8989);
     			option2.__value = "";
     			option2.value = option2.__value;
-    			add_location(option2, file$3, 285, 12, 9078);
+    			add_location(option2, file$3, 286, 12, 9131);
     			attr_dev(select2, "class", "form-select");
     			attr_dev(select2, "id", "carArea");
-    			if (/*car*/ ctx[0].carArea === void 0) add_render_callback(() => /*select2_change_handler*/ ctx[11].call(select2));
-    			add_location(select2, file$3, 284, 8, 8998);
+    			if (/*car*/ ctx[0].carArea === void 0) add_render_callback(() => /*select2_change_handler*/ ctx[12].call(select2));
+    			add_location(select2, file$3, 285, 8, 9051);
     			attr_dev(div6, "class", "col");
-    			add_location(div6, file$3, 282, 4, 8909);
+    			add_location(div6, file$3, 283, 4, 8962);
     			attr_dev(label5, "class", "form-label");
     			attr_dev(label5, "for", "cartype");
-    			add_location(label5, file$3, 293, 12, 9343);
+    			add_location(label5, file$3, 294, 12, 9396);
     			option3.__value = "ELECTRIC";
     			option3.value = option3.__value;
-    			add_location(option3, file$3, 300, 16, 9590);
+    			add_location(option3, file$3, 301, 16, 9643);
     			option4.__value = "HYBRID";
     			option4.value = option4.__value;
-    			add_location(option4, file$3, 301, 16, 9650);
+    			add_location(option4, file$3, 302, 16, 9703);
     			option5.__value = "DIESEL";
     			option5.value = option5.__value;
-    			add_location(option5, file$3, 302, 16, 9706);
+    			add_location(option5, file$3, 303, 16, 9759);
     			option6.__value = "GAS";
     			option6.value = option6.__value;
-    			add_location(option6, file$3, 303, 16, 9762);
+    			add_location(option6, file$3, 304, 16, 9815);
     			attr_dev(select3, "class", "form-select");
     			attr_dev(select3, "id", "cartype");
     			attr_dev(select3, "type", "text");
-    			if (/*car*/ ctx[0].carType === void 0) add_render_callback(() => /*select3_change_handler*/ ctx[12].call(select3));
-    			add_location(select3, file$3, 294, 12, 9412);
+    			if (/*car*/ ctx[0].carType === void 0) add_render_callback(() => /*select3_change_handler*/ ctx[13].call(select3));
+    			add_location(select3, file$3, 295, 12, 9465);
     			attr_dev(div7, "class", "col");
-    			add_location(div7, file$3, 292, 8, 9312);
+    			add_location(div7, file$3, 293, 8, 9365);
     			attr_dev(label6, "class", "form-label");
     			attr_dev(label6, "for", "transmission");
-    			add_location(label6, file$3, 307, 12, 9874);
+    			add_location(label6, file$3, 308, 12, 9927);
     			option7.__value = "MANUAL";
     			option7.value = option7.__value;
-    			add_location(option7, file$3, 314, 16, 10144);
+    			add_location(option7, file$3, 315, 16, 10197);
     			option8.__value = "AUTOMATIC";
     			option8.value = option8.__value;
-    			add_location(option8, file$3, 315, 16, 10200);
+    			add_location(option8, file$3, 316, 16, 10253);
     			option9.__value = "SINGLE";
     			option9.value = option9.__value;
-    			add_location(option9, file$3, 316, 16, 10262);
+    			add_location(option9, file$3, 317, 16, 10315);
     			attr_dev(select4, "class", "form-select");
     			attr_dev(select4, "id", "transmission");
     			attr_dev(select4, "type", "text");
-    			if (/*car*/ ctx[0].carTransmission === void 0) add_render_callback(() => /*select4_change_handler*/ ctx[13].call(select4));
-    			add_location(select4, file$3, 308, 12, 9953);
+    			if (/*car*/ ctx[0].carTransmission === void 0) add_render_callback(() => /*select4_change_handler*/ ctx[14].call(select4));
+    			add_location(select4, file$3, 309, 12, 10006);
     			attr_dev(div8, "class", "col");
-    			add_location(div8, file$3, 306, 8, 9843);
+    			add_location(div8, file$3, 307, 8, 9896);
     			attr_dev(label7, "class", "form-label");
     			attr_dev(label7, "for", "price");
-    			add_location(label7, file$3, 321, 12, 10382);
+    			add_location(label7, file$3, 322, 12, 10435);
     			attr_dev(input2, "class", "form-control");
     			attr_dev(input2, "id", "price");
     			attr_dev(input2, "type", "number");
-    			add_location(input2, file$3, 322, 12, 10447);
+    			add_location(input2, file$3, 323, 12, 10500);
     			attr_dev(div9, "class", "col");
-    			add_location(div9, file$3, 320, 8, 10351);
+    			add_location(div9, file$3, 321, 8, 10404);
     			attr_dev(div10, "class", "row mb-3");
-    			add_location(div10, file$3, 291, 4, 9280);
+    			add_location(div10, file$3, 292, 4, 9333);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-primary");
     			attr_dev(button, "id", "submitbutton");
-    			add_location(button, file$3, 330, 4, 10640);
+    			add_location(button, file$3, 331, 4, 10693);
     			attr_dev(form, "class", "mb-5");
-    			add_location(form, file$3, 234, 0, 7295);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(form, file$3, 235, 0, 7348);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h1, anchor);
@@ -7941,33 +7699,33 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[7]),
-    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[8]),
-    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
-    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[10]),
-    					listen_dev(select2, "change", /*select2_change_handler*/ ctx[11]),
-    					listen_dev(select3, "change", /*select3_change_handler*/ ctx[12]),
-    					listen_dev(select4, "change", /*select4_change_handler*/ ctx[13]),
-    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[14]),
-    					listen_dev(button, "click", /*createCar*/ ctx[4], false, false, false, false)
+    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[8]),
+    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[9]),
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[10]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[11]),
+    					listen_dev(select2, "change", /*select2_change_handler*/ ctx[12]),
+    					listen_dev(select3, "change", /*select3_change_handler*/ ctx[13]),
+    					listen_dev(select4, "change", /*select4_change_handler*/ ctx[14]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[15]),
+    					listen_dev(button, "click", /*createCar*/ ctx[5], false, false, false, false)
     				];
 
     				mounted = true;
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*brands*/ 2) {
-    				each_value_2 = /*brands*/ ctx[1];
+    			if (dirty[0] & /*brands*/ 4) {
+    				each_value_2 = /*brands*/ ctx[2];
     				validate_each_argument(each_value_2);
     				let i;
 
     				for (i = 0; i < each_value_2.length; i += 1) {
-    					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+    					const child_ctx = get_each_context_2$1(ctx, each_value_2, i);
 
     					if (each_blocks_1[i]) {
     						each_blocks_1[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks_1[i] = create_each_block_2(child_ctx);
+    						each_blocks_1[i] = create_each_block_2$1(child_ctx);
     						each_blocks_1[i].c();
     						each_blocks_1[i].m(select0, null);
     					}
@@ -7980,7 +7738,7 @@ var app = (function () {
     				each_blocks_1.length = each_value_2.length;
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3) {
+    			if (dirty[0] & /*car, brands*/ 5) {
     				select_option(select0, /*car*/ ctx[0].brand);
     			}
 
@@ -7988,7 +7746,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$3(ctx);
+    					if_block = create_if_block_1$3(ctx);
     					if_block.c();
     					if_block.m(select1, null);
     				}
@@ -7997,34 +7755,34 @@ var app = (function () {
     				if_block = null;
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3 && select1_disabled_value !== (select1_disabled_value = !/*car*/ ctx[0].brand)) {
+    			if (dirty[0] & /*car, brands*/ 5 && select1_disabled_value !== (select1_disabled_value = !/*car*/ ctx[0].brand)) {
     				prop_dev(select1, "disabled", select1_disabled_value);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3) {
+    			if (dirty[0] & /*car, brands*/ 5) {
     				select_option(select1, /*car*/ ctx[0].model);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3 && input0.value !== /*car*/ ctx[0].description) {
+    			if (dirty[0] & /*car, brands*/ 5 && input0.value !== /*car*/ ctx[0].description) {
     				set_input_value(input0, /*car*/ ctx[0].description);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3 && to_number(input1.value) !== /*car*/ ctx[0].year) {
+    			if (dirty[0] & /*car, brands*/ 5 && to_number(input1.value) !== /*car*/ ctx[0].year) {
     				set_input_value(input1, /*car*/ ctx[0].year);
     			}
 
-    			if (dirty[0] & /*carAreas*/ 8) {
-    				each_value = /*carAreas*/ ctx[3];
+    			if (dirty[0] & /*carAreas*/ 16) {
+    				each_value = /*carAreas*/ ctx[4];
     				validate_each_argument(each_value);
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context$1(ctx, each_value, i);
+    					const child_ctx = get_each_context$2(ctx, each_value, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i] = create_each_block$2(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(select2, null);
     					}
@@ -8037,24 +7795,22 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3) {
+    			if (dirty[0] & /*car, brands*/ 5) {
     				select_option(select2, /*car*/ ctx[0].carArea);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3) {
+    			if (dirty[0] & /*car, brands*/ 5) {
     				select_option(select3, /*car*/ ctx[0].carType);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3) {
+    			if (dirty[0] & /*car, brands*/ 5) {
     				select_option(select4, /*car*/ ctx[0].carTransmission);
     			}
 
-    			if (dirty[0] & /*car, brands*/ 3 && to_number(input2.value) !== /*car*/ ctx[0].price) {
+    			if (dirty[0] & /*car, brands*/ 5 && to_number(input2.value) !== /*car*/ ctx[0].price) {
     				set_input_value(input2, /*car*/ ctx[0].price);
     			}
     		},
-    		i: noop$1,
-    		o: noop$1,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h1);
     			if (detaching) detach_dev(t1);
@@ -8064,6 +7820,238 @@ var app = (function () {
     			destroy_each(each_blocks, detaching);
     			mounted = false;
     			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$3.name,
+    		type: "if",
+    		source: "(233:0) {#if $isAuthenticated}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (242:16) {#each brands as brand}
+    function create_each_block_2$1(ctx) {
+    	let option;
+    	let t_value = /*brand*/ ctx[34] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = /*brand*/ ctx[34];
+    			option.value = option.__value;
+    			add_location(option, file$3, 242, 20, 7684);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2$1.name,
+    		type: "each",
+    		source: "(242:16) {#each brands as brand}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (256:16) {#if car.brand}
+    function create_if_block_1$3(ctx) {
+    	let each_1_anchor;
+    	let each_value_1 = /*models*/ ctx[3][/*car*/ ctx[0].brand];
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(target, anchor);
+    				}
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*models, car*/ 9) {
+    				each_value_1 = /*models*/ ctx[3][/*car*/ ctx[0].brand];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$3.name,
+    		type: "if",
+    		source: "(256:16) {#if car.brand}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (257:20) {#each models[car.brand] as model}
+    function create_each_block_1$1(ctx) {
+    	let option;
+    	let t_value = /*model*/ ctx[31] + "";
+    	let t;
+    	let option_value_value;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = option_value_value = /*model*/ ctx[31];
+    			option.value = option.__value;
+    			add_location(option, file$3, 257, 24, 8231);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*car*/ 1 && t_value !== (t_value = /*model*/ ctx[31] + "")) set_data_dev(t, t_value);
+
+    			if (dirty[0] & /*car, brands*/ 5 && option_value_value !== (option_value_value = /*model*/ ctx[31])) {
+    				prop_dev(option, "__value", option_value_value);
+    				option.value = option.__value;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1$1.name,
+    		type: "each",
+    		source: "(257:20) {#each models[car.brand] as model}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (288:12) {#each carAreas as carArea}
+    function create_each_block$2(ctx) {
+    	let option;
+    	let t_value = /*carArea*/ ctx[6] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = /*carArea*/ ctx[6];
+    			option.value = option.__value;
+    			add_location(option, file$3, 288, 16, 9233);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$2.name,
+    		type: "each",
+    		source: "(288:12) {#each carAreas as carArea}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$3(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*$isAuthenticated*/ ctx[1] && create_if_block$3(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (/*$isAuthenticated*/ ctx[1]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$3(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop$1,
+    		o: noop$1,
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -8083,14 +8071,17 @@ var app = (function () {
     	let $actualUser;
     	let $myUserId;
     	let $querystring;
+    	let $isAuthenticated;
     	validate_store(jwt_token, 'jwt_token');
-    	component_subscribe($$self, jwt_token, $$value => $$invalidate(18, $jwt_token = $$value));
+    	component_subscribe($$self, jwt_token, $$value => $$invalidate(19, $jwt_token = $$value));
     	validate_store(actualUser, 'actualUser');
-    	component_subscribe($$self, actualUser, $$value => $$invalidate(19, $actualUser = $$value));
+    	component_subscribe($$self, actualUser, $$value => $$invalidate(20, $actualUser = $$value));
     	validate_store(myUserId, 'myUserId');
-    	component_subscribe($$self, myUserId, $$value => $$invalidate(20, $myUserId = $$value));
+    	component_subscribe($$self, myUserId, $$value => $$invalidate(21, $myUserId = $$value));
     	validate_store(querystring, 'querystring');
-    	component_subscribe($$self, querystring, $$value => $$invalidate(6, $querystring = $$value));
+    	component_subscribe($$self, querystring, $$value => $$invalidate(7, $querystring = $$value));
+    	validate_store(isAuthenticated, 'isAuthenticated');
+    	component_subscribe($$self, isAuthenticated, $$value => $$invalidate(1, $isAuthenticated = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('CreateCars', slots, []);
     	const api_root = window.location.origin;
@@ -8112,7 +8103,7 @@ var app = (function () {
     Pages es insgesamt gibt.*/
     	let priceMax;
 
-    	let carType;
+    	let carState;
     	let carArea; //In den Input-Elementen eingetragene Werte
     	let cars = [];
 
@@ -8203,6 +8194,7 @@ var app = (function () {
     		"Wettingen",
     		"Wetzikon",
     		"Wil",
+    		"Windisch",
     		"Winterthur",
     		"Zürich"
     	];
@@ -8217,8 +8209,8 @@ var app = (function () {
     			query += "&price=" + priceMax;
     		}
 
-    		if (carType && carType !== "ALL") {
-    			query += "&type=" + carType;
+    		if (carState && carState !== "ALL") {
+    			query += "&state=" + carState;
     		}
 
     		if (carArea && carArea !== "ALL") {
@@ -8311,49 +8303,49 @@ var app = (function () {
     	function select0_change_handler() {
     		car.brand = select_value(this);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function select1_change_handler() {
     		car.model = select_value(this);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function input0_input_handler() {
     		car.description = this.value;
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function input1_input_handler() {
     		car.year = to_number(this.value);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function select2_change_handler() {
     		car.carArea = select_value(this);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function select3_change_handler() {
     		car.carType = select_value(this);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function select4_change_handler() {
     		car.carTransmission = select_value(this);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	function input2_input_handler() {
     		car.price = to_number(this.value);
     		$$invalidate(0, car);
-    		$$invalidate(1, brands);
+    		$$invalidate(2, brands);
     	}
 
     	$$self.$capture_state = () => ({
@@ -8361,13 +8353,14 @@ var app = (function () {
     		jwt_token,
     		myUserId,
     		actualUser,
+    		isAuthenticated,
     		querystring,
     		api_root,
     		currentPage,
     		nrOfPages,
     		defaultPageSize,
     		priceMax,
-    		carType,
+    		carState,
     		carArea,
     		cars,
     		car,
@@ -8381,7 +8374,8 @@ var app = (function () {
     		$jwt_token,
     		$actualUser,
     		$myUserId,
-    		$querystring
+    		$querystring,
+    		$isAuthenticated
     	});
 
     	$$self.$inject_state = $$props => {
@@ -8389,13 +8383,13 @@ var app = (function () {
     		if ('nrOfPages' in $$props) nrOfPages = $$props.nrOfPages;
     		if ('defaultPageSize' in $$props) defaultPageSize = $$props.defaultPageSize;
     		if ('priceMax' in $$props) priceMax = $$props.priceMax;
-    		if ('carType' in $$props) carType = $$props.carType;
-    		if ('carArea' in $$props) $$invalidate(5, carArea = $$props.carArea);
+    		if ('carState' in $$props) carState = $$props.carState;
+    		if ('carArea' in $$props) $$invalidate(6, carArea = $$props.carArea);
     		if ('cars' in $$props) cars = $$props.cars;
     		if ('car' in $$props) $$invalidate(0, car = $$props.car);
-    		if ('brands' in $$props) $$invalidate(1, brands = $$props.brands);
-    		if ('models' in $$props) $$invalidate(2, models = $$props.models);
-    		if ('carAreas' in $$props) $$invalidate(3, carAreas = $$props.carAreas);
+    		if ('brands' in $$props) $$invalidate(2, brands = $$props.brands);
+    		if ('models' in $$props) $$invalidate(3, models = $$props.models);
+    		if ('carAreas' in $$props) $$invalidate(4, carAreas = $$props.carAreas);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -8403,7 +8397,7 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty[0] & /*$querystring*/ 64) {
+    		if ($$self.$$.dirty[0] & /*$querystring*/ 128) {
     			{
     				let searchParams = new URLSearchParams($querystring);
 
@@ -8420,6 +8414,7 @@ var app = (function () {
 
     	return [
     		car,
+    		$isAuthenticated,
     		brands,
     		models,
     		carAreas,
@@ -8456,218 +8451,26 @@ var app = (function () {
     const { console: console_1$1 } = globals;
     const file$2 = "src\\pages\\CarDetails.svelte";
 
-    // (155:8) {:else}
-    function create_else_block$2(ctx) {
-    	let span;
-
-    	const block = {
-    		c: function create() {
-    			span = element("span");
-    			span.textContent = "Unavailable";
-    			attr_dev(span, "class", "badge bg-secondary");
-    			attr_dev(span, "id", "rented");
-    			add_location(span, file$2, 155, 12, 5377);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, span, anchor);
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(span);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_else_block$2.name,
-    		type: "else",
-    		source: "(155:8) {:else}",
-    		ctx
-    	});
-
-    	return block;
+    function get_each_context$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[32] = list[i];
+    	return child_ctx;
     }
 
-    // (146:81) 
-    function create_if_block_3$2(ctx) {
-    	let button;
-    	let mounted;
-    	let dispose;
-
-    	const block = {
-    		c: function create() {
-    			button = element("button");
-    			button.textContent = "Rent Car";
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-primary btn-sm");
-    			attr_dev(button, "id", "rentButton");
-    			add_location(button, file$2, 146, 12, 5095);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, button, anchor);
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler_2*/ ctx[10], false, false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(button);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_3$2.name,
-    		type: "if",
-    		source: "(146:81) ",
-    		ctx
-    	});
-
-    	return block;
+    function get_each_context_1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[35] = list[i];
+    	return child_ctx;
     }
 
-    // (136:51) 
-    function create_if_block_2$2(ctx) {
-    	let span;
-    	let t1;
-    	let button;
-    	let mounted;
-    	let dispose;
-
-    	const block = {
-    		c: function create() {
-    			span = element("span");
-    			span.textContent = "My Car";
-    			t1 = space();
-    			button = element("button");
-    			button.textContent = "Delete";
-    			attr_dev(span, "class", "badge bg-secondary");
-    			attr_dev(span, "id", "myCar");
-    			add_location(span, file$2, 136, 12, 4669);
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$2, 137, 12, 4740);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, span, anchor);
-    			insert_dev(target, t1, anchor);
-    			insert_dev(target, button, anchor);
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler_1*/ ctx[9], false, false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(span);
-    			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(button);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_2$2.name,
-    		type: "if",
-    		source: "(136:51) ",
-    		ctx
-    	});
-
-    	return block;
+    function get_each_context_2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[38] = list[i];
+    	return child_ctx;
     }
 
-    // (128:8) {#if carDetails.userId === $myUserId}
-    function create_if_block_1$2(ctx) {
-    	let button;
-    	let mounted;
-    	let dispose;
-
-    	const block = {
-    		c: function create() {
-    			button = element("button");
-    			button.textContent = "Unrent Car";
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-success btn-sm");
-    			add_location(button, file$2, 128, 12, 4380);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, button, anchor);
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[8], false, false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(button);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_1$2.name,
-    		type: "if",
-    		source: "(128:8) {#if carDetails.userId === $myUserId}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (158:8) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+    // (217:0) {#if $isAuthenticated}
     function create_if_block$2(ctx) {
-    	let button;
-    	let mounted;
-    	let dispose;
-
-    	const block = {
-    		c: function create() {
-    			button = element("button");
-    			button.textContent = "Delete";
-    			attr_dev(button, "type", "button");
-    			attr_dev(button, "class", "btn btn-danger btn-sm");
-    			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$2, 158, 12, 5551);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, button, anchor);
-
-    			if (!mounted) {
-    				dispose = listen_dev(button, "click", /*click_handler_3*/ ctx[11], false, false, false, false);
-    				mounted = true;
-    			}
-    		},
-    		p: noop$1,
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(button);
-    			mounted = false;
-    			dispose();
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$2.name,
-    		type: "if",
-    		source: "(158:8) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function create_fragment$2(ctx) {
     	let h1;
     	let t1;
     	let img;
@@ -8720,21 +8523,23 @@ var app = (function () {
     	let t25;
     	let t26;
     	let t27;
-    	let show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
+    	let show_if = /*$actualUser*/ ctx[5].user_roles && /*$actualUser*/ ctx[5].user_roles.includes("admin");
     	let t28;
+    	let t29;
     	let iframe;
     	let iframe_src_value;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*carDetails*/ ctx[0].userId === /*$myUserId*/ ctx[2]) return create_if_block_1$2;
-    		if (/*carDetails*/ ctx[0].ownerId === /*$myUserId*/ ctx[2]) return create_if_block_2$2;
-    		if (/*carDetails*/ ctx[0].userId === null && /*carDetails*/ ctx[0].ownerId !== /*$myUserId*/ ctx[2]) return create_if_block_3$2;
+    		if (/*carDetails*/ ctx[0].userId === /*$myUserId*/ ctx[4]) return create_if_block_4$1;
+    		if (/*carDetails*/ ctx[0].ownerId === /*$myUserId*/ ctx[4]) return create_if_block_5$1;
+    		if (/*carDetails*/ ctx[0].userId === null && /*carDetails*/ ctx[0].ownerId !== /*$myUserId*/ ctx[4]) return create_if_block_6;
     		return create_else_block$2;
     	}
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
-    	let if_block1 = show_if && create_if_block$2(ctx);
+    	let if_block1 = show_if && create_if_block_3$2(ctx);
+    	let if_block2 = /*showUpdateForm*/ ctx[2] && create_if_block_1$2(ctx);
 
     	const block = {
     		c: function create() {
@@ -8781,29 +8586,31 @@ var app = (function () {
     			t27 = space();
     			if (if_block1) if_block1.c();
     			t28 = space();
+    			if (if_block2) if_block2.c();
+    			t29 = space();
     			iframe = element("iframe");
-    			add_location(h1, file$2, 105, 0, 3533);
+    			add_location(h1, file$2, 218, 0, 6444);
     			if (!src_url_equal(img.src, img_src_value = "images/" + /*carDetails*/ ctx[0].model + ".jpg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", img_alt_value = /*carDetails*/ ctx[0].model);
     			attr_dev(img, "width", "350");
-    			add_location(img, file$2, 107, 0, 3557);
+    			add_location(img, file$2, 220, 0, 6468);
     			attr_dev(h5, "class", "card-title");
-    			add_location(h5, file$2, 115, 8, 3742);
+    			add_location(h5, file$2, 228, 8, 6653);
     			attr_dev(h6, "class", "card-subtitle mb-2 text-muted");
-    			add_location(h6, file$2, 116, 8, 3817);
-    			add_location(br0, file$2, 120, 38, 4037);
-    			add_location(br1, file$2, 121, 54, 4099);
-    			add_location(br2, file$2, 122, 40, 4147);
-    			add_location(br3, file$2, 123, 41, 4196);
+    			add_location(h6, file$2, 229, 8, 6728);
+    			add_location(br0, file$2, 233, 38, 6948);
+    			add_location(br1, file$2, 234, 54, 7010);
+    			add_location(br2, file$2, 235, 40, 7058);
+    			add_location(br3, file$2, 236, 41, 7107);
     			attr_dev(p0, "class", "card-text");
-    			add_location(p0, file$2, 117, 8, 3899);
+    			add_location(p0, file$2, 230, 8, 6810);
     			attr_dev(p1, "class", "card-text");
-    			add_location(p1, file$2, 126, 8, 4270);
+    			add_location(p1, file$2, 239, 8, 7181);
     			attr_dev(div0, "class", "card-body");
-    			add_location(div0, file$2, 114, 4, 3709);
+    			add_location(div0, file$2, 227, 4, 6620);
     			attr_dev(div1, "class", "card");
     			set_style(div1, "width", "18rem");
-    			add_location(div1, file$2, 113, 0, 3663);
+    			add_location(div1, file$2, 226, 0, 6574);
     			attr_dev(iframe, "scrolling", "no");
     			attr_dev(iframe, "marginheight", "0");
     			attr_dev(iframe, "marginwidth", "0");
@@ -8812,10 +8619,7 @@ var app = (function () {
     			attr_dev(iframe, "width", "1229");
     			attr_dev(iframe, "height", "529");
     			attr_dev(iframe, "frameborder", "0");
-    			add_location(iframe, file$2, 171, 0, 5889);
-    		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    			add_location(iframe, file$2, 387, 0, 12126);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h1, anchor);
@@ -8860,28 +8664,30 @@ var app = (function () {
     			append_dev(div0, t27);
     			if (if_block1) if_block1.m(div0, null);
     			insert_dev(target, t28, anchor);
+    			if (if_block2) if_block2.m(target, anchor);
+    			insert_dev(target, t29, anchor);
     			insert_dev(target, iframe, anchor);
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*carDetails*/ 1 && !src_url_equal(img.src, img_src_value = "images/" + /*carDetails*/ ctx[0].model + ".jpg")) {
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*carDetails, brands*/ 65 && !src_url_equal(img.src, img_src_value = "images/" + /*carDetails*/ ctx[0].model + ".jpg")) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*carDetails*/ 1 && img_alt_value !== (img_alt_value = /*carDetails*/ ctx[0].model)) {
+    			if (dirty[0] & /*carDetails, brands*/ 65 && img_alt_value !== (img_alt_value = /*carDetails*/ ctx[0].model)) {
     				attr_dev(img, "alt", img_alt_value);
     			}
 
-    			if (dirty & /*carDetails*/ 1 && t3_value !== (t3_value = /*carDetails*/ ctx[0].brand + "")) set_data_dev(t3, t3_value);
-    			if (dirty & /*carDetails*/ 1 && t5_value !== (t5_value = /*carDetails*/ ctx[0].model + "")) set_data_dev(t5, t5_value);
-    			if (dirty & /*carDetails*/ 1 && t8_value !== (t8_value = /*carDetails*/ ctx[0].price + "")) set_data_dev(t8, t8_value);
-    			if (dirty & /*carDetails*/ 1 && t11_value !== (t11_value = /*carDetails*/ ctx[0].year + "")) set_data_dev(t11, t11_value);
-    			if (dirty & /*carDetails*/ 1 && t13_value !== (t13_value = /*carDetails*/ ctx[0].carArea + "")) set_data_dev(t13, t13_value);
-    			if (dirty & /*carDetails*/ 1 && t15_value !== (t15_value = /*carDetails*/ ctx[0].carType + "")) set_data_dev(t15, t15_value);
-    			if (dirty & /*carDetails*/ 1 && t17_value !== (t17_value = /*carDetails*/ ctx[0].carTransmission + "")) set_data_dev(t17, t17_value);
-    			if (dirty & /*carDetails*/ 1 && t19_value !== (t19_value = /*carDetails*/ ctx[0].carState + "")) set_data_dev(t19, t19_value);
-    			if (dirty & /*carDetails*/ 1 && t21_value !== (t21_value = /*carDetails*/ ctx[0].ownerName + "")) set_data_dev(t21, t21_value);
-    			if (dirty & /*carDetails*/ 1 && t23_value !== (t23_value = /*carDetails*/ ctx[0].userEmail + "")) set_data_dev(t23, t23_value);
-    			if (dirty & /*carDetails*/ 1 && t25_value !== (t25_value = /*carDetails*/ ctx[0].description + "")) set_data_dev(t25, t25_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t3_value !== (t3_value = /*carDetails*/ ctx[0].brand + "")) set_data_dev(t3, t3_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t5_value !== (t5_value = /*carDetails*/ ctx[0].model + "")) set_data_dev(t5, t5_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t8_value !== (t8_value = /*carDetails*/ ctx[0].price + "")) set_data_dev(t8, t8_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t11_value !== (t11_value = /*carDetails*/ ctx[0].year + "")) set_data_dev(t11, t11_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t13_value !== (t13_value = /*carDetails*/ ctx[0].carArea + "")) set_data_dev(t13, t13_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t15_value !== (t15_value = /*carDetails*/ ctx[0].carType + "")) set_data_dev(t15, t15_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t17_value !== (t17_value = /*carDetails*/ ctx[0].carTransmission + "")) set_data_dev(t17, t17_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t19_value !== (t19_value = /*carDetails*/ ctx[0].carState + "")) set_data_dev(t19, t19_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t21_value !== (t21_value = /*carDetails*/ ctx[0].ownerName + "")) set_data_dev(t21, t21_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t23_value !== (t23_value = /*carDetails*/ ctx[0].userEmail + "")) set_data_dev(t23, t23_value);
+    			if (dirty[0] & /*carDetails*/ 1 && t25_value !== (t25_value = /*carDetails*/ ctx[0].description + "")) set_data_dev(t25, t25_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
@@ -8895,13 +8701,13 @@ var app = (function () {
     				}
     			}
 
-    			if (dirty & /*$actualUser*/ 8) show_if = /*$actualUser*/ ctx[3].user_roles && /*$actualUser*/ ctx[3].user_roles.includes("admin");
+    			if (dirty[0] & /*$actualUser*/ 32) show_if = /*$actualUser*/ ctx[5].user_roles && /*$actualUser*/ ctx[5].user_roles.includes("admin");
 
     			if (show_if) {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block$2(ctx);
+    					if_block1 = create_if_block_3$2(ctx);
     					if_block1.c();
     					if_block1.m(div0, null);
     				}
@@ -8910,12 +8716,23 @@ var app = (function () {
     				if_block1 = null;
     			}
 
-    			if (dirty & /*mapUrl*/ 2 && !src_url_equal(iframe.src, iframe_src_value = /*mapUrl*/ ctx[1])) {
+    			if (/*showUpdateForm*/ ctx[2]) {
+    				if (if_block2) {
+    					if_block2.p(ctx, dirty);
+    				} else {
+    					if_block2 = create_if_block_1$2(ctx);
+    					if_block2.c();
+    					if_block2.m(t29.parentNode, t29);
+    				}
+    			} else if (if_block2) {
+    				if_block2.d(1);
+    				if_block2 = null;
+    			}
+
+    			if (dirty[0] & /*mapUrl*/ 2 && !src_url_equal(iframe.src, iframe_src_value = /*mapUrl*/ ctx[1])) {
     				attr_dev(iframe, "src", iframe_src_value);
     			}
     		},
-    		i: noop$1,
-    		o: noop$1,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h1);
     			if (detaching) detach_dev(t1);
@@ -8925,7 +8742,929 @@ var app = (function () {
     			if_block0.d();
     			if (if_block1) if_block1.d();
     			if (detaching) detach_dev(t28);
+    			if (if_block2) if_block2.d(detaching);
+    			if (detaching) detach_dev(t29);
     			if (detaching) detach_dev(iframe);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(217:0) {#if $isAuthenticated}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (275:8) {:else}
+    function create_else_block$2(ctx) {
+    	let span;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			span.textContent = "Unavailable";
+    			attr_dev(span, "class", "badge bg-secondary");
+    			attr_dev(span, "id", "rented");
+    			add_location(span, file$2, 275, 12, 8521);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block$2.name,
+    		type: "else",
+    		source: "(275:8) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (266:81) 
+    function create_if_block_6(ctx) {
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Rent Car";
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn btn-primary btn-sm");
+    			attr_dev(button, "id", "rentButton");
+    			add_location(button, file$2, 266, 12, 8239);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*click_handler_3*/ ctx[17], false, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_6.name,
+    		type: "if",
+    		source: "(266:81) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (249:51) 
+    function create_if_block_5$1(ctx) {
+    	let span;
+    	let t1;
+    	let button0;
+    	let t3;
+    	let button1;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			span.textContent = "My Car";
+    			t1 = space();
+    			button0 = element("button");
+    			button0.textContent = "Update Car";
+    			t3 = space();
+    			button1 = element("button");
+    			button1.textContent = "Delete";
+    			attr_dev(span, "class", "badge bg-secondary");
+    			attr_dev(span, "id", "myCar");
+    			add_location(span, file$2, 249, 12, 7580);
+    			attr_dev(button0, "type", "button");
+    			attr_dev(button0, "class", "btn btn-primary btn-sm");
+    			add_location(button0, file$2, 250, 12, 7651);
+    			attr_dev(button1, "type", "button");
+    			attr_dev(button1, "class", "btn btn-danger btn-sm");
+    			attr_dev(button1, "id", "deleteButton");
+    			add_location(button1, file$2, 257, 12, 7884);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, button0, anchor);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, button1, anchor);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(button0, "click", /*click_handler_1*/ ctx[15], false, false, false, false),
+    					listen_dev(button1, "click", /*click_handler_2*/ ctx[16], false, false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(button0);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(button1);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_5$1.name,
+    		type: "if",
+    		source: "(249:51) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (241:8) {#if carDetails.userId === $myUserId}
+    function create_if_block_4$1(ctx) {
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Unrent Car";
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn btn-success btn-sm");
+    			add_location(button, file$2, 241, 12, 7291);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[14], false, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_4$1.name,
+    		type: "if",
+    		source: "(241:8) {#if carDetails.userId === $myUserId}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (278:8) {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+    function create_if_block_3$2(ctx) {
+    	let button;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Delete";
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn btn-danger btn-sm");
+    			attr_dev(button, "id", "deleteButton");
+    			add_location(button, file$2, 278, 12, 8695);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*click_handler_4*/ ctx[18], false, false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3$2.name,
+    		type: "if",
+    		source: "(278:8) {#if $actualUser.user_roles && $actualUser.user_roles.includes(\\\"admin\\\")}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (291:0) {#if showUpdateForm}
+    function create_if_block_1$2(ctx) {
+    	let form;
+    	let label0;
+    	let t1;
+    	let select0;
+    	let option0;
+    	let t3;
+    	let label1;
+    	let t5;
+    	let select1;
+    	let option1;
+    	let select1_disabled_value;
+    	let t7;
+    	let label2;
+    	let t9;
+    	let input0;
+    	let t10;
+    	let label3;
+    	let t12;
+    	let select2;
+    	let option2;
+    	let t14;
+    	let label4;
+    	let t16;
+    	let input1;
+    	let t17;
+    	let label5;
+    	let t19;
+    	let select3;
+    	let option3;
+    	let option4;
+    	let option5;
+    	let option6;
+    	let t24;
+    	let label6;
+    	let t26;
+    	let select4;
+    	let option7;
+    	let option8;
+    	let option9;
+    	let t30;
+    	let label7;
+    	let t32;
+    	let input2;
+    	let t33;
+    	let button0;
+    	let t35;
+    	let button1;
+    	let mounted;
+    	let dispose;
+    	let each_value_2 = /*brands*/ ctx[6];
+    	validate_each_argument(each_value_2);
+    	let each_blocks_1 = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks_1[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    	}
+
+    	let if_block = /*carDetails*/ ctx[0].brand && create_if_block_2$2(ctx);
+    	let each_value = /*carAreas*/ ctx[8];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			form = element("form");
+    			label0 = element("label");
+    			label0.textContent = "Brand";
+    			t1 = space();
+    			select0 = element("select");
+    			option0 = element("option");
+    			option0.textContent = "Select a brand";
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				each_blocks_1[i].c();
+    			}
+
+    			t3 = space();
+    			label1 = element("label");
+    			label1.textContent = "Model";
+    			t5 = space();
+    			select1 = element("select");
+    			option1 = element("option");
+    			option1.textContent = "Select a model";
+    			if (if_block) if_block.c();
+    			t7 = space();
+    			label2 = element("label");
+    			label2.textContent = "Year";
+    			t9 = space();
+    			input0 = element("input");
+    			t10 = space();
+    			label3 = element("label");
+    			label3.textContent = "Area";
+    			t12 = space();
+    			select2 = element("select");
+    			option2 = element("option");
+    			option2.textContent = "Select an carArea";
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t14 = space();
+    			label4 = element("label");
+    			label4.textContent = "Price";
+    			t16 = space();
+    			input1 = element("input");
+    			t17 = space();
+    			label5 = element("label");
+    			label5.textContent = "Cartype";
+    			t19 = space();
+    			select3 = element("select");
+    			option3 = element("option");
+    			option3.textContent = "ELECTRIC";
+    			option4 = element("option");
+    			option4.textContent = "HYBRID";
+    			option5 = element("option");
+    			option5.textContent = "DIESEL";
+    			option6 = element("option");
+    			option6.textContent = "GAS";
+    			t24 = space();
+    			label6 = element("label");
+    			label6.textContent = "Transmission";
+    			t26 = space();
+    			select4 = element("select");
+    			option7 = element("option");
+    			option7.textContent = "MANUAL";
+    			option8 = element("option");
+    			option8.textContent = "AUTOMATIC";
+    			option9 = element("option");
+    			option9.textContent = "SINGLE";
+    			t30 = space();
+    			label7 = element("label");
+    			label7.textContent = "Description";
+    			t32 = space();
+    			input2 = element("input");
+    			t33 = space();
+    			button0 = element("button");
+    			button0.textContent = "Submit";
+    			t35 = space();
+    			button1 = element("button");
+    			button1.textContent = "Cancel";
+    			attr_dev(label0, "class", "form-label");
+    			attr_dev(label0, "for", "brand");
+    			add_location(label0, file$2, 292, 8, 9080);
+    			option0.__value = "";
+    			option0.value = option0.__value;
+    			add_location(option0, file$2, 294, 12, 9224);
+    			attr_dev(select0, "class", "form-select");
+    			attr_dev(select0, "id", "brand");
+    			if (/*carDetails*/ ctx[0].brand === void 0) add_render_callback(() => /*select0_change_handler*/ ctx[19].call(select0));
+    			add_location(select0, file$2, 293, 8, 9141);
+    			attr_dev(label1, "class", "form-label");
+    			attr_dev(label1, "for", "model");
+    			add_location(label1, file$2, 300, 8, 9409);
+    			option1.__value = "";
+    			option1.value = option1.__value;
+    			add_location(option1, file$2, 307, 12, 9644);
+    			attr_dev(select1, "class", "form-select");
+    			attr_dev(select1, "id", "model");
+    			select1.disabled = select1_disabled_value = !/*carDetails*/ ctx[0].brand;
+    			if (/*carDetails*/ ctx[0].model === void 0) add_render_callback(() => /*select1_change_handler*/ ctx[20].call(select1));
+    			add_location(select1, file$2, 301, 8, 9470);
+    			attr_dev(label2, "class", "form-label");
+    			attr_dev(label2, "for", "year");
+    			add_location(label2, file$2, 315, 8, 9914);
+    			attr_dev(input0, "class", "form-control");
+    			attr_dev(input0, "id", "year");
+    			attr_dev(input0, "type", "number");
+    			add_location(input0, file$2, 316, 8, 9973);
+    			attr_dev(label3, "class", "form-label");
+    			attr_dev(label3, "for", "carArea");
+    			add_location(label3, file$2, 323, 8, 10129);
+    			option2.__value = "";
+    			option2.value = option2.__value;
+    			add_location(option2, file$2, 329, 12, 10327);
+    			attr_dev(select2, "class", "form-select");
+    			attr_dev(select2, "id", "carArea");
+    			if (/*carDetails*/ ctx[0].carArea === void 0) add_render_callback(() => /*select2_change_handler*/ ctx[22].call(select2));
+    			add_location(select2, file$2, 324, 8, 10191);
+    			attr_dev(label4, "class", "form-label");
+    			attr_dev(label4, "for", "price");
+    			add_location(label4, file$2, 335, 8, 10523);
+    			attr_dev(input1, "class", "form-control");
+    			attr_dev(input1, "id", "price");
+    			attr_dev(input1, "type", "number");
+    			add_location(input1, file$2, 336, 8, 10584);
+    			attr_dev(label5, "class", "form-label");
+    			attr_dev(label5, "for", "cartype");
+    			add_location(label5, file$2, 343, 8, 10742);
+    			option3.__value = "ELECTRIC";
+    			option3.value = option3.__value;
+    			add_location(option3, file$2, 350, 12, 10968);
+    			option4.__value = "HYBRID";
+    			option4.value = option4.__value;
+    			add_location(option4, file$2, 351, 12, 11024);
+    			option5.__value = "DIESEL";
+    			option5.value = option5.__value;
+    			add_location(option5, file$2, 352, 12, 11076);
+    			option6.__value = "GAS";
+    			option6.value = option6.__value;
+    			add_location(option6, file$2, 353, 12, 11128);
+    			attr_dev(select3, "class", "form-select");
+    			attr_dev(select3, "id", "cartype");
+    			attr_dev(select3, "type", "text");
+    			if (/*carDetails*/ ctx[0].carType === void 0) add_render_callback(() => /*select3_change_handler*/ ctx[24].call(select3));
+    			add_location(select3, file$2, 344, 8, 10807);
+    			attr_dev(label6, "class", "form-label");
+    			attr_dev(label6, "for", "transmission");
+    			add_location(label6, file$2, 356, 8, 11191);
+    			option7.__value = "MANUAL";
+    			option7.value = option7.__value;
+    			add_location(option7, file$2, 363, 12, 11440);
+    			option8.__value = "AUTOMATIC";
+    			option8.value = option8.__value;
+    			add_location(option8, file$2, 364, 12, 11492);
+    			option9.__value = "SINGLE";
+    			option9.value = option9.__value;
+    			add_location(option9, file$2, 365, 12, 11550);
+    			attr_dev(select4, "class", "form-select");
+    			attr_dev(select4, "id", "transmission");
+    			attr_dev(select4, "type", "text");
+    			if (/*carDetails*/ ctx[0].carTransmission === void 0) add_render_callback(() => /*select4_change_handler*/ ctx[25].call(select4));
+    			add_location(select4, file$2, 357, 8, 11266);
+    			attr_dev(label7, "class", "form-label");
+    			attr_dev(label7, "for", "description");
+    			add_location(label7, file$2, 368, 8, 11619);
+    			attr_dev(input2, "class", "form-control");
+    			attr_dev(input2, "id", "description");
+    			attr_dev(input2, "type", "text");
+    			add_location(input2, file$2, 369, 8, 11692);
+    			attr_dev(button0, "type", "submit");
+    			add_location(button0, file$2, 376, 8, 11860);
+    			attr_dev(button1, "type", "button");
+    			add_location(button1, file$2, 377, 8, 11907);
+    			add_location(form, file$2, 291, 4, 9012);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, form, anchor);
+    			append_dev(form, label0);
+    			append_dev(form, t1);
+    			append_dev(form, select0);
+    			append_dev(select0, option0);
+
+    			for (let i = 0; i < each_blocks_1.length; i += 1) {
+    				if (each_blocks_1[i]) {
+    					each_blocks_1[i].m(select0, null);
+    				}
+    			}
+
+    			select_option(select0, /*carDetails*/ ctx[0].brand, true);
+    			append_dev(form, t3);
+    			append_dev(form, label1);
+    			append_dev(form, t5);
+    			append_dev(form, select1);
+    			append_dev(select1, option1);
+    			if (if_block) if_block.m(select1, null);
+    			select_option(select1, /*carDetails*/ ctx[0].model, true);
+    			append_dev(form, t7);
+    			append_dev(form, label2);
+    			append_dev(form, t9);
+    			append_dev(form, input0);
+    			set_input_value(input0, /*carDetails*/ ctx[0].year);
+    			append_dev(form, t10);
+    			append_dev(form, label3);
+    			append_dev(form, t12);
+    			append_dev(form, select2);
+    			append_dev(select2, option2);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(select2, null);
+    				}
+    			}
+
+    			select_option(select2, /*carDetails*/ ctx[0].carArea, true);
+    			append_dev(form, t14);
+    			append_dev(form, label4);
+    			append_dev(form, t16);
+    			append_dev(form, input1);
+    			set_input_value(input1, /*carDetails*/ ctx[0].price);
+    			append_dev(form, t17);
+    			append_dev(form, label5);
+    			append_dev(form, t19);
+    			append_dev(form, select3);
+    			append_dev(select3, option3);
+    			append_dev(select3, option4);
+    			append_dev(select3, option5);
+    			append_dev(select3, option6);
+    			select_option(select3, /*carDetails*/ ctx[0].carType, true);
+    			append_dev(form, t24);
+    			append_dev(form, label6);
+    			append_dev(form, t26);
+    			append_dev(form, select4);
+    			append_dev(select4, option7);
+    			append_dev(select4, option8);
+    			append_dev(select4, option9);
+    			select_option(select4, /*carDetails*/ ctx[0].carTransmission, true);
+    			append_dev(form, t30);
+    			append_dev(form, label7);
+    			append_dev(form, t32);
+    			append_dev(form, input2);
+    			set_input_value(input2, /*carDetails*/ ctx[0].description);
+    			append_dev(form, t33);
+    			append_dev(form, button0);
+    			append_dev(form, t35);
+    			append_dev(form, button1);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(select0, "change", /*select0_change_handler*/ ctx[19]),
+    					listen_dev(select1, "change", /*select1_change_handler*/ ctx[20]),
+    					listen_dev(input0, "input", /*input0_input_handler*/ ctx[21]),
+    					listen_dev(select2, "change", /*select2_change_handler*/ ctx[22]),
+    					listen_dev(input1, "input", /*input1_input_handler*/ ctx[23]),
+    					listen_dev(select3, "change", /*select3_change_handler*/ ctx[24]),
+    					listen_dev(select4, "change", /*select4_change_handler*/ ctx[25]),
+    					listen_dev(input2, "input", /*input2_input_handler*/ ctx[26]),
+    					listen_dev(button1, "click", /*click_handler_5*/ ctx[27], false, false, false, false),
+    					listen_dev(
+    						form,
+    						"submit",
+    						prevent_default(function () {
+    							if (is_function(/*updateCar*/ ctx[11](/*carDetails*/ ctx[0].id))) /*updateCar*/ ctx[11](/*carDetails*/ ctx[0].id).apply(this, arguments);
+    						}),
+    						false,
+    						true,
+    						false,
+    						false
+    					)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty[0] & /*brands*/ 64) {
+    				each_value_2 = /*brands*/ ctx[6];
+    				validate_each_argument(each_value_2);
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+    					if (each_blocks_1[i]) {
+    						each_blocks_1[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks_1[i] = create_each_block_2(child_ctx);
+    						each_blocks_1[i].c();
+    						each_blocks_1[i].m(select0, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_1.length; i += 1) {
+    					each_blocks_1[i].d(1);
+    				}
+
+    				each_blocks_1.length = each_value_2.length;
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65) {
+    				select_option(select0, /*carDetails*/ ctx[0].brand);
+    			}
+
+    			if (/*carDetails*/ ctx[0].brand) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block_2$2(ctx);
+    					if_block.c();
+    					if_block.m(select1, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65 && select1_disabled_value !== (select1_disabled_value = !/*carDetails*/ ctx[0].brand)) {
+    				prop_dev(select1, "disabled", select1_disabled_value);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65) {
+    				select_option(select1, /*carDetails*/ ctx[0].model);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65 && to_number(input0.value) !== /*carDetails*/ ctx[0].year) {
+    				set_input_value(input0, /*carDetails*/ ctx[0].year);
+    			}
+
+    			if (dirty[0] & /*carAreas*/ 256) {
+    				each_value = /*carAreas*/ ctx[8];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(select2, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65) {
+    				select_option(select2, /*carDetails*/ ctx[0].carArea);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65 && to_number(input1.value) !== /*carDetails*/ ctx[0].price) {
+    				set_input_value(input1, /*carDetails*/ ctx[0].price);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65) {
+    				select_option(select3, /*carDetails*/ ctx[0].carType);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65) {
+    				select_option(select4, /*carDetails*/ ctx[0].carTransmission);
+    			}
+
+    			if (dirty[0] & /*carDetails, brands*/ 65 && input2.value !== /*carDetails*/ ctx[0].description) {
+    				set_input_value(input2, /*carDetails*/ ctx[0].description);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(form);
+    			destroy_each(each_blocks_1, detaching);
+    			if (if_block) if_block.d();
+    			destroy_each(each_blocks, detaching);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$2.name,
+    		type: "if",
+    		source: "(291:0) {#if showUpdateForm}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (296:12) {#each brands as brand}
+    function create_each_block_2(ctx) {
+    	let option;
+    	let t_value = /*brand*/ ctx[38] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = /*brand*/ ctx[38];
+    			option.value = option.__value;
+    			add_location(option, file$2, 296, 16, 9319);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2.name,
+    		type: "each",
+    		source: "(296:12) {#each brands as brand}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (309:12) {#if carDetails.brand}
+    function create_if_block_2$2(ctx) {
+    	let each_1_anchor;
+    	let each_value_1 = /*models*/ ctx[7][/*carDetails*/ ctx[0].brand];
+    	validate_each_argument(each_value_1);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			each_1_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(target, anchor);
+    				}
+    			}
+
+    			insert_dev(target, each_1_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*models, carDetails*/ 129) {
+    				each_value_1 = /*models*/ ctx[7][/*carDetails*/ ctx[0].brand];
+    				validate_each_argument(each_value_1);
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(each_1_anchor.parentNode, each_1_anchor);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(each_1_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$2.name,
+    		type: "if",
+    		source: "(309:12) {#if carDetails.brand}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (310:16) {#each models[carDetails.brand] as model}
+    function create_each_block_1(ctx) {
+    	let option;
+    	let t_value = /*model*/ ctx[35] + "";
+    	let t;
+    	let option_value_value;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = option_value_value = /*model*/ ctx[35];
+    			option.value = option.__value;
+    			add_location(option, file$2, 310, 20, 9801);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*carDetails*/ 1 && t_value !== (t_value = /*model*/ ctx[35] + "")) set_data_dev(t, t_value);
+
+    			if (dirty[0] & /*carDetails, brands*/ 65 && option_value_value !== (option_value_value = /*model*/ ctx[35])) {
+    				prop_dev(option, "__value", option_value_value);
+    				option.value = option.__value;
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_1.name,
+    		type: "each",
+    		source: "(310:16) {#each models[carDetails.brand] as model}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (331:12) {#each carAreas as carArea}
+    function create_each_block$1(ctx) {
+    	let option;
+    	let t_value = /*carArea*/ ctx[32] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = /*carArea*/ ctx[32];
+    			option.value = option.__value;
+    			add_location(option, file$2, 331, 16, 10429);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop$1,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(331:12) {#each carAreas as carArea}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*$isAuthenticated*/ ctx[3] && create_if_block$2(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (/*$isAuthenticated*/ ctx[3]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$2(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop$1,
+    		o: noop$1,
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 
@@ -8942,19 +9681,101 @@ var app = (function () {
 
     function instance$2($$self, $$props, $$invalidate) {
     	let $jwt_token;
+    	let $isAuthenticated;
     	let $myUserId;
     	let $actualUser;
     	validate_store(jwt_token, 'jwt_token');
-    	component_subscribe($$self, jwt_token, $$value => $$invalidate(12, $jwt_token = $$value));
+    	component_subscribe($$self, jwt_token, $$value => $$invalidate(28, $jwt_token = $$value));
+    	validate_store(isAuthenticated, 'isAuthenticated');
+    	component_subscribe($$self, isAuthenticated, $$value => $$invalidate(3, $isAuthenticated = $$value));
     	validate_store(myUserId, 'myUserId');
-    	component_subscribe($$self, myUserId, $$value => $$invalidate(2, $myUserId = $$value));
+    	component_subscribe($$self, myUserId, $$value => $$invalidate(4, $myUserId = $$value));
     	validate_store(actualUser, 'actualUser');
-    	component_subscribe($$self, actualUser, $$value => $$invalidate(3, $actualUser = $$value));
+    	component_subscribe($$self, actualUser, $$value => $$invalidate(5, $actualUser = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('CarDetails', slots, []);
     	const api_root = window.location.origin;
     	let carDetails = [];
     	let mapUrl = "";
+    	let showUpdateForm = false;
+
+    	let brands = [
+    		"Audi",
+    		"Citroen",
+    		"Fiat",
+    		"Ford",
+    		"Jeep",
+    		"Mini",
+    		"Opel",
+    		"Seat",
+    		"Tesla",
+    		"VW"
+    	];
+
+    	let models = {
+    		Audi: ["A3", "A5", "A6", "Q5", "Q8", "etron"],
+    		Citroen: ["Berlingo", "C3", "C4", "C5", "C6", "C8"],
+    		Fiat: ["Doblo", "Ducato", "Panda", "Punto", "Tipo"],
+    		Ford: ["EcoSport", "Fiesta", "Focus", "Kuga", "Mondeo", "Mustang"],
+    		Jeep: ["Cherokee", "Compass", "Patriot", "Renegade", "Wagoneer", "Wrangler"],
+    		Mini: ["Cabrio", "Clubman", "Cooper", "Countryman", "Coupe", "Paceman"],
+    		Opel: ["Astra", "Cascada", "Corsa", "Crossland", "Insignia", "Mokka"],
+    		Seat: ["Alhambra", "Arona", "Ateca", "Ibiza", "Leon", "Tarraco"],
+    		Tesla: ["ModelS", "Model3", "ModelX", "ModelY"],
+    		VW: ["Golf", "ID3", "ID4", "Tiguan", "Touareg", "Touran"]
+    	};
+
+    	let carAreas = [
+    		"Aarau",
+    		"Adliswil",
+    		"Altstätten",
+    		"Amriswil",
+    		"Arbon",
+    		"Baden",
+    		"Basel",
+    		"Bellinzona",
+    		"Bern",
+    		"Biel",
+    		"Bülach",
+    		"Chur",
+    		"Davos",
+    		"Dietikon",
+    		"Dübendorf",
+    		"Emmen",
+    		"Frauenfeld",
+    		"Genf",
+    		"Glarus",
+    		"Gossau",
+    		"Hinwil",
+    		"Horgen",
+    		"Kloten",
+    		"Kreuzlingen",
+    		"Kriens",
+    		"Küsnacht",
+    		"Lausanne",
+    		"Lenzburg",
+    		"Locarno",
+    		"Luzern",
+    		"Opfikon",
+    		"Rapperswil",
+    		"Regensdorf",
+    		"Romanshorn",
+    		"Schaffhausen",
+    		"Schlieren",
+    		"Schwyz",
+    		"Solothurn",
+    		"Thalwil",
+    		"Thun",
+    		"Uster",
+    		"Volketswil",
+    		"Wallisellen",
+    		"Wettingen",
+    		"Wetzikon",
+    		"Wil",
+    		"Windisch",
+    		"Winterthur",
+    		"Zürich"
+    	];
 
     	function getCarDetails(carId) {
     		var config = {
@@ -9006,6 +9827,28 @@ var app = (function () {
     		});
     	}
 
+    	function updateCar(carId) {
+    		var config = {
+    			method: "put",
+    			url: api_root + "/api/car/" + carId,
+    			headers: {
+    				"Content-Type": "application/json",
+    				Authorization: "Bearer " + $jwt_token
+    			},
+    			data: carDetails
+    		};
+
+    		axios$1(config).then(function (response) {
+    			alert("Car updated");
+    			$$invalidate(0, carDetails = response.data);
+    			$$invalidate(2, showUpdateForm = false);
+    			getCarDetails(carId);
+    		}).catch(function (error) {
+    			alert("Could not update car");
+    			console.log(error);
+    		});
+    	}
+
     	function deleteCar(carId) {
     		var config = {
     			method: "delete",
@@ -9032,7 +9875,7 @@ var app = (function () {
     			method: "delete",
     			url: api_root + "/api/me/car/" + carId,
     			headers: {
-    				"Content-Type": "application/json",
+    				//"Content-Type": "application/json",
     				Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
     				
     			}
@@ -9058,15 +9901,71 @@ var app = (function () {
     	};
 
     	const click_handler_1 = () => {
-    		deleteMyCarById(carDetails.id);
+    		$$invalidate(2, showUpdateForm = true);
     	};
 
     	const click_handler_2 = () => {
-    		rentCar(carDetails.id);
+    		deleteMyCarById(carDetails.id);
     	};
 
     	const click_handler_3 = () => {
+    		rentCar(carDetails.id);
+    	};
+
+    	const click_handler_4 = () => {
     		deleteCar(carDetails.id);
+    	};
+
+    	function select0_change_handler() {
+    		carDetails.brand = select_value(this);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function select1_change_handler() {
+    		carDetails.model = select_value(this);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function input0_input_handler() {
+    		carDetails.year = to_number(this.value);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function select2_change_handler() {
+    		carDetails.carArea = select_value(this);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function input1_input_handler() {
+    		carDetails.price = to_number(this.value);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function select3_change_handler() {
+    		carDetails.carType = select_value(this);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function select4_change_handler() {
+    		carDetails.carTransmission = select_value(this);
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	function input2_input_handler() {
+    		carDetails.description = this.value;
+    		$$invalidate(0, carDetails);
+    		$$invalidate(6, brands);
+    	}
+
+    	const click_handler_5 = () => {
+    		$$invalidate(2, showUpdateForm = false);
     	};
 
     	$$self.$capture_state = () => ({
@@ -9074,16 +9973,23 @@ var app = (function () {
     		actualUser,
     		jwt_token,
     		myUserId,
+    		isAuthenticated,
     		api_root,
     		carDetails,
     		mapUrl,
+    		showUpdateForm,
+    		brands,
+    		models,
+    		carAreas,
     		getCarDetails,
     		carId,
     		rentCar,
     		unrentCar,
+    		updateCar,
     		deleteCar,
     		deleteMyCarById,
     		$jwt_token,
+    		$isAuthenticated,
     		$myUserId,
     		$actualUser
     	});
@@ -9091,6 +9997,10 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ('carDetails' in $$props) $$invalidate(0, carDetails = $$props.carDetails);
     		if ('mapUrl' in $$props) $$invalidate(1, mapUrl = $$props.mapUrl);
+    		if ('showUpdateForm' in $$props) $$invalidate(2, showUpdateForm = $$props.showUpdateForm);
+    		if ('brands' in $$props) $$invalidate(6, brands = $$props.brands);
+    		if ('models' in $$props) $$invalidate(7, models = $$props.models);
+    		if ('carAreas' in $$props) $$invalidate(8, carAreas = $$props.carAreas);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -9100,23 +10010,39 @@ var app = (function () {
     	return [
     		carDetails,
     		mapUrl,
+    		showUpdateForm,
+    		$isAuthenticated,
     		$myUserId,
     		$actualUser,
+    		brands,
+    		models,
+    		carAreas,
     		rentCar,
     		unrentCar,
+    		updateCar,
     		deleteCar,
     		deleteMyCarById,
     		click_handler,
     		click_handler_1,
     		click_handler_2,
-    		click_handler_3
+    		click_handler_3,
+    		click_handler_4,
+    		select0_change_handler,
+    		select1_change_handler,
+    		input0_input_handler,
+    		select2_change_handler,
+    		input1_input_handler,
+    		select3_change_handler,
+    		select4_change_handler,
+    		input2_input_handler,
+    		click_handler_5
     	];
     }
 
     class CarDetails extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {}, null, [-1, -1]);
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -9138,7 +10064,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (78:0) {:else}
+    // (138:0) {:else}
     function create_else_block$1(ctx) {
     	let p;
 
@@ -9146,7 +10072,7 @@ var app = (function () {
     		c: function create() {
     			p = element("p");
     			p.textContent = "Not logged in";
-    			add_location(p, file$1, 78, 4, 2413);
+    			add_location(p, file$1, 138, 4, 4510);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -9161,107 +10087,265 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(78:0) {:else}",
+    		source: "(138:0) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (69:0) {#if $isAuthenticated}
-    function create_if_block_2$1(ctx) {
+    // (67:0) {#if $isAuthenticated}
+    function create_if_block$1(ctx) {
+    	let h10;
+    	let t1;
     	let p0;
     	let img;
     	let img_src_value;
-    	let t0;
+    	let t2;
     	let p1;
     	let b0;
-    	let t2;
-    	let t3_value = /*$actualUser*/ ctx[2].name + "";
-    	let t3;
     	let t4;
+    	let t5_value = /*$actualUser*/ ctx[2].name + "";
+    	let t5;
+    	let t6;
     	let p2;
     	let b1;
-    	let t6;
-    	let t7_value = /*$actualUser*/ ctx[2].nickname + "";
-    	let t7;
     	let t8;
+    	let t9_value = /*$actualUser*/ ctx[2].nickname + "";
+    	let t9;
+    	let t10;
     	let p3;
     	let b2;
-    	let t10;
-    	let t11_value = /*$actualUser*/ ctx[2].email + "";
-    	let t11;
     	let t12;
-    	let if_block_anchor;
+    	let t13_value = /*$actualUser*/ ctx[2].email + "";
+    	let t13;
+    	let t14;
+    	let t15;
+    	let h11;
+    	let t17;
+    	let table;
+    	let thead;
+    	let tr;
+    	let th0;
+    	let t19;
+    	let th1;
+    	let t21;
+    	let th2;
+    	let t23;
+    	let th3;
+    	let t25;
+    	let th4;
+    	let t27;
+    	let th5;
+    	let t29;
+    	let th6;
+    	let t31;
+    	let th7;
+    	let t33;
+    	let th8;
+    	let t35;
+    	let th9;
+    	let t37;
+    	let th10;
+    	let t39;
+    	let th11;
+    	let t41;
+    	let tbody;
     	let if_block = /*$actualUser*/ ctx[2].user_roles && /*$actualUser*/ ctx[2].user_roles.length > 0 && create_if_block_3$1(ctx);
+    	let each_value = /*cars*/ ctx[0];
+    	validate_each_argument(each_value);
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
 
     	const block = {
     		c: function create() {
+    			h10 = element("h1");
+    			h10.textContent = "Account Details";
+    			t1 = space();
     			p0 = element("p");
     			img = element("img");
-    			t0 = space();
+    			t2 = space();
     			p1 = element("p");
     			b0 = element("b");
     			b0.textContent = "Name:";
-    			t2 = space();
-    			t3 = text(t3_value);
     			t4 = space();
+    			t5 = text(t5_value);
+    			t6 = space();
     			p2 = element("p");
     			b1 = element("b");
     			b1.textContent = "Nickname:";
-    			t6 = space();
-    			t7 = text(t7_value);
     			t8 = space();
+    			t9 = text(t9_value);
+    			t10 = space();
     			p3 = element("p");
     			b2 = element("b");
     			b2.textContent = "Email:";
-    			t10 = space();
-    			t11 = text(t11_value);
     			t12 = space();
+    			t13 = text(t13_value);
+    			t14 = space();
     			if (if_block) if_block.c();
-    			if_block_anchor = empty();
+    			t15 = space();
+    			h11 = element("h1");
+    			h11.textContent = "All Cars";
+    			t17 = space();
+    			table = element("table");
+    			thead = element("thead");
+    			tr = element("tr");
+    			th0 = element("th");
+    			th0.textContent = "Image";
+    			t19 = space();
+    			th1 = element("th");
+    			th1.textContent = "Brand";
+    			t21 = space();
+    			th2 = element("th");
+    			th2.textContent = "Model";
+    			t23 = space();
+    			th3 = element("th");
+    			th3.textContent = "Year";
+    			t25 = space();
+    			th4 = element("th");
+    			th4.textContent = "Area";
+    			t27 = space();
+    			th5 = element("th");
+    			th5.textContent = "Price";
+    			t29 = space();
+    			th6 = element("th");
+    			th6.textContent = "Type";
+    			t31 = space();
+    			th7 = element("th");
+    			th7.textContent = "Transmission";
+    			t33 = space();
+    			th8 = element("th");
+    			th8.textContent = "State";
+    			t35 = space();
+    			th9 = element("th");
+    			th9.textContent = "Rented By";
+    			t37 = space();
+    			th10 = element("th");
+    			th10.textContent = "Owner";
+    			t39 = space();
+    			th11 = element("th");
+    			th11.textContent = "Actions";
+    			t41 = space();
+    			tbody = element("tbody");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			add_location(h10, file$1, 68, 0, 1972);
     			if (!src_url_equal(img.src, img_src_value = /*$actualUser*/ ctx[2].picture)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "");
     			attr_dev(img, "srcset", "");
-    			add_location(img, file$1, 69, 7, 2005);
-    			add_location(p0, file$1, 69, 4, 2002);
-    			add_location(b0, file$1, 70, 7, 2068);
-    			add_location(p1, file$1, 70, 4, 2065);
-    			add_location(b1, file$1, 71, 7, 2112);
-    			add_location(p2, file$1, 71, 4, 2109);
-    			add_location(b2, file$1, 72, 7, 2164);
-    			add_location(p3, file$1, 72, 4, 2161);
+    			add_location(img, file$1, 70, 7, 2007);
+    			add_location(p0, file$1, 70, 4, 2004);
+    			add_location(b0, file$1, 71, 7, 2070);
+    			add_location(p1, file$1, 71, 4, 2067);
+    			add_location(b1, file$1, 72, 7, 2114);
+    			add_location(p2, file$1, 72, 4, 2111);
+    			add_location(b2, file$1, 73, 7, 2166);
+    			add_location(p3, file$1, 73, 4, 2163);
+    			add_location(h11, file$1, 79, 0, 2404);
+    			add_location(th0, file$1, 84, 12, 2487);
+    			attr_dev(th1, "scope", "col");
+    			add_location(th1, file$1, 85, 12, 2515);
+    			attr_dev(th2, "scope", "col");
+    			add_location(th2, file$1, 86, 12, 2555);
+    			attr_dev(th3, "scope", "col");
+    			add_location(th3, file$1, 87, 12, 2595);
+    			attr_dev(th4, "scope", "col");
+    			add_location(th4, file$1, 88, 12, 2634);
+    			attr_dev(th5, "scope", "col");
+    			add_location(th5, file$1, 89, 12, 2673);
+    			attr_dev(th6, "scope", "col");
+    			add_location(th6, file$1, 90, 12, 2713);
+    			attr_dev(th7, "scope", "col");
+    			add_location(th7, file$1, 91, 12, 2752);
+    			attr_dev(th8, "scope", "col");
+    			add_location(th8, file$1, 92, 12, 2799);
+    			attr_dev(th9, "scope", "col");
+    			add_location(th9, file$1, 93, 12, 2839);
+    			attr_dev(th10, "scope", "col");
+    			add_location(th10, file$1, 94, 12, 2883);
+    			attr_dev(th11, "scope", "col");
+    			add_location(th11, file$1, 95, 12, 2923);
+    			add_location(tr, file$1, 83, 8, 2469);
+    			add_location(thead, file$1, 82, 4, 2452);
+    			add_location(tbody, file$1, 98, 4, 2986);
+    			attr_dev(table, "class", "table");
+    			add_location(table, file$1, 81, 0, 2425);
     		},
     		m: function mount(target, anchor) {
+    			insert_dev(target, h10, anchor);
+    			insert_dev(target, t1, anchor);
     			insert_dev(target, p0, anchor);
     			append_dev(p0, img);
-    			insert_dev(target, t0, anchor);
+    			insert_dev(target, t2, anchor);
     			insert_dev(target, p1, anchor);
     			append_dev(p1, b0);
-    			append_dev(p1, t2);
-    			append_dev(p1, t3);
-    			insert_dev(target, t4, anchor);
+    			append_dev(p1, t4);
+    			append_dev(p1, t5);
+    			insert_dev(target, t6, anchor);
     			insert_dev(target, p2, anchor);
     			append_dev(p2, b1);
-    			append_dev(p2, t6);
-    			append_dev(p2, t7);
-    			insert_dev(target, t8, anchor);
+    			append_dev(p2, t8);
+    			append_dev(p2, t9);
+    			insert_dev(target, t10, anchor);
     			insert_dev(target, p3, anchor);
     			append_dev(p3, b2);
-    			append_dev(p3, t10);
-    			append_dev(p3, t11);
-    			insert_dev(target, t12, anchor);
+    			append_dev(p3, t12);
+    			append_dev(p3, t13);
+    			insert_dev(target, t14, anchor);
     			if (if_block) if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
+    			insert_dev(target, t15, anchor);
+    			insert_dev(target, h11, anchor);
+    			insert_dev(target, t17, anchor);
+    			insert_dev(target, table, anchor);
+    			append_dev(table, thead);
+    			append_dev(thead, tr);
+    			append_dev(tr, th0);
+    			append_dev(tr, t19);
+    			append_dev(tr, th1);
+    			append_dev(tr, t21);
+    			append_dev(tr, th2);
+    			append_dev(tr, t23);
+    			append_dev(tr, th3);
+    			append_dev(tr, t25);
+    			append_dev(tr, th4);
+    			append_dev(tr, t27);
+    			append_dev(tr, th5);
+    			append_dev(tr, t29);
+    			append_dev(tr, th6);
+    			append_dev(tr, t31);
+    			append_dev(tr, th7);
+    			append_dev(tr, t33);
+    			append_dev(tr, th8);
+    			append_dev(tr, t35);
+    			append_dev(tr, th9);
+    			append_dev(tr, t37);
+    			append_dev(tr, th10);
+    			append_dev(tr, t39);
+    			append_dev(tr, th11);
+    			append_dev(table, t41);
+    			append_dev(table, tbody);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				if (each_blocks[i]) {
+    					each_blocks[i].m(tbody, null);
+    				}
+    			}
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*$actualUser*/ 4 && !src_url_equal(img.src, img_src_value = /*$actualUser*/ ctx[2].picture)) {
     				attr_dev(img, "src", img_src_value);
     			}
 
-    			if (dirty & /*$actualUser*/ 4 && t3_value !== (t3_value = /*$actualUser*/ ctx[2].name + "")) set_data_dev(t3, t3_value);
-    			if (dirty & /*$actualUser*/ 4 && t7_value !== (t7_value = /*$actualUser*/ ctx[2].nickname + "")) set_data_dev(t7, t7_value);
-    			if (dirty & /*$actualUser*/ 4 && t11_value !== (t11_value = /*$actualUser*/ ctx[2].email + "")) set_data_dev(t11, t11_value);
+    			if (dirty & /*$actualUser*/ 4 && t5_value !== (t5_value = /*$actualUser*/ ctx[2].name + "")) set_data_dev(t5, t5_value);
+    			if (dirty & /*$actualUser*/ 4 && t9_value !== (t9_value = /*$actualUser*/ ctx[2].nickname + "")) set_data_dev(t9, t9_value);
+    			if (dirty & /*$actualUser*/ 4 && t13_value !== (t13_value = /*$actualUser*/ ctx[2].email + "")) set_data_dev(t13, t13_value);
 
     			if (/*$actualUser*/ ctx[2].user_roles && /*$actualUser*/ ctx[2].user_roles.length > 0) {
     				if (if_block) {
@@ -9269,39 +10353,69 @@ var app = (function () {
     				} else {
     					if_block = create_if_block_3$1(ctx);
     					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    					if_block.m(t15.parentNode, t15);
     				}
     			} else if (if_block) {
     				if_block.d(1);
     				if_block = null;
     			}
+
+    			if (dirty & /*unrentCar, cars, $myUserId, deleteMyCarById*/ 57) {
+    				each_value = /*cars*/ ctx[0];
+    				validate_each_argument(each_value);
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(tbody, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
     		},
     		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h10);
+    			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(p0);
-    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(p1);
-    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(t6);
     			if (detaching) detach_dev(p2);
-    			if (detaching) detach_dev(t8);
+    			if (detaching) detach_dev(t10);
     			if (detaching) detach_dev(p3);
-    			if (detaching) detach_dev(t12);
+    			if (detaching) detach_dev(t14);
     			if (if_block) if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
+    			if (detaching) detach_dev(t15);
+    			if (detaching) detach_dev(h11);
+    			if (detaching) detach_dev(t17);
+    			if (detaching) detach_dev(table);
+    			destroy_each(each_blocks, detaching);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_2$1.name,
+    		id: create_if_block$1.name,
     		type: "if",
-    		source: "(69:0) {#if $isAuthenticated}",
+    		source: "(67:0) {#if $isAuthenticated}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (75:4) {#if $actualUser.user_roles && $actualUser.user_roles.length > 0}
+    // (76:4) {#if $actualUser.user_roles && $actualUser.user_roles.length > 0}
     function create_if_block_3$1(ctx) {
     	let p;
     	let b;
@@ -9316,8 +10430,8 @@ var app = (function () {
     			b.textContent = "Roles:";
     			t1 = space();
     			t2 = text(t2_value);
-    			add_location(b, file$1, 75, 11, 2345);
-    			add_location(p, file$1, 75, 8, 2342);
+    			add_location(b, file$1, 76, 11, 2347);
+    			add_location(p, file$1, 76, 8, 2344);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, p, anchor);
@@ -9337,15 +10451,15 @@ var app = (function () {
     		block,
     		id: create_if_block_3$1.name,
     		type: "if",
-    		source: "(75:4) {#if $actualUser.user_roles && $actualUser.user_roles.length > 0}",
+    		source: "(76:4) {#if $actualUser.user_roles && $actualUser.user_roles.length > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (124:56) 
-    function create_if_block_1$1(ctx) {
+    // (122:56) 
+    function create_if_block_2$1(ctx) {
     	let span;
     	let t1;
     	let button;
@@ -9365,11 +10479,11 @@ var app = (function () {
     			button.textContent = "Delete";
     			attr_dev(span, "class", "badge bg-secondary");
     			attr_dev(span, "id", "myCar");
-    			add_location(span, file$1, 124, 20, 4051);
+    			add_location(span, file$1, 122, 20, 4011);
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-danger btn-sm");
     			attr_dev(button, "id", "deleteButton");
-    			add_location(button, file$1, 126, 20, 4152);
+    			add_location(button, file$1, 124, 20, 4112);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -9395,17 +10509,17 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_1$1.name,
+    		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(124:56) ",
+    		source: "(122:56) ",
     		ctx
     	});
 
     	return block;
     }
 
-    // (116:20) {#if car.userId === $myUserId}
-    function create_if_block$1(ctx) {
+    // (114:20) {#if car.userId === $myUserId}
+    function create_if_block_1$1(ctx) {
     	let button;
     	let mounted;
     	let dispose;
@@ -9420,7 +10534,7 @@ var app = (function () {
     			button.textContent = "Unrent Car";
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-success btn-sm");
-    			add_location(button, file$1, 116, 24, 3684);
+    			add_location(button, file$1, 114, 24, 3644);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -9442,16 +10556,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$1.name,
+    		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(116:20) {#if car.userId === $myUserId}",
+    		source: "(114:20) {#if car.userId === $myUserId}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (102:8) {#each cars as car}
+    // (100:8) {#each cars as car}
     function create_each_block(ctx) {
     	let tr;
     	let td0;
@@ -9503,8 +10617,8 @@ var app = (function () {
     	let t21;
 
     	function select_block_type_1(ctx, dirty) {
-    		if (/*car*/ ctx[11].userId === /*$myUserId*/ ctx[3]) return create_if_block$1;
-    		if (/*car*/ ctx[11].ownerId === /*$myUserId*/ ctx[3]) return create_if_block_1$1;
+    		if (/*car*/ ctx[11].userId === /*$myUserId*/ ctx[3]) return create_if_block_1$1;
+    		if (/*car*/ ctx[11].ownerId === /*$myUserId*/ ctx[3]) return create_if_block_2$1;
     	}
 
     	let current_block_type = select_block_type_1(ctx);
@@ -9552,20 +10666,20 @@ var app = (function () {
     			if (!src_url_equal(img.src, img_src_value = "images/" + /*car*/ ctx[11].model + ".jpg")) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", img_alt_value = /*car*/ ctx[11].model);
     			attr_dev(img, "width", "200");
-    			add_location(img, file$1, 103, 20, 3102);
-    			add_location(td0, file$1, 103, 16, 3098);
-    			add_location(td1, file$1, 104, 16, 3197);
-    			add_location(td2, file$1, 105, 16, 3235);
-    			add_location(td3, file$1, 106, 16, 3273);
-    			add_location(td4, file$1, 107, 16, 3310);
-    			add_location(td5, file$1, 108, 16, 3350);
-    			add_location(td6, file$1, 109, 16, 3388);
-    			add_location(td7, file$1, 110, 16, 3428);
-    			add_location(td8, file$1, 111, 16, 3476);
-    			add_location(td9, file$1, 112, 16, 3517);
-    			add_location(td10, file$1, 113, 16, 3559);
-    			add_location(td11, file$1, 114, 16, 3602);
-    			add_location(tr, file$1, 102, 12, 3076);
+    			add_location(img, file$1, 101, 20, 3062);
+    			add_location(td0, file$1, 101, 16, 3058);
+    			add_location(td1, file$1, 102, 16, 3157);
+    			add_location(td2, file$1, 103, 16, 3195);
+    			add_location(td3, file$1, 104, 16, 3233);
+    			add_location(td4, file$1, 105, 16, 3270);
+    			add_location(td5, file$1, 106, 16, 3310);
+    			add_location(td6, file$1, 107, 16, 3348);
+    			add_location(td7, file$1, 108, 16, 3388);
+    			add_location(td8, file$1, 109, 16, 3436);
+    			add_location(td9, file$1, 110, 16, 3477);
+    			add_location(td10, file$1, 111, 16, 3519);
+    			add_location(td11, file$1, 112, 16, 3562);
+    			add_location(tr, file$1, 100, 12, 3036);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -9651,7 +10765,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(102:8) {#each cars as car}",
+    		source: "(100:8) {#each cars as car}",
     		ctx
     	});
 
@@ -9659,185 +10773,27 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let h10;
-    	let t1;
-    	let t2;
-    	let h11;
-    	let t4;
-    	let table;
-    	let thead;
-    	let tr;
-    	let th0;
-    	let t6;
-    	let th1;
-    	let t8;
-    	let th2;
-    	let t10;
-    	let th3;
-    	let t12;
-    	let th4;
-    	let t14;
-    	let th5;
-    	let t16;
-    	let th6;
-    	let t18;
-    	let th7;
-    	let t20;
-    	let th8;
-    	let t22;
-    	let th9;
-    	let t24;
-    	let th10;
-    	let t26;
-    	let th11;
-    	let t28;
-    	let tbody;
+    	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*$isAuthenticated*/ ctx[1]) return create_if_block_2$1;
+    		if (/*$isAuthenticated*/ ctx[1]) return create_if_block$1;
     		return create_else_block$1;
     	}
 
     	let current_block_type = select_block_type(ctx);
     	let if_block = current_block_type(ctx);
-    	let each_value = /*cars*/ ctx[0];
-    	validate_each_argument(each_value);
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
-    	}
 
     	const block = {
     		c: function create() {
-    			h10 = element("h1");
-    			h10.textContent = "Account Details";
-    			t1 = space();
     			if_block.c();
-    			t2 = space();
-    			h11 = element("h1");
-    			h11.textContent = "All Cars";
-    			t4 = space();
-    			table = element("table");
-    			thead = element("thead");
-    			tr = element("tr");
-    			th0 = element("th");
-    			th0.textContent = "Image";
-    			t6 = space();
-    			th1 = element("th");
-    			th1.textContent = "Brand";
-    			t8 = space();
-    			th2 = element("th");
-    			th2.textContent = "Model";
-    			t10 = space();
-    			th3 = element("th");
-    			th3.textContent = "Year";
-    			t12 = space();
-    			th4 = element("th");
-    			th4.textContent = "Area";
-    			t14 = space();
-    			th5 = element("th");
-    			th5.textContent = "Price";
-    			t16 = space();
-    			th6 = element("th");
-    			th6.textContent = "Type";
-    			t18 = space();
-    			th7 = element("th");
-    			th7.textContent = "Transmission";
-    			t20 = space();
-    			th8 = element("th");
-    			th8.textContent = "State";
-    			t22 = space();
-    			th9 = element("th");
-    			th9.textContent = "Rented By";
-    			t24 = space();
-    			th10 = element("th");
-    			th10.textContent = "Owner";
-    			t26 = space();
-    			th11 = element("th");
-    			th11.textContent = "Actions";
-    			t28 = space();
-    			tbody = element("tbody");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			add_location(h10, file$1, 66, 0, 1946);
-    			add_location(h11, file$1, 81, 0, 2444);
-    			add_location(th0, file$1, 86, 12, 2527);
-    			attr_dev(th1, "scope", "col");
-    			add_location(th1, file$1, 87, 12, 2555);
-    			attr_dev(th2, "scope", "col");
-    			add_location(th2, file$1, 88, 12, 2595);
-    			attr_dev(th3, "scope", "col");
-    			add_location(th3, file$1, 89, 12, 2635);
-    			attr_dev(th4, "scope", "col");
-    			add_location(th4, file$1, 90, 12, 2674);
-    			attr_dev(th5, "scope", "col");
-    			add_location(th5, file$1, 91, 12, 2713);
-    			attr_dev(th6, "scope", "col");
-    			add_location(th6, file$1, 92, 12, 2753);
-    			attr_dev(th7, "scope", "col");
-    			add_location(th7, file$1, 93, 12, 2792);
-    			attr_dev(th8, "scope", "col");
-    			add_location(th8, file$1, 94, 12, 2839);
-    			attr_dev(th9, "scope", "col");
-    			add_location(th9, file$1, 95, 12, 2879);
-    			attr_dev(th10, "scope", "col");
-    			add_location(th10, file$1, 96, 12, 2923);
-    			attr_dev(th11, "scope", "col");
-    			add_location(th11, file$1, 97, 12, 2963);
-    			add_location(tr, file$1, 85, 8, 2509);
-    			add_location(thead, file$1, 84, 4, 2492);
-    			add_location(tbody, file$1, 100, 4, 3026);
-    			attr_dev(table, "class", "table");
-    			add_location(table, file$1, 83, 0, 2465);
+    			if_block_anchor = empty();
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, h10, anchor);
-    			insert_dev(target, t1, anchor);
     			if_block.m(target, anchor);
-    			insert_dev(target, t2, anchor);
-    			insert_dev(target, h11, anchor);
-    			insert_dev(target, t4, anchor);
-    			insert_dev(target, table, anchor);
-    			append_dev(table, thead);
-    			append_dev(thead, tr);
-    			append_dev(tr, th0);
-    			append_dev(tr, t6);
-    			append_dev(tr, th1);
-    			append_dev(tr, t8);
-    			append_dev(tr, th2);
-    			append_dev(tr, t10);
-    			append_dev(tr, th3);
-    			append_dev(tr, t12);
-    			append_dev(tr, th4);
-    			append_dev(tr, t14);
-    			append_dev(tr, th5);
-    			append_dev(tr, t16);
-    			append_dev(tr, th6);
-    			append_dev(tr, t18);
-    			append_dev(tr, th7);
-    			append_dev(tr, t20);
-    			append_dev(tr, th8);
-    			append_dev(tr, t22);
-    			append_dev(tr, th9);
-    			append_dev(tr, t24);
-    			append_dev(tr, th10);
-    			append_dev(tr, t26);
-    			append_dev(tr, th11);
-    			append_dev(table, t28);
-    			append_dev(table, tbody);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				if (each_blocks[i]) {
-    					each_blocks[i].m(tbody, null);
-    				}
-    			}
+    			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, [dirty]) {
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
@@ -9848,45 +10804,15 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(t2.parentNode, t2);
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
-    			}
-
-    			if (dirty & /*unrentCar, cars, $myUserId, deleteMyCarById*/ 57) {
-    				each_value = /*cars*/ ctx[0];
-    				validate_each_argument(each_value);
-    				let i;
-
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks[i] = create_each_block(child_ctx);
-    						each_blocks[i].c();
-    						each_blocks[i].m(tbody, null);
-    					}
-    				}
-
-    				for (; i < each_blocks.length; i += 1) {
-    					each_blocks[i].d(1);
-    				}
-
-    				each_blocks.length = each_value.length;
     			}
     		},
     		i: noop$1,
     		o: noop$1,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(h10);
-    			if (detaching) detach_dev(t1);
     			if_block.d(detaching);
-    			if (detaching) detach_dev(t2);
-    			if (detaching) detach_dev(h11);
-    			if (detaching) detach_dev(t4);
-    			if (detaching) detach_dev(table);
-    			destroy_each(each_blocks, detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     		}
     	};
 

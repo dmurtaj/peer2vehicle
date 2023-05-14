@@ -97,6 +97,7 @@
             .then(function (response) {
                 alert("User deleted");
                 getUsers();
+                window.location.href = api_root + '/#/users?page=1';
             })
             .catch(function (error) {
                 alert("Could not delete User");
@@ -104,7 +105,7 @@
             });
     }
 
-    /*
+    
     function createUser() {
         var config = {
             method: "post",
@@ -120,14 +121,17 @@
             .then(function (response) {
                 alert("User created");
                 getUsers();
+                window.location.href = api_root + '/#/users?page=1';
             })
             .catch(function (error) {
                 alert("Could not create User");
                 console.log(error);
             });
     }
-    */
+    
 </script>
+
+{#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 
 <h1 class="mt-3">Create User</h1>
 <form class="mb-5">
@@ -175,7 +179,7 @@
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>
-                    {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+                    
                         <button
                             type="button"
                             class="btn btn-danger btn-sm"
@@ -184,7 +188,7 @@
                                 deleteUser(user.id);
                             }}>Delete</button
                         >
-                    {/if}
+                    
                 </td>
             </tr>
         {/each}
@@ -212,3 +216,5 @@
         {/each}
     </ul>
 </nav>
+
+{/if}

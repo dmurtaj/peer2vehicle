@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { jwt_token, myUserId, actualUser } from "../store"; //Das JWT wird aus dem Store geladen
+    import { jwt_token, myUserId, actualUser, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
@@ -20,7 +20,7 @@
     Pages es insgesamt gibt.*/
 
     let priceMax;
-    let carType;
+    let carState;
     let carArea; //In den Input-Elementen eingetragene Werte
 
     let cars = [];
@@ -116,6 +116,7 @@
         "Wettingen",
         "Wetzikon",
         "Wil",
+        "Windisch",
         "Winterthur",
         "Zürich",
     ];
@@ -133,7 +134,6 @@
     siehe auch https://svelte.dev/tutorial/reactive-statements
     Wir lesen hier den Query-Parameter "page" aus der URL und holen uns anschliessend alle Cars. */
 
-    
     function getCars() {
         let query =
             "?pageSize=" + defaultPageSize + " &pageNumber=" + currentPage; //Hier werden die Query-Parameter für den Request ans Backend erstellt
@@ -141,8 +141,8 @@
         if (priceMax) {
             query += "&price=" + priceMax;
         }
-        if (carType && carType !== "ALL") {
-            query += "&type=" + carType;
+        if (carState && carState !== "ALL") {
+            query += "&state=" + carState;
         }
         if (carArea && carArea !== "ALL") {
             query += "&carArea=" + carArea;
@@ -150,7 +150,6 @@
         /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
         http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
 
-        
         var config = {
             method: "get",
             url: api_root + "/api/car" + query, //Komplette URL für den Request erstellen, z.B: http://localhost:8080/api/car?pageSize=4&pageNumber=1
@@ -230,6 +229,8 @@
             });
     }
 </script>
+
+{#if $isAuthenticated}
 
 <h1 class="mt-3">Create Car</h1>
 <form class="mb-5">
@@ -335,3 +336,5 @@
         on:click={createCar}>Submit</button
     >
 </form>
+
+{/if}

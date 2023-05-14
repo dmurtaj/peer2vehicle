@@ -12,7 +12,7 @@ import ch.zhaw.peer2vehicle.model.Mail;
 @Service
 public class MailService {
     private static final Logger logger = LoggerFactory.getLogger(MailService.class);
-    private final static String FROM_MAIL = "se2.zhaw@outlook.com";
+    private final static String FROM_MAIL = "peer2vehicle@outlook.com";
 
     /**
      * Setups the mail configuraiton.
@@ -24,7 +24,7 @@ public class MailService {
         mailSender.setHost("smtp.office365.com");
         mailSender.setPort(587);
         mailSender.setUsername(FROM_MAIL);
-        mailSender.setPassword("KNR7ZHsFThk5eav");
+        mailSender.setPassword("P2V123zhaw");
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");

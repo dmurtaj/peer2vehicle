@@ -17,7 +17,6 @@ import ch.zhaw.peer2vehicle.model.Car;
 import ch.zhaw.peer2vehicle.model.CarBrand;
 import ch.zhaw.peer2vehicle.model.CarModel;
 import ch.zhaw.peer2vehicle.model.CarStateChangeDTO;
-import ch.zhaw.peer2vehicle.model.CarState;
 import ch.zhaw.peer2vehicle.model.Mail;
 import ch.zhaw.peer2vehicle.service.CarService;
 import ch.zhaw.peer2vehicle.service.MailService;
@@ -32,9 +31,16 @@ public class ServiceController {
     @Autowired
     MailService mailService;
 
-    private void sendCarStatusEmail(String to, CarBrand brand, CarModel model, CarState carState) {
-        String subject = String.format("'%s' '%s' marked as '%s'", brand, model, carState.name());
-        String message = String.format("Hi, you just marked the car '%s' '%s' as '%s'", brand, model, carState.name());
+    private void sendRentedEmail(String to, CarBrand brand, CarModel model) {
+        String subject = String.format("Miete von %s %s gestartet", brand, model);
+        String message = String.format("Lieber Kunde\n\nDas Fahrzeug %s %s wurde soeben für Dich gemietet.\n\nWir wünschen eine gute Fahrt!\n\nLiebe Grüsse\nDein P2V-Team", brand, model);
+        Mail mail = new Mail(to, subject, message);
+        mailService.sendMail(mail);
+    }
+
+    private void sendUnrentedEmail(String to, CarBrand brand, CarModel model) {
+        String subject = String.format("Miete von %s %s beendet", brand, model);
+        String message = String.format("Lieber Kunde\n\nDie Miete für das Fahrzeug %s %s wurde soeben beendet.\n\nWir freuen uns wieder von Dir zu hören!\n\nLiebe Grüsse\nDein P2V-Team", brand, model);
         Mail mail = new Mail(to, subject, message);
         mailService.sendMail(mail);
     }
@@ -46,7 +52,7 @@ public class ServiceController {
         String carId = changes.getCarId();
         Optional<Car> car = carService.rentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendRentedEmail(userEmail, car.get().getBrand(), car.get().getModel());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,7 +65,7 @@ public class ServiceController {
         String carId = changes.getCarId();
         Optional<Car> car = carService.unrentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendUnrentedEmail(userEmail, car.get().getBrand(), car.get().getModel());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -71,7 +77,7 @@ public class ServiceController {
         String userEmail = jwt.getClaimAsString("email");
         Optional<Car> car = carService.rentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendRentedEmail(userEmail, car.get().getBrand(), car.get().getModel());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -83,7 +89,7 @@ public class ServiceController {
         String userEmail = jwt.getClaimAsString("email");
         Optional<Car> car = carService.unrentCar(carId, userEmail);
         if (car.isPresent()) {
-            sendCarStatusEmail(userEmail, car.get().getBrand(), car.get().getModel(), car.get().getCarState());
+            sendUnrentedEmail(userEmail, car.get().getBrand(), car.get().getModel());
             return new ResponseEntity<>(car.get(), HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

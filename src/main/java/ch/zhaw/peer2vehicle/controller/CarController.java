@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,8 @@ import ch.zhaw.peer2vehicle.model.Car;
 import ch.zhaw.peer2vehicle.model.CarArea;
 import ch.zhaw.peer2vehicle.model.CarCreateDTO;
 import ch.zhaw.peer2vehicle.model.CarStateAggregation;
-import ch.zhaw.peer2vehicle.model.CarType;
+import ch.zhaw.peer2vehicle.model.CarState;
+import ch.zhaw.peer2vehicle.model.CarUpdateDTO;
 import ch.zhaw.peer2vehicle.repository.CarRepository;
 
 import org.springframework.security.access.annotation.Secured; //Mit @Secured wird der Request auf die entsprechende Rolle beschränkt
@@ -39,7 +41,8 @@ public class CarController {
     @PostMapping("/car")
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
-        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getCarArea(), cDTO.getPrice(), cDTO.getCarType(),
+        Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getCarArea(), cDTO.getPrice(),
+                cDTO.getCarType(),
                 cDTO.getCarTransmission(), cDTO.getDescription(), cDTO.getOwnerName(), cDTO.getOwnerEmail(),
                 cDTO.getOwnerId());
         Car c = carRepository.save(cDAO);
@@ -68,43 +71,43 @@ public class CarController {
     @GetMapping("/car")
     public ResponseEntity<Page<Car>> getAllCars(
             @RequestParam(required = false) Double price,
-            @RequestParam(required = false) CarType type,
+            @RequestParam(required = false) CarState state,
             @RequestParam(required = false) CarArea carArea,
             @RequestParam(required = false, defaultValue = "1") Integer pageNumber,
             @RequestParam(required = false, defaultValue = "2") Integer pageSize) {
         Page<Car> allCars;
-        if (price == null && type == null && carArea == null) {
+        if (price == null && state == null && carArea == null) {
             allCars = carRepository.findAll(PageRequest.of(pageNumber - 1, pageSize));
         } else {
-            // Filter Price, Type, Area
-            if (price != null && type != null && carArea != null) {
-                allCars = carRepository.findByCarTypeAndCarAreaAndPriceLessThan(type, carArea, price,
+            // Filter Price, State, Area
+            if (price != null && state != null && carArea != null) {
+                allCars = carRepository.findByCarStateAndCarAreaAndPriceLessThan(state, carArea, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
 
-            // Filter Type, Area
-            else if (price == null && type != null && carArea != null) {
-                allCars = carRepository.findByCarTypeAndCarArea(type, carArea,
+            // Filter State, Area
+            else if (price == null && state != null && carArea != null) {
+                allCars = carRepository.findByCarStateAndCarArea(state, carArea,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
 
             // Filter Price, Area
-            else if (price != null && type == null && carArea != null) {
+            else if (price != null && state == null && carArea != null) {
                 allCars = carRepository.findByCarAreaAndPriceLessThan(carArea, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
-            // Filter Price, Type
-            else if (price != null && type != null && carArea == null) {
-                allCars = carRepository.findByCarTypeAndPriceLessThan(type, price,
+            // Filter Price, State
+            else if (price != null && state != null && carArea == null) {
+                allCars = carRepository.findByCarStateAndPriceLessThan(state, price,
                         PageRequest.of(pageNumber - 1, pageSize));
             }
             // Filter Price
-            else if (price != null && type == null && carArea == null) {
+            else if (price != null && state == null && carArea == null) {
                 allCars = carRepository.findByPriceLessThan(price, PageRequest.of(pageNumber - 1, pageSize));
             }
-            // Filter Type
-            else if (price == null && type != null && carArea == null) {
-                allCars = carRepository.findByCarType(type, PageRequest.of(pageNumber - 1, pageSize));
+            // Filter State
+            else if (price == null && state != null && carArea == null) {
+                allCars = carRepository.findByCarState(state, PageRequest.of(pageNumber - 1, pageSize));
             }
             // Filter Area
             else {
@@ -112,6 +115,31 @@ public class CarController {
             }
         }
         return new ResponseEntity<>(allCars, HttpStatus.OK);
+    }
+
+    @PutMapping("/car/{id}")
+    public ResponseEntity<Car> updateCar(@PathVariable String id, @RequestBody CarUpdateDTO carUpdateDTO, @AuthenticationPrincipal Jwt jwt) {
+        String userEmail = jwt.getClaimAsString("email");
+        Optional<Car> optionalCar = carRepository.findById(id);
+        if (optionalCar.isPresent()) {
+            Car car = optionalCar.get();
+            if (!car.getOwnerEmail().equals(userEmail)) {
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            car.setBrand(carUpdateDTO.getBrand());
+            car.setModel(carUpdateDTO.getModel());
+            car.setYear(carUpdateDTO.getYear());
+            car.setCarArea(carUpdateDTO.getCarArea());
+            car.setPrice(carUpdateDTO.getPrice());
+            car.setCarType(carUpdateDTO.getCarType());
+            car.setCarTransmission(carUpdateDTO.getCarTransmission());
+            car.setDescription(carUpdateDTO.getDescription());
+
+            Car updatedCar = carRepository.save(car);
+            return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/car/aggregation/state")

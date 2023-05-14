@@ -1,6 +1,6 @@
 <script>
     import axios from "axios";
-    import { actualUser, jwt_token, myUserId } from "../store"; //Das JWT wird aus dem Store geladen
+    import { actualUser, jwt_token, myUserId, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
@@ -20,10 +20,8 @@
     Pages es insgesamt gibt.*/
 
     let priceMax;
-    let carType;
+    let carState;
     let carArea; //In den Input-Elementen eingetragene Werte
-
-    let showAvailableOnly = "AVAILABLE";
 
     let cars = [];
     /*let car = {
@@ -106,8 +104,8 @@
         if (priceMax) {
             query += "&price=" + priceMax;
         }
-        if (carType && carType !== "ALL") {
-            query += "&type=" + carType;
+        if (carState && carState !== "ALL") {
+            query += "&state=" + carState;
         }
         if (carArea && carArea !== "ALL") {
             query += "&carArea=" + carArea;
@@ -236,6 +234,8 @@
     }
 </script>
 
+{#if $isAuthenticated}
+
 <h1>All Cars</h1>
 
 <div class="row my-3">
@@ -255,20 +255,18 @@
         Dadurch werden via Reactive Statement die Cars neu geladen. //-->
     </div>
     <div class="col-auto">
-        <label for="" class="col-form-label">Car Type: </label>
+        <label for="" class="col-form-label">Car State: </label>
     </div>
     <div class="col-3">
         <select
-            bind:value={carType}
+            bind:value={carState}
             class="form-select"
-            id="carTypeFilter"
+            id="carStateFilter"
             type="text"
         >
             <option value="ALL" />
-            <option value="ELECTRIC">ELECTRIC</option>
-            <option value="HYBRID">HYBRID</option>
-            <option value="DIESEL">DIESEL</option>
-            <option value="GAS">GAS</option>
+            <option value="AVAILABLE">AVAILABLE</option>
+            <option value="UNAVAILABLE">UNAVAILABLE</option>
         </select>
     </div>
     <div class="col-auto">
@@ -292,28 +290,13 @@
             class="btn btn-primary"
             id="applyButton"
             href={"#/cars?page=1&carType=" +
-                carType +
+                carState +
                 "&price=" +
                 priceMax +
                 "&carArea=" +
                 carArea}
             role="button">Apply</a
         >
-    </div>
-</div>
-
-<div class="row my-3">
-    <div class="col-auto">
-        <!-- svelte-ignore a11y-label-has-associated-control -->
-        <label>Show:</label>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="availabilityFilter" id="availableFilter" value="AVAILABLE" bind:group={showAvailableOnly} checked />
-            <label class="form-check-label" for="availableFilter">Available</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="availabilityFilter" id="allFilter" value="ALL" bind:group={showAvailableOnly} />
-            <label class="form-check-label" for="allFilter">All</label>
-        </div>
     </div>
 </div>
 
@@ -337,7 +320,7 @@
         </tr>
     </thead>
     <tbody>
-        {#each cars.filter(car => showAvailableOnly === "ALL" || car.userId === null) as car}
+        {#each cars as car}
             <tr>
                 <td>
                     <a href={"#/car/" + car.id} class="btn btn-primary"
@@ -432,3 +415,5 @@
         {/each}
     </ul>
 </nav>
+
+{/if}

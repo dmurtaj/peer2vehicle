@@ -1,11 +1,95 @@
 <script>
     import axios from "axios";
-    import { actualUser, jwt_token, myUserId } from "../store"; //Das JWT wird aus dem Store geladen
+    import { actualUser, jwt_token, myUserId, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
 
     const api_root = window.location.origin;
 
     let carDetails = [];
     let mapUrl = "";
+    let showUpdateForm = false;
+
+    let brands = [
+        "Audi",
+        "Citroen",
+        "Fiat",
+        "Ford",
+        "Jeep",
+        "Mini",
+        "Opel",
+        "Seat",
+        "Tesla",
+        "VW",
+    ];
+    let models = {
+        Audi: ["A3", "A5", "A6", "Q5", "Q8", "etron"],
+        Citroen: ["Berlingo", "C3", "C4", "C5", "C6", "C8"],
+        Fiat: ["Doblo", "Ducato", "Panda", "Punto", "Tipo"],
+        Ford: ["EcoSport", "Fiesta", "Focus", "Kuga", "Mondeo", "Mustang"],
+        Jeep: [
+            "Cherokee",
+            "Compass",
+            "Patriot",
+            "Renegade",
+            "Wagoneer",
+            "Wrangler",
+        ],
+        Mini: ["Cabrio", "Clubman", "Cooper", "Countryman", "Coupe", "Paceman"],
+        Opel: ["Astra", "Cascada", "Corsa", "Crossland", "Insignia", "Mokka"],
+        Seat: ["Alhambra", "Arona", "Ateca", "Ibiza", "Leon", "Tarraco"],
+        Tesla: ["ModelS", "Model3", "ModelX", "ModelY"],
+        VW: ["Golf", "ID3", "ID4", "Tiguan", "Touareg", "Touran"],
+    };
+    let carAreas = [
+        "Aarau",
+        "Adliswil",
+        "Altstätten",
+        "Amriswil",
+        "Arbon",
+        "Baden",
+        "Basel",
+        "Bellinzona",
+        "Bern",
+        "Biel",
+        "Bülach",
+        "Chur",
+        "Davos",
+        "Dietikon",
+        "Dübendorf",
+        "Emmen",
+        "Frauenfeld",
+        "Genf",
+        "Glarus",
+        "Gossau",
+        "Hinwil",
+        "Horgen",
+        "Kloten",
+        "Kreuzlingen",
+        "Kriens",
+        "Küsnacht",
+        "Lausanne",
+        "Lenzburg",
+        "Locarno",
+        "Luzern",
+        "Opfikon",
+        "Rapperswil",
+        "Regensdorf",
+        "Romanshorn",
+        "Schaffhausen",
+        "Schlieren",
+        "Schwyz",
+        "Solothurn",
+        "Thalwil",
+        "Thun",
+        "Uster",
+        "Volketswil",
+        "Wallisellen",
+        "Wettingen",
+        "Wetzikon",
+        "Wil",
+        "Windisch",
+        "Winterthur",
+        "Zürich",
+    ];
 
     function getCarDetails(carId) {
         var config = {
@@ -17,7 +101,10 @@
         axios(config)
             .then(function (response) {
                 carDetails = response.data;
-                mapUrl = "https://maps.google.com/maps?width=1229&height=529&hl=en&q=%20" + carDetails.carArea + "+()&t=&z=11&ie=UTF8&iwloc=B&output=embed";
+                mapUrl =
+                    "https://maps.google.com/maps?width=1229&height=529&hl=en&q=%20" +
+                    carDetails.carArea +
+                    "+()&t=&z=11&ie=UTF8&iwloc=B&output=embed";
             })
             .catch(function (error) {
                 alert("Could not get CarDetails");
@@ -59,6 +146,30 @@
             });
     }
 
+    function updateCar(carId) {
+        var config = {
+            method: "put",
+            url: api_root + "/api/car/" + carId,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token,
+            },
+            data: carDetails,
+        };
+
+        axios(config)
+            .then(function (response) {
+                alert("Car updated");
+                carDetails = response.data;
+                showUpdateForm = false;
+                getCarDetails(carId);
+            })
+            .catch(function (error) {
+                alert("Could not update car");
+                console.log(error);
+            });
+    }
+
     function deleteCar(carId) {
         var config = {
             method: "delete",
@@ -86,7 +197,7 @@
             method: "delete",
             url: api_root + "/api/me/car/" + carId,
             headers: {
-                "Content-Type": "application/json",
+                //"Content-Type": "application/json",
                 Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
             },
         };
@@ -102,6 +213,8 @@
             });
     }
 </script>
+
+{#if $isAuthenticated}
 
 <h1>Car Details</h1>
 
@@ -137,6 +250,13 @@
             <span class="badge bg-secondary" id="myCar">My Car</span>
             <button
                 type="button"
+                class="btn btn-primary btn-sm"
+                on:click={() => {
+                    showUpdateForm = true;
+                }}>Update Car</button
+            >
+            <button
+                type="button"
                 class="btn btn-danger btn-sm"
                 id="deleteButton"
                 on:click={() => {
@@ -168,6 +288,102 @@
     </div>
 </div>
 
+{#if showUpdateForm}
+    <form on:submit|preventDefault={updateCar(carDetails.id)}>
+        <label class="form-label" for="brand">Brand</label>
+        <select bind:value={carDetails.brand} class="form-select" id="brand">
+            <option value="">Select a brand</option>
+            {#each brands as brand}
+                <option value={brand}>{brand}</option>
+            {/each}
+        </select>
+
+        <label class="form-label" for="model">Model</label>
+        <select
+            bind:value={carDetails.model}
+            class="form-select"
+            id="model"
+            disabled={!carDetails.brand}
+        >
+            <option value="">Select a model</option>
+            {#if carDetails.brand}
+                {#each models[carDetails.brand] as model}
+                    <option value={model}>{model}</option>
+                {/each}
+            {/if}
+        </select>
+
+        <label class="form-label" for="year">Year</label>
+        <input
+            bind:value={carDetails.year}
+            class="form-control"
+            id="year"
+            type="number"
+        />
+
+        <label class="form-label" for="carArea">Area</label>
+        <select
+            bind:value={carDetails.carArea}
+            class="form-select"
+            id="carArea"
+        >
+            <option value="">Select an carArea</option>
+            {#each carAreas as carArea}
+                <option value={carArea}>{carArea}</option>
+            {/each}
+        </select>
+
+        <label class="form-label" for="price">Price</label>
+        <input
+            bind:value={carDetails.price}
+            class="form-control"
+            id="price"
+            type="number"
+        />
+
+        <label class="form-label" for="cartype">Cartype</label>
+        <select
+            bind:value={carDetails.carType}
+            class="form-select"
+            id="cartype"
+            type="text"
+        >
+            <option value="ELECTRIC">ELECTRIC</option>
+            <option value="HYBRID">HYBRID</option>
+            <option value="DIESEL">DIESEL</option>
+            <option value="GAS">GAS</option>
+        </select>
+
+        <label class="form-label" for="transmission">Transmission</label>
+        <select
+            bind:value={carDetails.carTransmission}
+            class="form-select"
+            id="transmission"
+            type="text"
+        >
+            <option value="MANUAL">MANUAL</option>
+            <option value="AUTOMATIC">AUTOMATIC</option>
+            <option value="SINGLE">SINGLE</option>
+        </select>
+
+        <label class="form-label" for="description">Description</label>
+        <input
+            bind:value={carDetails.description}
+            class="form-control"
+            id="description"
+            type="text"
+        />
+
+        <button type="submit">Submit</button>
+        <button
+            type="button"
+            on:click={() => {
+                showUpdateForm = false;
+            }}>Cancel</button
+        >
+    </form>
+{/if}
+
 <!-- svelte-ignore a11y-missing-attribute -->
 <iframe
     scrolling="no"
@@ -179,3 +395,5 @@
     height="529"
     frameborder="0"
 />
+
+{/if}
