@@ -1,4 +1,5 @@
 <script>
+    /*
     import axios from "axios";
     import { actualUser, jwt_token } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router";
@@ -10,14 +11,14 @@
     http://localhost:8080
     Dies hat den Vorteil, dass wir die URL später nicht anpassen müssen, wenn wir die Anwendung
     deployen.
-    */
+    
 
     let currentPage;
     let nrOfPages = 0;
     let defaultPageSize = 4;
     /*In diesen Variablen merken wir uns, welche
     Page aktuell angezeigt wird und wie viele
-    Pages es insgesamt gibt.*/
+    Pages es insgesamt gibt.
 
     let users = [];
     let user = {
@@ -128,9 +129,9 @@
                 console.log(error);
             });
     }
-    
+    */
 </script>
-
+<!-- 
 {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 
 <h1 class="mt-3">Create User</h1>
@@ -197,11 +198,11 @@
 <nav>
     <ul class="pagination">
         {#each Array(nrOfPages) as _, i}
-            <!-- In each-Blöcken kann man nur über Arrays iterieren. Wir wissen aber nur, wie viele Page-
+            In each-Blöcken kann man nur über Arrays iterieren. Wir wissen aber nur, wie viele Page-
         Links hinzugefügt werden sollen (nrOfPages). Der Trick ist, erst ein Array mit nrOfPages
         Elementen zu erstellen. Diese Elemente sind leer und interessieren uns auch nicht, darum
         bezeichnen wir sie mit _. Aber wir können den Index i im each-Block verwenden, um
-        beispielsweise die Pagination-Elemente zu beschriften. //-->
+        beispielsweise die Pagination-Elemente zu beschriften. //
             <li class="page-item">
                 <a
                     class="page-link"
@@ -209,12 +210,14 @@
                     href={"#/users?page=" + (i + 1)}
                     >{i + 1}
                 </a>
-                <!-- Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
+                Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
                     
-                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/cars?page=2//-->
+                Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/cars?page=2//
             </li>
         {/each}
     </ul>
 </nav>
 
 {/if}
+
+-->

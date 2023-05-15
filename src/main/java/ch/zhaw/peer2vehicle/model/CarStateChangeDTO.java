@@ -1,3 +1,4 @@
+/*
 package ch.zhaw.peer2vehicle.model;
 
 import lombok.Getter;
@@ -9,3 +10,4 @@ public class CarStateChangeDTO {
     private String carId;
     private String userEmail;    
 }
+*/

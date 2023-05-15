@@ -1,3 +1,4 @@
+/*
 package ch.zhaw.peer2vehicle.model;
 
 import lombok.Getter;
@@ -8,4 +9,4 @@ import lombok.NoArgsConstructor;
 public class UserCreateDTO {
     private String email;
     private String name;
-}
+}*/

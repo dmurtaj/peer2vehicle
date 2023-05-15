@@ -22,7 +22,7 @@ import ch.zhaw.peer2vehicle.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity //Mit der Annotation @EnableWebSecurity wird spring-security aktiviert. 
-@EnableMethodSecurity(securedEnabled = true)
+@EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
@@ -54,7 +54,7 @@ public class SecurityConfig {
                 .and().cors(withDefaults())
                 .oauth2ResourceServer(server -> server.jwt()
                     .decoder(jwtDecoder())
-                    .jwtAuthenticationConverter(new RoleExtractor()));             
+                    .jwtAuthenticationConverter(new RoleExtractor()));
         return http.build();
     }
 

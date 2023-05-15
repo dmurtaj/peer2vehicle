@@ -23,12 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import ch.zhaw.peer2vehicle.model.Car;
 import ch.zhaw.peer2vehicle.model.CarArea;
 import ch.zhaw.peer2vehicle.model.CarCreateDTO;
-import ch.zhaw.peer2vehicle.model.CarStateAggregation;
 import ch.zhaw.peer2vehicle.model.CarState;
 import ch.zhaw.peer2vehicle.model.CarUpdateDTO;
 import ch.zhaw.peer2vehicle.repository.CarRepository;
 
 import org.springframework.security.access.annotation.Secured; //Mit @Secured wird der Request auf die entsprechende Rolle beschränkt
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -39,6 +39,7 @@ public class CarController {
     CarRepository carRepository;
 
     @PostMapping("/car")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Car> createCar(
             @RequestBody CarCreateDTO cDTO) {
         Car cDAO = new Car(cDTO.getBrand(), cDTO.getModel(), cDTO.getYear(), cDTO.getCarArea(), cDTO.getPrice(),
@@ -50,6 +51,7 @@ public class CarController {
     }
 
     @GetMapping("/mycars")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<Car>> getMyCars(@AuthenticationPrincipal Jwt jwt) {
         String actualUserEmail = jwt.getClaimAsString("email"); // Get the current user's Email from the JWT
         List<Car> myOwnedCars = carRepository.findByOwnerEmail(actualUserEmail);
@@ -59,6 +61,7 @@ public class CarController {
     }
 
     @GetMapping("/car/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Car> getCarById(@PathVariable String id) {
         Optional<Car> car = carRepository.findById(id);
         if (car.isPresent()) {
@@ -69,6 +72,7 @@ public class CarController {
     }
 
     @GetMapping("/car")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<Car>> getAllCars(
             @RequestParam(required = false) Double price,
             @RequestParam(required = false) CarState state,
@@ -118,7 +122,9 @@ public class CarController {
     }
 
     @PutMapping("/car/{id}")
-    public ResponseEntity<Car> updateCar(@PathVariable String id, @RequestBody CarUpdateDTO carUpdateDTO, @AuthenticationPrincipal Jwt jwt) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Car> updateCar(@PathVariable String id, @RequestBody CarUpdateDTO carUpdateDTO,
+            @AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaimAsString("email");
         Optional<Car> optionalCar = carRepository.findById(id);
         if (optionalCar.isPresent()) {
@@ -142,9 +148,28 @@ public class CarController {
         }
     }
 
-    @GetMapping("/car/aggregation/state")
-    public List<CarStateAggregation> getCarStateAggregation() {
-        return carRepository.getCarStateAggregation();
+    @PutMapping("/car/{id}/setAsAvailable")
+    @Secured("ROLE_admin")
+    public ResponseEntity<Car> setCarAsAvailable(@PathVariable String id) {
+        Optional<Car> optionalCar = carRepository.findById(id);
+        if (optionalCar.isPresent()) {
+            Car car = optionalCar.get();
+
+            // Check if current car state is UNAVAILABLE
+            if (!car.getCarState().equals(CarState.UNAVAILABLE)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            car.setCarState(CarState.AVAILABLE);
+            car.setUserName(null);
+            car.setUserEmail(null);
+            car.setUserId(null);
+
+            Car updatedCar = carRepository.save(car);
+            return new ResponseEntity<>(updatedCar, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/car/{id}")
@@ -160,6 +185,7 @@ public class CarController {
     }
 
     @DeleteMapping("/me/car/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> deleteMyCarById(@PathVariable String id, @AuthenticationPrincipal Jwt jwt) {
         String actualUserEmail = jwt.getClaimAsString("email"); // Get the current user's Email from the JWT
         Optional<Car> carToDelete = carRepository.findById(id);

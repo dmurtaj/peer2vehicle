@@ -136,5 +136,5 @@
 </table>
 
 {:else}
-    <p>Not logged in</p>
+    <p>Bitte melde Dich an.</p>
 {/if}

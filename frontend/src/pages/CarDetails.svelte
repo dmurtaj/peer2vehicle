@@ -7,6 +7,7 @@
     let carDetails = [];
     let mapUrl = "";
     let showUpdateForm = false;
+    let isLoading = false;
 
     let brands = [
         "Audi",
@@ -115,6 +116,7 @@
     getCarDetails(carId); // Füge hier carId als Parameter hinzu
 
     function rentCar(carId) {
+        isLoading = true;
         var config = {
             method: "put",
             url: api_root + "/api/service/me/rentcar?carId=" + carId,
@@ -122,15 +124,19 @@
         };
         axios(config)
             .then(function (response) {
-                getCarDetails();
+                getCarDetails(carId);
             })
             .catch(function (error) {
                 alert("Could not rent car");
                 console.log(error);
+            })
+            .finally(function () {
+                isLoading = false;
             });
     }
 
     function unrentCar(carId) {
+        isLoading = true;
         var config = {
             method: "put",
             url: api_root + "/api/service/me/unrentcar?carId=" + carId,
@@ -138,11 +144,14 @@
         };
         axios(config)
             .then(function (response) {
-                getCars();
+                getCarDetails(carId);
             })
             .catch(function (error) {
                 alert("Could not unrent car");
                 console.log(error);
+            })
+            .finally(function () {
+                isLoading = false;
             });
     }
 
@@ -162,6 +171,27 @@
                 alert("Car updated");
                 carDetails = response.data;
                 showUpdateForm = false;
+                getCarDetails(carId);
+            })
+            .catch(function (error) {
+                alert("Could not update car");
+                console.log(error);
+            });
+    }
+
+    function setCarAsAvailable(carId) {
+        var config = {
+            method: "put",
+            url: api_root + "/api/car/" + carId + "/setAsAvailable",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token,
+            }
+        };
+
+        axios(config)
+            .then(function (response) {
+                alert("Car updated");
                 getCarDetails(carId);
             })
             .catch(function (error) {
@@ -215,6 +245,9 @@
 </script>
 
 {#if $isAuthenticated}
+    {#if isLoading}
+    <div class="loading">Loading...</div>
+    {:else}
 
 <h1>Car Details</h1>
 
@@ -275,7 +308,15 @@
         {:else}
             <span class="badge bg-secondary" id="rented">Unavailable</span>
         {/if}
-        {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+        {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin") && carDetails.carState === "UNAVAILABLE"}
+        <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                id="setCarAsAvailable"
+                on:click={() => {
+                    setCarAsAvailable(carDetails.id);
+                }}>Set as Available</button
+            >
             <button
                 type="button"
                 class="btn btn-danger btn-sm"
@@ -395,5 +436,7 @@
     height="529"
     frameborder="0"
 />
-
+    {/if}
+{:else}
+    <p>Bitte melde Dich an.</p>
 {/if}

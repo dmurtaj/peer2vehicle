@@ -416,4 +416,6 @@
     </ul>
 </nav>
 
+{:else}
+    <p>Bitte melde Dich an.</p>
 {/if}

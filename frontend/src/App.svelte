@@ -22,6 +22,7 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+					<!--
 					{#if $isAuthenticated && $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 						<li class="nav-item">
 							<a class="nav-link" href="#/users"
@@ -29,10 +30,11 @@
 							>
 						</li>
 					{/if}
+					-->
 					{#if $isAuthenticated && $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
 						<li class="nav-item">
 							<a class="nav-link" href="#/cars"
-								>Fahrzeuge</a
+								>Fahrzeugübersicht</a
 							>
 						</li>
 					{/if}

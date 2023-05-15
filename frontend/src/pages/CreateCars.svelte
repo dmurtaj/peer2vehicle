@@ -1,7 +1,7 @@
 <script>
     import axios from "axios";
     import { jwt_token, myUserId, actualUser, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
-    import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
+    import { push } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
     const api_root = window.location.origin;
     /*
@@ -12,18 +12,18 @@
     deployen.
     */
 
-    let currentPage;
-    let nrOfPages = 0;
-    let defaultPageSize = 4;
+    //let currentPage;
+    //let nrOfPages = 0;
+    //let defaultPageSize = 4;
     /*In diesen Variablen merken wir uns, welche
     Page aktuell angezeigt wird und wie viele
     Pages es insgesamt gibt.*/
 
-    let priceMax;
-    let carState;
-    let carArea; //In den Input-Elementen eingetragene Werte
+    //let priceMax;
+    //let carState;
+    //let carArea; //In den Input-Elementen eingetragene Werte
 
-    let cars = [];
+    //let cars = [];
     let car = {
         brand: null,
         model: null,
@@ -121,6 +121,7 @@
         "Zürich",
     ];
 
+    /*
     $: {
         let searchParams = new URLSearchParams($querystring);
         if (searchParams.has("page")) {
@@ -128,12 +129,13 @@
         } else {
             currentPage = "1";
         }
-        getCars();
-    }
+        //getCars();
+    }*/
     /* Dieser Code wird immer dann ausgeführt, wenn sich der Wert einer Variablen im Code-Block $: {... } ändert,
     siehe auch https://svelte.dev/tutorial/reactive-statements
     Wir lesen hier den Query-Parameter "page" aus der URL und holen uns anschliessend alle Cars. */
 
+    /*
     function getCars() {
         let query =
             "?pageSize=" + defaultPageSize + " &pageNumber=" + currentPage; //Hier werden die Query-Parameter für den Request ans Backend erstellt
@@ -147,8 +149,8 @@
         if (carArea && carArea !== "ALL") {
             query += "&carArea=" + carArea;
         }
-        /* Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
-        http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST */
+        //Query-Parameter für den Request ans Backend ergänzen. Beispiel für eine komplette URL:
+        //http://localhost:8080/api/car?pageSize=4&page=2&price=139&carType=TEST 
 
         var config = {
             method: "get",
@@ -167,6 +169,7 @@
                 console.log(error);
             });
     }
+    */
     //getCars();
     /* getCars() wird neu im Reactive Statement weiter
     oben aufgerufen und kann hier gelöscht oder
@@ -189,7 +192,8 @@
         axios(config)
             .then(function (response) {
                 alert("Car created");
-                getCars();
+                //getCars();
+                push('/cars');
             })
             .catch(function (error) {
                 alert("Could not create Car");
@@ -197,6 +201,7 @@
             });
     }
 
+    /*
     function rentCar(carId) {
         var config = {
             method: "put",
@@ -228,6 +233,7 @@
                 console.log(error);
             });
     }
+    */
 </script>
 
 {#if $isAuthenticated}
@@ -337,4 +343,6 @@
     >
 </form>
 
+{:else}
+    <p>Bitte melde Dich an.</p>
 {/if}

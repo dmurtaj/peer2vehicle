@@ -2,6 +2,7 @@ package ch.zhaw.peer2vehicle.service;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import ch.zhaw.peer2vehicle.model.User;
@@ -17,6 +18,7 @@ public class CarService {
     @Autowired
     UserRepository userRepository;
 
+    @PreAuthorize("isAuthenticated()")
     public Optional<Car> rentCar(String carId, String userEmail) {
         Optional<Car> carToRent = carRepository.findById(carId);
         if (carToRent.isPresent()) {
@@ -36,6 +38,7 @@ public class CarService {
         return Optional.empty();
     }
 
+    @PreAuthorize("isAuthenticated()")
     public Optional<Car> unrentCar(String carId, String userEmail) {
         Optional<Car> carToUnrent = carRepository.findById(carId);
         if (carToUnrent.isPresent()) {

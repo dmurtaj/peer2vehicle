@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import ch.zhaw.peer2vehicle.model.Mail;
 
@@ -19,6 +20,7 @@ public class MailService {
      * 
      * @return configured mail sender.
      */
+    @PreAuthorize("isAuthenticated()")
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.office365.com");
@@ -33,6 +35,7 @@ public class MailService {
         return mailSender;
     }
 
+    @PreAuthorize("isAuthenticated()")
     public boolean sendMail(Mail mail) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();

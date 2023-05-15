@@ -1,27 +1,28 @@
 package ch.zhaw.peer2vehicle.controller;
 
-import java.util.Optional;
+//import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+//import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.RequestParam;
 import ch.zhaw.peer2vehicle.model.User;
-import ch.zhaw.peer2vehicle.model.UserCreateDTO;
-import ch.zhaw.peer2vehicle.model.MailInformation;
+//import ch.zhaw.peer2vehicle.model.UserCreateDTO;
+//import ch.zhaw.peer2vehicle.model.MailInformation;
 import ch.zhaw.peer2vehicle.repository.UserRepository;
-import ch.zhaw.peer2vehicle.service.MailValidatorService;
+//import ch.zhaw.peer2vehicle.service.MailValidatorService;
 
-import org.springframework.security.access.annotation.Secured; //Mit @Secured wird der Request auf die entsprechende Rolle beschränkt
+//import org.springframework.security.access.annotation.Secured; //Mit @Secured wird der Request auf die entsprechende Rolle beschränkt
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -31,9 +32,10 @@ public class UserController {
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    MailValidatorService mailValidatorService;
+    //@Autowired
+    //MailValidatorService mailValidatorService;
 
+    /*
     @PostMapping("/user")
     @Secured("ROLE_admin")
     public ResponseEntity<User> createUser(
@@ -72,8 +74,11 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    */
 
+    
     @GetMapping("/me/user")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<User> assignToMe(@AuthenticationPrincipal Jwt jwt) {
         String userEmail = jwt.getClaimAsString("email");
         User user = userRepository.findFirstByEmail(userEmail);
@@ -84,6 +89,7 @@ public class UserController {
         }
     }
 
+    /*
     @DeleteMapping("/user/{id}")
     @Secured("ROLE_admin")
     public ResponseEntity<String> deleteUserById(@PathVariable String id) {
@@ -95,4 +101,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID " + id + " not found.");
         }
     }
+    */
 }
