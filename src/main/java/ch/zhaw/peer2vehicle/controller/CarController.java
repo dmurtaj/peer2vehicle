@@ -156,11 +156,11 @@ public class CarController {
             Car car = optionalCar.get();
 
             // Check if current car state is UNAVAILABLE
-            if (!car.getCarState().equals(CarState.UNAVAILABLE)) {
+            if (!car.getCarState().equals(CarState.Besetzt)) {
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
 
-            car.setCarState(CarState.AVAILABLE);
+            car.setCarState(CarState.Verfügbar);
             car.setUserName(null);
             car.setUserEmail(null);
             car.setUserId(null);

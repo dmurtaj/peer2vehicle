@@ -1,0 +1,256 @@
+/* Startseite */
+
+h1 {
+    color: #003317c7;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    text-align: center;
+}
+
+h2 {
+    color: #003317c7;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-style: italic;
+}
+
+#homepage-text {
+    font-size: 20px;
+    text-align: justify;
+    margin-left: 250px;
+    margin-right: 250px;
+}
+
+
+
+/* Navigationsbar */
+
+.navbar,
+.footer {
+    background-color: #003317c7;
+}
+
+.nav-link {
+    transition: color 0.3s ease;
+    color: white;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 20px;
+}
+
+.nav-link:hover {
+    color: #088d3e;
+}
+
+.icon-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+
+
+/* Fahrzeugfilter */
+
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-row .form-control,
+.filter-row .form-select {
+    width: auto;
+}
+
+.filter-row .btn {
+    background-color: #003317c7;
+    color: white;
+    border: none;
+    height: 38px;
+    /* Same height as the filter fields */
+    width: 38px;
+    /* Same width as the height to make the button round */
+    border-radius: 50%;
+    /* Make the button round */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-row .btn:hover {
+    background-color: #088d3e;
+}
+
+
+
+/* Buttons */
+
+#rentButton, #updateButton, #submitButton, #setAvailableButton {
+    background-color: #08793bcc;
+    color: white;
+    border: none;
+    height: 40px;
+    width: 130px;
+    transition: background-color 0.3s ease;
+}
+
+#rentButton:hover, #updateButton:hover, #submitButton:hover, #setAvailableButton:hover {
+    background-color: #088d3e;
+}
+
+#unrentButton, #submitButton, #createButton {
+    background-color: #003317c7;
+    color: white;
+    border: none;
+    height: 40px;
+    width: 130px;
+    transition: background-color 0.3s ease;
+}
+
+#createButton {
+    margin-bottom: 750px;
+}
+
+#submitButton, #cancelButton {
+    margin-bottom: 50px;
+}
+
+#unrentButton:hover {
+    background-color: #088d3e;
+}
+
+#deleteButton, #cancelButton {
+    height: 40px;
+    width: 130px;
+}
+
+/* Fahrzeugtabelle */
+
+#cars-table-name {
+    font-size: 22px;
+}
+
+#cars-table-img {
+    border-radius: 5%;
+    max-width: 100%;
+    height: auto;
+}
+
+th {
+    font-style: italic;
+}
+
+
+
+/* Pagination */
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    /* Zentriert die Listenelemente horizontal */
+}
+
+.pagination .page-link {
+    color: #003317c7;
+    margin-top: 10px;
+    margin-bottom: 600px;
+    align-items: center;
+}
+
+.pagination .page-link.active {
+    background-color: #003317c7;
+    border-color: rgba(0, 128, 0, 0.5);
+    color: white;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 128, 0, 0.5);
+    /* Ersetzt den blauen Focus-Shadow durch einen grünen */
+}
+
+
+
+/* Fahrzeugdetails */
+
+.car-info-container {
+    display: flex; /* Verwendet Flexbox, um die Elemente horizontal anzuordnen */
+    align-items: start; /* Stellt sicher, dass die Elemente oben ausgerichtet sind */
+    gap: 20px; /* Fügt etwas Platz zwischen den Elementen hinzu */
+    margin-bottom: 18px;
+}
+
+.car-image {
+    width: 350px; /* Begrenzt die Breite des Bildes */
+    height: auto; /* Behält das Seitenverhältnis des Bildes bei */
+    border-radius: 5%;
+}
+
+.car-description {
+    text-align: right;
+    margin-left: 250px;
+    margin-bottom: 20px;
+}
+
+#gmap_canvas {
+    margin-bottom: 400px;
+}
+
+
+
+/* Account Informationen */
+
+.acc-info-container {
+    display: flex; /* Verwendet Flexbox, um die Elemente horizontal anzuordnen */
+    align-items: start; /* Stellt sicher, dass die Elemente oben ausgerichtet sind */
+    gap: 20px; /* Fügt etwas Platz zwischen den Elementen hinzu */
+}
+
+
+
+/* Fusszeile */
+
+.footer {
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: #088d3e;
+}
+
+.footer .social-links {
+    margin: 20px 0;
+}
+
+.footer .social-links a {
+    margin: 0 15px;
+}
+
+.footer .legal {
+    font-size: 0.875em;
+    margin-bottom: 0;
+}
+
+
+
+/* Ladescreen */
+
+#loading {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 45%;
+    margin-bottom: 55%;
+    width: 100px;
+}

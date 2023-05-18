@@ -23,10 +23,10 @@ public class CarService {
         Optional<Car> carToRent = carRepository.findById(carId);
         if (carToRent.isPresent()) {
             Car car = carToRent.get();
-            if (car.getCarState() == CarState.AVAILABLE) {
+            if (car.getCarState() == CarState.Verfügbar) {
                 User userByEmail = userRepository.findFirstByEmail(userEmail);
                 if (userByEmail != null) {
-                    car.setCarState(CarState.UNAVAILABLE);
+                    car.setCarState(CarState.Besetzt);
                     car.setUserName(userByEmail.getName());
                     car.setUserEmail(userByEmail.getEmail());
                     car.setUserId(userByEmail.getId());
@@ -43,11 +43,11 @@ public class CarService {
         Optional<Car> carToUnrent = carRepository.findById(carId);
         if (carToUnrent.isPresent()) {
             Car car = carToUnrent.get();
-            if (car.getCarState() == CarState.UNAVAILABLE) {
+            if (car.getCarState() == CarState.Besetzt) {
                 User userByEmail = userRepository.findFirstByEmail(userEmail);
                 //System.out.println(userByEmail.getId());
                 if (userByEmail != null && userByEmail.getId().equals(car.getUserId())) {
-                    car.setCarState(CarState.AVAILABLE);
+                    car.setCarState(CarState.Verfügbar);
                     car.setUserName(null);
                     car.setUserEmail(null);
                     car.setUserId(null);

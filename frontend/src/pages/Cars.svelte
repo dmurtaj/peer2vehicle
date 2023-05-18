@@ -3,14 +3,7 @@
     import { actualUser, jwt_token, myUserId, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
     import { querystring } from "svelte-spa-router"; //Wird benötigt, um Query-Parameter aus der aktuellen URL auszulesen, z.B.: http://localhost:8080/#/cars?pageNumber=2
 
-    const api_root = window.location.origin;
-    /*
-    Hinweis: window.location.origin ist die Serveradresse der aktuellen Seiten. Beispiel: Wenn
-    http://localhost:8080/#/cars angezeigt wird, ist window.location.origin gleich
-    http://localhost:8080
-    Dies hat den Vorteil, dass wir die URL später nicht anpassen müssen, wenn wir die Anwendung
-    deployen.
-    */
+    const api_root = window.location.origin; //http://localhost:8080
 
     let currentPage;
     let nrOfPages = 0;
@@ -23,15 +16,9 @@
     let carState;
     let carArea; //In den Input-Elementen eingetragene Werte
 
+    let isLoading = false;
+
     let cars = [];
-    /*let car = {
-        brand: null,
-        model: null,
-        price: null,
-        carType: null,
-        carArea: null,
-        description: null,
-    };*/
 
     let carAreas = [
         "Aarau",
@@ -125,40 +112,13 @@
                 nrOfPages = response.data.totalPages; //Nach jedem Request wird die Anzahl Pages aktualisiert. Das Backend schickt diese in der Property totalPages in der Response.
             })
             .catch(function (error) {
-                alert("Could not get cars");
+                alert("Konnte Fahrzeuge nicht laden.");
                 console.log(error);
             });
     }
-    //getCars();
-    /* getCars() wird neu im Reactive Statement weiter
-    oben aufgerufen und kann hier gelöscht oder
-    auskommentiert werden. */
-
-    /*
-    function createCar() {
-        var config = {
-            method: "post",
-            url: api_root + "/api/car",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
-            },
-            data: car,
-        };
-
-        axios(config)
-            .then(function (response) {
-                alert("Car created");
-                getCars();
-            })
-            .catch(function (error) {
-                alert("Could not create Car");
-                console.log(error);
-            });
-    }
-    */
 
     function rentCar(carId) {
+        isLoading = true;
         var config = {
             method: "put",
             url: api_root + "/api/service/me/rentcar?carId=" + carId,
@@ -169,12 +129,16 @@
                 getCars();
             })
             .catch(function (error) {
-                alert("Could not rent car");
+                alert("Konnte Fahrzeug nicht mieten.");
                 console.log(error);
+            })
+            .finally(function () {
+                isLoading = false;
             });
     }
 
     function unrentCar(carId) {
+        isLoading = true;
         var config = {
             method: "put",
             url: api_root + "/api/service/me/unrentcar?carId=" + carId,
@@ -185,8 +149,11 @@
                 getCars();
             })
             .catch(function (error) {
-                alert("Could not unrent car");
+                alert("Konnte Fahrzeug nicht entmieten.");
                 console.log(error);
+            })
+            .finally(function () {
+                isLoading = false;
             });
     }
 
@@ -203,11 +170,11 @@
 
         axios(config)
             .then(function (response) {
-                alert("Car deleted");
+                alert("Fahrzeug gelöscht.");
                 getCars();
             })
             .catch(function (error) {
-                alert("Could not delete Car");
+                alert("Konnte Fahrzeug nicht löschen.");
                 console.log(error);
             });
     }
@@ -224,198 +191,196 @@
 
         axios(config)
             .then(function (response) {
-                alert("Car deleted");
+                alert("Dein Vehicle wurde gelöscht.");
                 getCars();
             })
             .catch(function (error) {
-                alert("Could not delete Car");
+                alert("Konnte Fahrzeug nicht löschen.");
                 console.log(error);
             });
     }
 </script>
 
 {#if $isAuthenticated}
+    {#if isLoading}
+        <img id="loading" src={"images/design/spinner.gif"} alt="loading" />
+    {:else}
+        {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+            <h2>Fahrzeugverwaltung</h2>
+        {:else}
+            <h2>Miete ein Vehicle</h2>
+        {/if}
 
-<h1>All Cars</h1>
+        <div class="filter-row my-3">
+            <label for="carAreaFilter" class="col-form-label">Ort:</label>
+            <select
+                bind:value={carArea}
+                class="form-select"
+                id="carAreaFilter"
+                type="text"
+            >
+                <option value="ALL" />
+                {#each carAreas as carArea}
+                    <option value={carArea}>{carArea}</option>
+                {/each}
+            </select>
 
-<div class="row my-3">
-    <div class="col-auto">
-        <label for="" class="col-form-label">Price: </label>
-    </div>
-    <div class="col-3">
-        <input
-            class="form-control"
-            type="number"
-            placeholder="price"
-            id="minPriceFilter"
-            bind:value={priceMax}
-        />
-        <!--Die Eingaben sind via value-binding mit den Variablen priceMax und carType (siehe nächste Seite) verknüpft.
-        Für den Apply-Button braucht es keine neue Funktion, wir müssen nur die URL mit den neuen Query-Parametern aktualisieren.
-        Dadurch werden via Reactive Statement die Cars neu geladen. //-->
-    </div>
-    <div class="col-auto">
-        <label for="" class="col-form-label">Car State: </label>
-    </div>
-    <div class="col-3">
-        <select
-            bind:value={carState}
-            class="form-select"
-            id="carStateFilter"
-            type="text"
-        >
-            <option value="ALL" />
-            <option value="AVAILABLE">AVAILABLE</option>
-            <option value="UNAVAILABLE">UNAVAILABLE</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <label for="" class="col-form-label">Area: </label>
-    </div>
-    <div class="col-3">
-        <select
-            bind:value={carArea}
-            class="form-select"
-            id="carAreaFilter"
-            type="text"
-        >
-            <option value="ALL" />
-            {#each carAreas as carArea}
-                <option value={carArea}>{carArea}</option>
-            {/each}
-        </select>
-    </div>
-    <div class="col-3">
-        <a
-            class="btn btn-primary"
-            id="applyButton"
-            href={"#/cars?page=1&carType=" +
-                carState +
-                "&price=" +
-                priceMax +
-                "&carArea=" +
-                carArea}
-            role="button">Apply</a
-        >
-    </div>
-</div>
+            <label for="minPriceFilter" class="col-form-label">Preis bis:</label
+            >
+            <input
+                class="form-control"
+                type="number"
+                id="minPriceFilter"
+                bind:value={priceMax}
+            />
 
+            <label for="carStateFilter" class="col-form-label"
+                >Verfügbarkeit:</label
+            >
+            <select
+                bind:value={carState}
+                class="form-select"
+                id="carStateFilter"
+                type="text"
+            >
+                <option value="ALL" />
+                <option value="Verfügbar">Verfügbar</option>
+                <option value="Besetzt">Besetzt</option>
+            </select>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th />
-            <th>Image</th>
-            <th scope="col">Brand</th>
-            <th scope="col">Model</th>
-            <th scope="col">Year</th>
-            <th scope="col">Area</th>
-            <th scope="col">Price</th>
-            <th scope="col">Type</th>
-            <th scope="col">Transmission</th>
-            <th scope="col">State</th>
-            <th scope="col">User ID</th>
-            <th scope="col">User Name</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each cars as car}
-            <tr>
-                <td>
-                    <a href={"#/car/" + car.id} class="btn btn-primary"
-                        ><i class="fa fa-bars" /></a
-                    >
-                </td>
-                <td
-                    ><img
-                        src={"images/" + car.model + ".jpg"}
-                        alt={car.model}
-                        width="200"
-                    /></td
-                >
-                <td>{car.brand}</td>
-                <td>{car.model}</td>
-                <td>{car.year}</td>
-                <td>{car.carArea}</td>
-                <td>{car.price}</td>
-                <td>{car.carType}</td>
-                <td>{car.carTransmission}</td>
-                <td>{car.carState}</td>
-                <td>{car.userId}</td>
-                <td>{car.userName}</td>
-                <td>
-                    {#if car.userId === $myUserId}
-                        <button
-                            type="button"
-                            class="btn btn-success btn-sm"
-                            on:click={() => {
-                                unrentCar(car.id);
-                            }}>Unrent Car</button
+            <a
+                class="btn"
+                id="applyButton"
+                href={"#/cars?page=1&carType=" +
+                    carState +
+                    "&price=" +
+                    priceMax +
+                    "&carArea=" +
+                    carArea}
+                role="button">Go!</a
+            >
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:20%">Vehicle</th>
+                    <th />
+                    <th scope="col">Ort</th>
+                    <th scope="col">Preis</th>
+                    <th scope="col">Verfügbarkeit</th>
+                    <th style="width:10%" />
+                </tr>
+            </thead>
+            <tbody>
+                {#each cars as car}
+                    <tr>
+                        <td
+                            ><a href={"#/car/" + car.id}
+                                ><img
+                                    id="cars-table-img"
+                                    src={"images/" + car.model + ".jpg"}
+                                    alt={car.model}
+                                /></a
+                            ></td
                         >
-                    {:else if car.ownerId === $myUserId}
-                        <span class="badge bg-secondary" id="myCar">My Car</span
-                        >
-                        <button
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                            id="deleteButton"
-                            on:click={() => {
-                                deleteMyCarById(car.id);
-                            }}>Delete</button
-                        >
-                    {:else if car.userId === null && car.ownerId !== $myUserId}
-                        <button
-                            type="button"
-                            class="btn btn-primary btn-sm"
-                            id="rentButton"
-                            on:click={() => {
-                                rentCar(car.id);
-                            }}>Rent Car</button
-                        >
-                    {:else}
-                        <span class="badge bg-secondary" id="rented"
-                            >Unavailable</span
-                        >
-                    {/if}
-                    {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
-                        <button
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                            id="deleteButton"
-                            on:click={() => {
-                                deleteCar(car.id);
-                            }}>Delete</button
-                        >
-                    {/if}
-                </td>
-            </tr>
-        {/each}
-    </tbody>
-</table>
-<nav>
-    <ul class="pagination">
-        {#each Array(nrOfPages) as _, i}
-            <!-- In each-Blöcken kann man nur über Arrays iterieren. Wir wissen aber nur, wie viele Page-
+                        <td
+                            ><p id="cars-table-name">{car.brand} {car.model}</p>
+                            <p>
+                                <img
+                                    src="images/design/calendar.png"
+                                    alt="calendar"
+                                    width="18"
+                                    style="margin-right: 7px; margin-top: -3px;"
+                                />{car.year}
+                            </p>
+                            <p>
+                                <img
+                                    src="images/design/fuel.png"
+                                    alt="calendar"
+                                    width="18"
+                                    style="margin-right: 7px; margin-top: -3px;"
+                                />{car.carType}
+                            </p>
+                            <p>
+                                <img
+                                    src="images/design/transmission.png"
+                                    alt="calendar"
+                                    width="18"
+                                    style="margin-right: 7px; margin-top: -3px;"
+                                />{car.carTransmission}
+                            </p>
+                        </td>
+                        <td>{car.carArea}</td>
+                        <td>{car.price} CHF/Tag</td>
+                        <td>{car.carState}</td>
+                        <td>
+                            {#if car.userId === $myUserId}
+                                <button
+                                    type="button"
+                                    class="btn btn-sm"
+                                    id="unrentButton"
+                                    on:click={() => {
+                                        unrentCar(car.id);
+                                    }}>Miete beenden</button
+                                >
+                            {:else if car.ownerId === $myUserId}
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    id="deleteButton"
+                                    on:click={() => {
+                                        deleteMyCarById(car.id);
+                                    }}>Löschen</button
+                                >
+                            {:else if car.userId === null && car.ownerId !== $myUserId && !$actualUser.user_roles.includes("admin")}
+                                <button
+                                    type="button"
+                                    class="btn btn-sm"
+                                    id="rentButton"
+                                    on:click={() => {
+                                        rentCar(car.id);
+                                    }}>Miete starten</button
+                                >
+                            {/if}
+                            {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    id="deleteButton"
+                                    on:click={() => {
+                                        deleteCar(car.id);
+                                    }}>Löschen</button
+                                >
+                            {/if}
+                        </td>
+                    </tr>
+                {/each}
+            </tbody>
+        </table>
+        <nav>
+            <ul class="pagination">
+                {#each Array(nrOfPages) as _, i}
+                    <!-- In each-Blöcken kann man nur über Arrays iterieren. Wir wissen aber nur, wie viele Page-
         Links hinzugefügt werden sollen (nrOfPages). Der Trick ist, erst ein Array mit nrOfPages
         Elementen zu erstellen. Diese Elemente sind leer und interessieren uns auch nicht, darum
         bezeichnen wir sie mit _. Aber wir können den Index i im each-Block verwenden, um
         beispielsweise die Pagination-Elemente zu beschriften. //-->
-            <li class="page-item">
-                <a
-                    class="page-link"
-                    class:active={currentPage == i + 1}
-                    href={"#/cars?page=" + (i + 1)}
-                    >{i + 1}
-                </a>
-                <!-- Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
+                    <li class="page-item">
+                        <a
+                            class="page-link"
+                            class:active={currentPage == i + 1}
+                            href={"#/cars?page=" + (i + 1)}
+                            >{i + 1}
+                        </a>
+                        <!-- Pagination-Element wird blau (active) angezeigt, wenn die aktuelle Page mit dem index (+1) übereinstimmt.
                     
                 Bei Klick auf das Pagination-Element soll auf die entsprechende Page gewechselt werden, z.B. http://localhost:8080/#/cars?page=2//-->
-            </li>
-        {/each}
-    </ul>
-</nav>
-
+                    </li>
+                {/each}
+            </ul>
+        </nav>
+    {/if}
 {:else}
     <p>Bitte melde Dich an.</p>
 {/if}

@@ -1,6 +1,7 @@
 <script>
     import axios from "axios";
     import { actualUser, jwt_token, myUserId, isAuthenticated } from "../store"; //Das JWT wird aus dem Store geladen
+    import { push } from "svelte-spa-router";
 
     const api_root = window.location.origin;
 
@@ -108,7 +109,7 @@
                     "+()&t=&z=11&ie=UTF8&iwloc=B&output=embed";
             })
             .catch(function (error) {
-                alert("Could not get CarDetails");
+                alert("Konnte Fahrzeuginformationen nicht laden.");
                 console.log(error);
             });
     }
@@ -127,7 +128,7 @@
                 getCarDetails(carId);
             })
             .catch(function (error) {
-                alert("Could not rent car");
+                alert("Konnte Fahrzeug nicht mieten.");
                 console.log(error);
             })
             .finally(function () {
@@ -147,7 +148,7 @@
                 getCarDetails(carId);
             })
             .catch(function (error) {
-                alert("Could not unrent car");
+                alert("Konnte Fahrzeug nicht entmieten.");
                 console.log(error);
             })
             .finally(function () {
@@ -168,13 +169,13 @@
 
         axios(config)
             .then(function (response) {
-                alert("Car updated");
+                alert("Änderungen gespeichert.");
                 carDetails = response.data;
                 showUpdateForm = false;
                 getCarDetails(carId);
             })
             .catch(function (error) {
-                alert("Could not update car");
+                alert("Konnte Fahrzeug nicht updaten.");
                 console.log(error);
             });
     }
@@ -186,16 +187,16 @@
             headers: {
                 "Content-Type": "application/json",
                 Authorization: "Bearer " + $jwt_token,
-            }
+            },
         };
 
         axios(config)
             .then(function (response) {
-                alert("Car updated");
+                alert("Fahrzeug wurde als Verfügbar markiert.");
                 getCarDetails(carId);
             })
             .catch(function (error) {
-                alert("Could not update car");
+                alert("Konnte Fahrzeug nicht updaten.");
                 console.log(error);
             });
     }
@@ -213,11 +214,11 @@
 
         axios(config)
             .then(function (response) {
-                alert("Car deleted");
-                getCars();
+                alert("Fahrzeug gelöscht.");
+                push('/cars');
             })
             .catch(function (error) {
-                alert("Could not delete Car");
+                alert("Konnte Fahrzeug nicht löschen.");
                 console.log(error);
             });
     }
@@ -234,11 +235,11 @@
 
         axios(config)
             .then(function (response) {
-                alert("Car deleted");
-                getCars();
+                alert("Dein Vehicle wurde gelöscht.");
+                push('/cars');
             })
             .catch(function (error) {
-                alert("Could not delete Car");
+                alert("Konnte Fahrzeug nicht löschen.");
                 console.log(error);
             });
     }
@@ -246,196 +247,269 @@
 
 {#if $isAuthenticated}
     {#if isLoading}
-    <div class="loading">Loading...</div>
+        <img id="loading" src={"images/design/spinner.gif"} alt="loading" />
     {:else}
+        <h2>Vehicle Informationen</h2>
 
-<h1>Car Details</h1>
+        <div class="car-info-container">
+            <img
+                src={"images/" + carDetails.model + ".jpg"}
+                alt={carDetails.model}
+                class="car-image"
+            />
 
-<img
-    src={"images/" + carDetails.model + ".jpg"}
-    alt={carDetails.model}
-    width="350"
-/>
+            <div class="car-info">
+                <h3>{carDetails.brand} {carDetails.model}</h3>
+                <h6>Preis: {carDetails.price} CHF/Tag</h6>
+                <p>
+                    <img
+                        src="images/design/calendar.png"
+                        alt="calendar"
+                        width="18"
+                        style="margin-right: 7px; margin-top: -3px;"
+                    />{carDetails.year}
+                </p>
+                <p>
+                    <img
+                        src="images/design/fuel.png"
+                        alt="calendar"
+                        width="18"
+                        style="margin-right: 7px; margin-top: -3px;"
+                    />{carDetails.carType}
+                </p>
+                <p>
+                    <img
+                        src="images/design/transmission.png"
+                        alt="calendar"
+                        width="18"
+                        style="margin-right: 7px; margin-top: -3px;"
+                    />{carDetails.carTransmission}
+                </p>
+                <p>
+                    <img
+                        src="images/design/pin.png"
+                        alt="pin"
+                        width="18"
+                        style="margin-right: 7px; margin-top: -3px;"
+                    />{carDetails.carArea}
+                </p>
+                <p>
+                    <img
+                        src="images/design/state.png"
+                        alt="state"
+                        width="18"
+                        style="margin-right: 7px; margin-top: -3px;"
+                    />{carDetails.carState}
+                </p>
+            </div>
+        </div>
+        <div class="car-description">
+            <h3>Besitzer/in {carDetails.ownerName} sagt:</h3>
+            <p>{carDetails.description}</p>
 
-<div class="card" style="width: 18rem;">
-    <div class="card-body">
-        <h5 class="card-title">{carDetails.brand} {carDetails.model}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Price: {carDetails.price}</h6>
-        <p class="card-text">
-            Year: {carDetails.year}
-            Area: {carDetails.carArea}
-            Type: {carDetails.carType}<br />
-            Transmission: {carDetails.carTransmission}<br />
-            State: {carDetails.carState}<br />
-            Owner: {carDetails.ownerName}<br />
-            Renter: {carDetails.userEmail}
-        </p>
-        <p class="card-text">{carDetails.description}</p>
-        {#if carDetails.userId === $myUserId}
-            <button
-                type="button"
-                class="btn btn-success btn-sm"
-                on:click={() => {
-                    unrentCar(carDetails.id);
-                }}>Unrent Car</button
-            >
-        {:else if carDetails.ownerId === $myUserId}
-            <span class="badge bg-secondary" id="myCar">My Car</span>
-            <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                on:click={() => {
-                    showUpdateForm = true;
-                }}>Update Car</button
-            >
-            <button
-                type="button"
-                class="btn btn-danger btn-sm"
-                id="deleteButton"
-                on:click={() => {
-                    deleteMyCarById(carDetails.id);
-                }}>Delete</button
-            >
-        {:else if carDetails.userId === null && carDetails.ownerId !== $myUserId}
-            <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                id="rentButton"
-                on:click={() => {
-                    rentCar(carDetails.id);
-                }}>Rent Car</button
-            >
-        {:else}
-            <span class="badge bg-secondary" id="rented">Unavailable</span>
+            <div class="button-container">
+                {#if carDetails.userId === $myUserId}
+                    <button
+                        type="button"
+                        class="btn btn-success btn-sm"
+                        id="unrentButton"
+                        on:click={() => {
+                            unrentCar(carDetails.id);
+                        }}>Miete beenden</button
+                    >
+                {:else if carDetails.ownerId === $myUserId}
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="updateButton"
+                        on:click={() => {
+                            showUpdateForm = true;
+                        }}>Bearbeiten</button
+                    >
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        id="deleteButton"
+                        on:click={() => {
+                            deleteMyCarById(carDetails.id);
+                        }}>Löschen</button
+                    >
+                {:else if carDetails.userId === null && carDetails.ownerId !== $myUserId && !$actualUser.user_roles.includes("admin")}
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="rentButton"
+                        on:click={() => {
+                            rentCar(carDetails.id);
+                        }}>Miete starten</button
+                    >
+                {/if}
+                {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin") && carDetails.carState === "Besetzt"}
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="setAvailableButton"
+                        on:click={() => {
+                            setCarAsAvailable(carDetails.id);
+                        }}>Verfügbar setzen</button
+                    >
+                {/if}
+                {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin")}
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-sm"
+                        id="deleteButton"
+                        on:click={() => {
+                            deleteCar(carDetails.id);
+                        }}>Löschen</button
+                    >
+                {/if}
+            </div>
+        </div>
+
+        {#if showUpdateForm}
+            <form on:submit|preventDefault={updateCar(carDetails.id)}>
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="brand">Marke</label>
+                        <select
+                            bind:value={carDetails.brand}
+                            class="form-select"
+                            id="brand"
+                        >
+                            <option value="">Wähle eine Marke aus</option>
+                            {#each brands as brand}
+                                <option value={brand}>{brand}</option>
+                            {/each}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label" for="model">Modell</label>
+                        <select
+                            bind:value={carDetails.model}
+                            class="form-select"
+                            id="model"
+                            disabled={!carDetails.brand}
+                        >
+                            <option value="">Wähle ein Modell</option>
+                            {#if carDetails.brand}
+                                {#each models[carDetails.brand] as model}
+                                    <option value={model}>{model}</option>
+                                {/each}
+                            {/if}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="transmission"
+                            >Getriebe</label
+                        >
+                        <select
+                            bind:value={carDetails.carTransmission}
+                            class="form-select"
+                            id="transmission"
+                            type="text"
+                        >
+                            <option value="Geschalten">Geschalten</option>
+                            <option value="Automat">Automat</option>
+                            <option value="Single">Single</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label" for="cartype"
+                            >Treibstoff</label
+                        >
+                        <select
+                            bind:value={carDetails.carType}
+                            class="form-select"
+                            id="cartype"
+                            type="text"
+                        >
+                            <option value="Elektrisch">Elektrisch</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Benzin">Benzin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="year">Jahrgang</label>
+                        <input
+                            bind:value={carDetails.year}
+                            class="form-control"
+                            id="year"
+                            type="number"
+                        />
+                    </div>
+                    <div class="col">
+                        <label class="form-label" for="carArea">Ort</label>
+                        <select
+                            bind:value={carDetails.carArea}
+                            class="form-select"
+                            id="carArea"
+                        >
+                            <option value="">Select an carArea</option>
+                            {#each carAreas as carArea}
+                                <option value={carArea}>{carArea}</option>
+                            {/each}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label" for="price"
+                            >Preis in CHF/Tag</label
+                        >
+                        <input
+                            bind:value={carDetails.price}
+                            class="form-control"
+                            id="price"
+                            type="number"
+                        />
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label" for="description"
+                            >Beschreibung</label
+                        >
+                        <textarea
+                            bind:value={carDetails.description}
+                            class="form-control"
+                            id="description"
+                            type="text"
+                        />
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-sm" id="submitButton"
+                    >Speichern</button
+                >
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    id="cancelButton"
+                    on:click={() => {
+                        showUpdateForm = false;
+                    }}>Abbrechen</button
+                >
+            </form>
         {/if}
-        {#if $actualUser.user_roles && $actualUser.user_roles.includes("admin") && carDetails.carState === "UNAVAILABLE"}
-        <button
-                type="button"
-                class="btn btn-primary btn-sm"
-                id="setCarAsAvailable"
-                on:click={() => {
-                    setCarAsAvailable(carDetails.id);
-                }}>Set as Available</button
-            >
-            <button
-                type="button"
-                class="btn btn-danger btn-sm"
-                id="deleteButton"
-                on:click={() => {
-                    deleteCar(carDetails.id);
-                }}>Delete</button
-            >
-        {/if}
-    </div>
-</div>
 
-{#if showUpdateForm}
-    <form on:submit|preventDefault={updateCar(carDetails.id)}>
-        <label class="form-label" for="brand">Brand</label>
-        <select bind:value={carDetails.brand} class="form-select" id="brand">
-            <option value="">Select a brand</option>
-            {#each brands as brand}
-                <option value={brand}>{brand}</option>
-            {/each}
-        </select>
-
-        <label class="form-label" for="model">Model</label>
-        <select
-            bind:value={carDetails.model}
-            class="form-select"
-            id="model"
-            disabled={!carDetails.brand}
-        >
-            <option value="">Select a model</option>
-            {#if carDetails.brand}
-                {#each models[carDetails.brand] as model}
-                    <option value={model}>{model}</option>
-                {/each}
-            {/if}
-        </select>
-
-        <label class="form-label" for="year">Year</label>
-        <input
-            bind:value={carDetails.year}
-            class="form-control"
-            id="year"
-            type="number"
+        <!-- svelte-ignore a11y-missing-attribute -->
+        <iframe
+            scrolling="no"
+            marginheight="0"
+            marginwidth="0"
+            id="gmap_canvas"
+            src={mapUrl}
+            width="100%"
+            height="575"
+            frameborder="0"
         />
-
-        <label class="form-label" for="carArea">Area</label>
-        <select
-            bind:value={carDetails.carArea}
-            class="form-select"
-            id="carArea"
-        >
-            <option value="">Select an carArea</option>
-            {#each carAreas as carArea}
-                <option value={carArea}>{carArea}</option>
-            {/each}
-        </select>
-
-        <label class="form-label" for="price">Price</label>
-        <input
-            bind:value={carDetails.price}
-            class="form-control"
-            id="price"
-            type="number"
-        />
-
-        <label class="form-label" for="cartype">Cartype</label>
-        <select
-            bind:value={carDetails.carType}
-            class="form-select"
-            id="cartype"
-            type="text"
-        >
-            <option value="ELECTRIC">ELECTRIC</option>
-            <option value="HYBRID">HYBRID</option>
-            <option value="DIESEL">DIESEL</option>
-            <option value="GAS">GAS</option>
-        </select>
-
-        <label class="form-label" for="transmission">Transmission</label>
-        <select
-            bind:value={carDetails.carTransmission}
-            class="form-select"
-            id="transmission"
-            type="text"
-        >
-            <option value="MANUAL">MANUAL</option>
-            <option value="AUTOMATIC">AUTOMATIC</option>
-            <option value="SINGLE">SINGLE</option>
-        </select>
-
-        <label class="form-label" for="description">Description</label>
-        <input
-            bind:value={carDetails.description}
-            class="form-control"
-            id="description"
-            type="text"
-        />
-
-        <button type="submit">Submit</button>
-        <button
-            type="button"
-            on:click={() => {
-                showUpdateForm = false;
-            }}>Cancel</button
-        >
-    </form>
-{/if}
-
-<!-- svelte-ignore a11y-missing-attribute -->
-<iframe
-    scrolling="no"
-    marginheight="0"
-    marginwidth="0"
-    id="gmap_canvas"
-    src={mapUrl}
-    width="1229"
-    height="529"
-    frameborder="0"
-/>
     {/if}
 {:else}
     <p>Bitte melde Dich an.</p>
