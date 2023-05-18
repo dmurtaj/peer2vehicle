@@ -30,12 +30,10 @@ class UserValidator implements OAuth2TokenValidator<Jwt> {
 
         String userEmail = jwt.getClaimAsString("email"); //E-Mail wird aus JWT gelesen
 
-        //List<String> userRoles = jwt.getClaimAsStringList("user_roles");
-
         if (userEmail != null && !userEmail.equals("")) { 
             User m = userRepository.findFirstByEmail(userEmail);
             if (m==null) {     
-                String username = jwt.getClaimAsString("nickname");
+                String username = jwt.getClaimAsString("name");
                 userRepository.save(new User(userEmail, username)); //User wird automatisch erzeugt
             }
             return OAuth2TokenValidatorResult.success();

@@ -33,7 +33,7 @@ public class Car {
     private CarTransmission carTransmission;
     @NonNull
     private String description;
-    private CarState carState = CarState.AVAILABLE;
+    private CarState carState = CarState.Verfügbar;
     @NonNull
     private String ownerName;
     @NonNull

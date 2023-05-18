@@ -18,7 +18,6 @@ public interface CarRepository extends MongoRepository<Car, String> {
     Page<Car> findByCarArea(CarArea carArea, Pageable pageable);
 
     // Multiple Filter
-
     Page<Car> findByCarStateAndCarArea(CarState carState, CarArea carArea, Pageable pageable);
 
     Page<Car> findByCarStateAndCarAreaAndPriceLessThan(CarState carState, CarArea carArea, Double price,
@@ -29,7 +28,6 @@ public interface CarRepository extends MongoRepository<Car, String> {
     Page<Car> findByCarStateAndPriceLessThan(CarState carState, Double price, Pageable pageable);
 
     // List Filter für Meine Übersicht
-
     List<Car> findByOwnerEmail(String ownerEmail);
 
     List<Car> findByUserEmail(String userEmail);

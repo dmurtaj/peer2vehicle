@@ -4,7 +4,8 @@
 
     const api_root = window.location.origin;
 
-        
+    let isLoading = false;
+
     let cars = [];
 
     function getCars() {
@@ -19,13 +20,14 @@
                 cars = response.data;
             })
             .catch(function (error) {
-                alert("Could not get cars");
+                alert("Konnte Fahrzeuge nicht laden.");
                 console.log(error);
             });
     }
     getCars();
 
     function unrentCar(carId) {
+        isLoading = true;
         var config = {
             method: "put",
             url: api_root + "/api/service/me/unrentcar?carId=" + carId,
@@ -36,105 +38,205 @@
                 getCars();
             })
             .catch(function (error) {
-                alert("Could not unrent car");
+                alert("Konnte Fahrzeug nicht entmieten.");
                 console.log(error);
+            })
+            .finally(function () {
+                isLoading = false;
             });
     }
 
     function deleteMyCarById(carId) {
-    var config = {
-        method: "delete",
-        url: api_root + "/api/me/car/" + carId,
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
-        },
-    };
+        var config = {
+            method: "delete",
+            url: api_root + "/api/me/car/" + carId,
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + $jwt_token, //Das JWT wird im Header mitgeschickt
+            },
+        };
 
-    axios(config)
-        .then(function (response) {
-            alert("Car deleted");
-            getCars();
-        })
-        .catch(function (error) {
-            alert("Could not delete Car");
-            console.log(error);
-        });
-}
-
+        axios(config)
+            .then(function (response) {
+                alert("Dein Vehicle wurde gelöscht.");
+                getCars();
+            })
+            .catch(function (error) {
+                alert("Konnte Fahrzeug nicht löschen.");
+                console.log(error);
+            });
+    }
 </script>
 
 {#if $isAuthenticated}
+    {#if isLoading}
+        <img id="loading" src={"images/design/spinner.gif"} alt="loading" />
+    {:else}
+        <h2>Account Details</h2>
 
-<h1>Account Details</h1>
+        <div class="acc-info-container">
+            <p>
+                <img
+                    class="rounded-circle mb-3"
+                    src={$actualUser.picture}
+                    alt=""
+                    srcset=""
+                />
+            </p>
+            <div>
+                <br />
+                <p><i><b>Benutzername:</b> {$actualUser.name}</i></p>
+                <p><i><b>Email-Adresse:</b> {$actualUser.email}</i></p>
+            </div>
+        </div>
 
-    <p><img src={$actualUser.picture} alt="" srcset="" /></p>
-    <p><b>Name:</b> {$actualUser.name}</p>
-    <p><b>Nickname:</b> {$actualUser.nickname}</p>
-    <p><b>Email:</b> {$actualUser.email}</p>
-    <!-- Show roles only if user has at least one role -->
-    {#if $actualUser.user_roles && $actualUser.user_roles.length > 0}
-        <p><b>Roles:</b> {$actualUser.user_roles}</p>
+        <h2 style="margin-top: 10px;">Meine Vehicles</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:20%">Vehicle</th>
+                    <th />
+                    <th scope="col">Ort</th>
+                    <th scope="col">Preis</th>
+                    <th scope="col">Verfügbarkeit</th>
+                    <th style="width:10%" />
+                </tr>
+            </thead>
+            {#each cars as car}
+                {#if car.ownerId === $myUserId}
+                    <tbody>
+                        <tr>
+                            <td
+                                ><a href={"#/car/" + car.id}
+                                    ><img
+                                        id="cars-table-img"
+                                        src={"images/" + car.model + ".jpg"}
+                                        alt={car.model}
+                                    /></a
+                                ></td
+                            >
+                            <td
+                                ><p id="cars-table-name">
+                                    {car.brand}
+                                    {car.model}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/calendar.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.year}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/fuel.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.carType}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/transmission.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.carTransmission}
+                                </p>
+                            </td>
+                            <td>{car.carArea}</td>
+                            <td>{car.price} CHF/Tag</td>
+                            <td>{car.carState}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    id="deleteButton"
+                                    on:click={() => {
+                                        deleteMyCarById(car.id);
+                                    }}>Löschen</button
+                                >
+                            </td>
+                        </tr>
+                    </tbody>
+                {/if}
+            {/each}
+        </table>
+        <h2 style="margin-top: 40px;">Meine gemieteten Vehicles</h2>
+        <table class="table" style="margin-bottom: 500px;">
+            <thead>
+                <tr>
+                    <th scope="col" style="width:20%">Vehicle</th>
+                    <th />
+                    <th scope="col">Ort</th>
+                    <th scope="col">Preis</th>
+                    <th scope="col">Verfügbarkeit</th>
+                    <th style="width:10%" />
+                </tr>
+            </thead>
+            {#each cars as car}
+                {#if car.userId === $myUserId}
+                    <tbody>
+                        <tr>
+                            <td
+                                ><a href={"#/car/" + car.id}
+                                    ><img
+                                        id="cars-table-img"
+                                        src={"images/" + car.model + ".jpg"}
+                                        alt={car.model}
+                                    /></a
+                                ></td
+                            >
+                            <td
+                                ><p id="cars-table-name">
+                                    {car.brand}
+                                    {car.model}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/calendar.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.year}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/fuel.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.carType}
+                                </p>
+                                <p>
+                                    <img
+                                        src="images/design/transmission.png"
+                                        alt="calendar"
+                                        width="18"
+                                        style="margin-right: 7px; margin-top: -3px;"
+                                    />{car.carTransmission}
+                                </p>
+                            </td>
+                            <td>{car.carArea}</td>
+                            <td>{car.price} CHF/Tag</td>
+                            <td>{car.carState}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    class="btn btn-sm"
+                                    id="unrentButton"
+                                    on:click={() => {
+                                        unrentCar(car.id);
+                                    }}>Miete beenden</button
+                                >
+                            </td>
+                        </tr>
+                    </tbody>
+                {/if}
+            {/each}
+        </table>
     {/if}
-
-<h1>All Cars</h1>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Image</th>
-            <th scope="col">Brand</th>
-            <th scope="col">Model</th>
-            <th scope="col">Year</th>
-            <th scope="col">Area</th>
-            <th scope="col">Price</th>
-            <th scope="col">Type</th>
-            <th scope="col">Transmission</th>
-            <th scope="col">State</th>
-            <th scope="col">Rented By</th>
-            <th scope="col">Owner</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each cars as car}
-            <tr>
-                <td><img src={"images/" + car.model + ".jpg"} alt={car.model} width="200" /></td>
-                <td>{car.brand}</td>
-                <td>{car.model}</td>
-                <td>{car.year}</td>
-                <td>{car.carArea}</td>
-                <td>{car.price}</td>
-                <td>{car.carType}</td>
-                <td>{car.carTransmission}</td>
-                <td>{car.carState}</td>
-                <td>{car.userEmail}</td>
-                <td>{car.ownerEmail}</td>
-                <td>
-                    {#if car.userId === $myUserId}
-                        <button
-                            type="button"
-                            class="btn btn-success btn-sm"
-                            on:click={() => {
-                                unrentCar(car.id);
-                            }}>Unrent Car</button
-                        >
-                    {:else if car.ownerId === $myUserId}
-                    <span class="badge bg-secondary" id="myCar"
-                    >My Car</span>
-                    <button
-                            type="button"
-                            class="btn btn-danger btn-sm"
-                            id="deleteButton"
-                            on:click={() => {deleteMyCarById(car.id);}}>Delete</button
-                        >
-                    {/if}
-                </td>
-            </tr>
-        {/each}
-    </tbody>
-</table>
-
 {:else}
     <p>Bitte melde Dich an.</p>
 {/if}
