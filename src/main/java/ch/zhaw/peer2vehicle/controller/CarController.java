@@ -200,28 +200,4 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car with ID " + id + " not found.");
         }
     }
-
-    /*
-     * @DeleteMapping("/car")
-     * 
-     * @Secured("ROLE_admin")
-     * public ResponseEntity<String> deleteAllCars() {
-     * carRepository.deleteAll();
-     * return ResponseEntity.status(HttpStatus.OK).body("DELETED");
-     * }
-     */
-    /*
-     * Die End-to-End Tests sollen reproduzierbar sein, d.h., der Zustand des
-     * Systems zu Beginn der Tests sollte immer gleich sein. Dies ist aber nicht
-     * zwingend der Fall, weil
-     * du deine Daten in einer Datenbank gespeichert hast.
-     * Darum erstellst du als erstes einen zusätzlichen Endpoint, der alle
-     * deine Cars in der Datenbank löscht. Diesen Endpoint kannst du nachher zu
-     * Beginn deiner Tests aufrufen und somit sicherstellen, dass der Zustand der
-     * Datenbank zu Beginn immer gleich ist.
-     * Hinweis: Wenn du die bestehenden Daten in deiner Datenbank nicht verlieren
-     * möchtest, kannst
-     * in src/main/resources/application.properties statt der bestehenden Datenbank
-     * den Namen einer Testdatenbank angeben.
-     */
 }

@@ -69,11 +69,8 @@ h2 {
     color: white;
     border: none;
     height: 38px;
-    /* Same height as the filter fields */
     width: 38px;
-    /* Same width as the height to make the button round */
     border-radius: 50%;
-    /* Make the button round */
     display: flex;
     justify-content: center;
     align-items: center;
