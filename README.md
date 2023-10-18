@@ -3,7 +3,7 @@
 **Modulkürzel:** w.BA.XX.3SE2-WIN.XX \
 **Semester:** 4. Semester \
 **Studiengang:** Bachelorstudiengang Wirtschaftsinformatik \
-**Vertiefung:** Business Information Systems \
+**Vertiefung:** Business Information Systems
 
 ## Kurzbeschreibung des Projektes
 
